@@ -1,7 +1,7 @@
 // CashPhone Service Worker
-// Version 1.0.0
-const CACHE_NAME = 'cashphone-v1';
-const RUNTIME_CACHE = 'cashphone-runtime-v1';
+// Version 1.1.0
+const CACHE_NAME = 'cashphone-v2';
+const RUNTIME_CACHE = 'cashphone-runtime-v2';
 
 // קבצים בסיסיים שיישמרו בקאש מיד אחרי ההתקנה
 const PRECACHE_URLS = [
@@ -39,23 +39,30 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
 
-  // אל תיגע ב-Firebase, Cloudinary, ב-APIs של שער הדולר ובדומיינים חיצוניים
+  // אל תיגע בכלום שקשור ל-Firebase, Google, Cloudinary, ב-APIs ובדומיינים חיצוניים
   // הם תמיד צריכים להיות חיים מהרשת
   const skipDomains = [
-    'firestore.googleapis.com',
+    'gstatic.com',           // סקריפטי Firebase!
+    'googleapis.com',        // כל ה-APIs של Google
     'firebaseio.com',
-    'firebase.googleapis.com',
-    'identitytoolkit.googleapis.com',
+    'firebase.com',
+    'firebaseapp.com',
+    'cloudfunctions.net',
     'cloudinary.com',
+    'github.com',
+    'githubusercontent.com',
     'api.exchangerate-api.com',
     'open.er-api.com',
-    'api.frankfurter.app'
+    'api.frankfurter.app',
+    'jsdelivr.net',          // CDN של ספריות
+    'cdnjs.cloudflare.com'
   ];
 
   if (skipDomains.some(domain => url.hostname.includes(domain))) {
-    return; // נותנים לדפדפן לטפל בבקשה רגילה
+    return; // נותנים לדפדפן לטפל בבקשה רגילה - לא מתערבים
   }
 
+  // רק לאתר עצמו (cashphone.co.il) - אסטרטגיה Network First
   // אסטרטגיה: Network First, fallback to Cache
   // זה מבטיח שהמשתמש תמיד מקבל את הגירסה הכי עדכנית כשיש רשת
   event.respondWith(
