@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5"/>
+<meta name="description" content="CASHPHONE — מערכת טעינת מטבעות ומשחקים דיגיטליים"/>
+<meta name="theme-color" content="#39e600"/>
+<title>CASHPHONE — טעינות מטבעות ומשחקים</title>
+
+<!-- ============ PWA - אפליקציה מותקנת ============ -->
+<link rel="manifest" href="manifest.json"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="CashPhone"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="application-name" content="CashPhone"/>
+<meta name="msapplication-TileColor" content="#2d3748"/>
+<meta name="msapplication-tap-highlight" content="no"/>
+
+<!-- iOS splash icons -->
+<link rel="apple-touch-icon" sizes="192x192" href="https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/icon-192.png"/>
+<link rel="apple-touch-icon" sizes="512x512" href="https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/icon-512.png"/>
+
+<!-- Favicon - אייקון בטאב הדפדפן -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2339e600'/%3E%3Cstop offset='100%25' stop-color='%2300b050'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='%230d0d0d'/%3E%3Ctext x='50' y='72' font-family='Arial Black,sans-serif' font-size='68' font-weight='900' text-anchor='middle' fill='url(%23g)'%3EC%3C/text%3E%3Ccircle cx='78' cy='30' r='6' fill='%2339e600'/%3E%3C/svg%3E"/>
+
+<!-- Apple Touch Icon - אייקון להתקנה כאפליקציה ב-iOS -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2339e600'/%3E%3Cstop offset='100%25' stop-color='%2300b050'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='%230d0d0d'/%3E%3Ctext x='90' y='130' font-family='Arial Black,sans-serif' font-size='124' font-weight='900' text-anchor='middle' fill='url(%23g)'%3EC%3C/text%3E%3Ccircle cx='140' cy='54' r='11' fill='%2339e600'/%3E%3C/svg%3E"/>
+
+<!-- Open Graph - איך האתר ייראה כששולחים אותו ב-WhatsApp/Facebook -->
+<meta property="og:title" content="CASHPHONE — טעינות מטבעות ומשחקים דיגיטליים"/>
+<meta property="og:description" content="טעינת מטבעות למשחקים, גיפט קארדים וארנקים דיגיטליים — מהיר, אמין וזול"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://cashphone.co.il"/>
+<meta property="og:image" content="https://cashphone.co.il/icon.png"/>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="app.js?v=2.12" defer></script>
+
+<link rel="stylesheet" href="styles.css?v=2.12"/>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">CASH<span>PHONE</span></div>
+    <div class="login-sub">פתרון למזומן — כניסה למערכת</div>
+    <div class="login-err" id="login-err">שם משתמש או סיסמה שגויים</div>
+    <input class="login-inp" id="li-user" type="text" placeholder="שם משתמש" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="off" autocorrect="off" autocapitalize="off"/>
+    <input class="login-inp" id="li-pass" type="password" placeholder="סיסמה" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="new-password"/>
+    <button class="login-btn" onclick="doLogin()">כניסה</button>
+    <!-- קישורים לאודות ותקנון -->
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid #2a2a2a;display:flex;justify-content:center;gap:14px;font-size:12px;">
+      <button onclick="showInfoPage('about')" style="background:none;border:none;color:#888;cursor:pointer;font-family:inherit;font-size:12px;text-decoration:underline;padding:4px;">ℹ️ אודות</button>
+      <span style="color:#444;">·</span>
+      <button onclick="showInfoPage('terms')" style="background:none;border:none;color:#888;cursor:pointer;font-family:inherit;font-size:12px;text-decoration:underline;padding:4px;">⚖️ תקנון ותנאי שימוש</button>
+      <span style="color:#444;">·</span>
+      <button onclick="showInfoPage('contact')" style="background:none;border:none;color:#888;cursor:pointer;font-family:inherit;font-size:12px;text-decoration:underline;padding:4px;">📞 צור קשר</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav" id="main-nav" style="display:none;">
+  <div class="logo">CASH<span>PHONE</span><sup style="font-size:9px;color:#666;font-weight:400;margin-right:4px;">v2.9</sup></div>
+  <div class="nav-right">
+    <div id="nav-tabs" style="display:flex;gap:4px;"></div>
+    <button id="nav-search-btn" onclick="openGlobalSearch()" title="חיפוש (Ctrl+K)" style="background:#475467;border:1px solid #5a6478;border-radius:20px;padding:6px 12px;color:#fff;cursor:pointer;font-family:inherit;font-size:13px;display:none;align-items:center;gap:6px;">
+      <span style="font-size:14px;">🔍</span>
+      <span style="font-size:11px;color:#aaa;background:#2d3748;padding:2px 5px;border-radius:4px;border:1px solid #5a6478;">⌘K</span>
+    </button>
+    <div style="display:flex;align-items:center;gap:6px;background:#475467;border:1px solid #5a6478;border-radius:20px;padding:4px 12px;">
+      <span class="user-chip" id="chip-name" style="background:none;border:none;padding:0;"></span>
+      <button class="logout-btn" onclick="doLogout()">יציאה</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="toast" id="t-admin"></div>
+
+  <!-- 🚀 כפתור צף "הזמנה ידנית מהירה" -->
+  <button id="quick-order-fab" onclick="openQuickOrder()" title="הזמנה ידנית מהירה" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;font-size:28px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(57,230,0,0.4);z-index:90;font-family:inherit;display:none;">➕</button>
+
+  <!-- 💰 כפתור צף "הגדר רווח מהיר" - לחנויות ולמשווקים -->
+  <button id="margin-fab" onclick="openMarginQuick()" title="הגדר רווח מהיר" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(22,163,74,0.45);z-index:90;font-family:inherit;display:none;">💰</button>
+
+  <div class="atabs">
+    <button class="atab on" onclick="aTab(this,'sec-dash')">📊 דשבורד</button>
+    <button class="atab" onclick="aTab(this,'sec-orders')">📋 הזמנות</button>
+    <button class="atab" onclick="aTab(this,'sec-debts')">💰 חובות</button>
+    <button class="atab" onclick="aTab(this,'sec-log')">📒 יומן</button>
+    <button class="atab" onclick="aTab(this,'sec-stats')">📈 דוחות</button>
+    <button class="atab" onclick="aTab(this,'sec-monthly')">📅 חודשי</button>
+    <button class="atab" onclick="aTab(this,'sec-security')">🛡️ אבטחה</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="sec-dash">
+    <!-- KPI Cards - 6 גדולים -->
+    <div class="g3" style="margin-bottom:16px;">
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;position:relative;">
+        <div class="stat-l">💰 הכנסות החודש</div>
+        <div class="stat-v" style="color:#39e600;font-size:22px;" id="kpi-rev">₪0</div>
+        <div id="kpi-rev-trend" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;position:relative;">
+        <div class="stat-l">💵 רווח נקי החודש</div>
+        <div class="stat-v" style="color:#39e600;font-size:22px;" id="kpi-profit">₪0</div>
+        <div id="kpi-profit-trend" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;position:relative;">
+        <div class="stat-l">📦 הזמנות החודש</div>
+        <div class="stat-v" style="font-size:22px;" id="kpi-orders">0</div>
+        <div id="kpi-orders-trend" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+    </div>
+    <div class="g3" style="margin-bottom:16px;">
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+        <div class="stat-l">🏪 חנויות פעילות החודש</div>
+        <div class="stat-v" style="font-size:22px;" id="kpi-active-stores">0</div>
+        <div style="font-size:11px;color:#888;margin-top:4px;" id="kpi-active-stores-sub">מתוך 0 חנויות</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#3a2828,#222831);border:1px solid #3a1a1a;">
+        <div class="stat-l">🔴 סך החובות</div>
+        <div class="stat-v" style="color:#e24b4a;font-size:22px;" id="kpi-debt">₪0</div>
+        <div style="font-size:11px;color:#888;margin-top:4px;" id="kpi-debt-sub">0 חנויות</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#3a3528,#222831);border:1px solid #3a2a00;">
+        <div class="stat-l">⚡ הזמנות ממתינות</div>
+        <div class="stat-v" style="color:#ef9f27;font-size:22px;" id="kpi-pending">0</div>
+        <div style="font-size:11px;color:#888;margin-top:4px;" id="kpi-pending-sub">דורשות טיפול</div>
+      </div>
+    </div>
+
+    <!-- Dollar rate -->
+    <div style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid rgba(57,230,0,0.2);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+      <span style="font-size:13px;color:#888;">💱 שער דולר</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span style="color:#39e600;font-size:16px;font-weight:700;" id="dollar-rate-display2">$1 = ₪3.65</span>
+        <button onclick="fetchDollarRate().then(()=>{document.getElementById('dollar-rate-display2').textContent='$1 = ₪'+dollarRate;toast('t-admin','שער עודכן: ₪'+dollarRate);})" style="background:#3a4556;color:#39e600;border:1px solid #39e600;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 עדכן</button>
+        <button onclick="fetchDollarRate().then(()=>updateAllStorePrices())" style="background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">📊 עדכן כל החנויות</button>
+      </div>
+    </div>
+
+    <!-- ==== גרף מכירות 30 ימים ==== -->
+    <div style="background:#3a4556;border:1px solid #5a6478;border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:700;color:#fff;">📊 מכירות 30 ימים אחרונים</span>
+        <span id="chart-30d-total" style="font-size:11px;color:#888;"></span>
+      </div>
+      <canvas id="chart-30d" height="150" style="width:100%;display:block;"></canvas>
+    </div>
+
+    <!-- ==== טופ 5 מוצרים + טופ 5 חנויות ==== -->
+    <div class="g2" style="margin-bottom:16px;">
+      <div style="background:#3a4556;border:1px solid #5a6478;border-radius:12px;padding:14px;">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;">🎮 טופ 5 מוצרים החודש</div>
+        <div id="top-products" style="font-size:12px;"></div>
+      </div>
+      <div style="background:#3a4556;border:1px solid #5a6478;border-radius:12px;padding:14px;">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;">🏆 טופ 5 חנויות החודש</div>
+        <div id="top-stores" style="font-size:12px;"></div>
+      </div>
+    </div>
+
+    <!-- Pending orders alert -->
+    <div id="dash-pending" style="display:none;background:linear-gradient(135deg,#3a3328,#222831);border:1px solid #ef9f27;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;color:#ef9f27;margin-bottom:8px;">⚠️ הזמנות ממתינות לביצוע</div>
+      <div id="dash-pending-list"></div>
+    </div>
+
+    <!-- Low credit alert -->
+    <div id="dash-low-credit" style="display:none;background:linear-gradient(135deg,#3a2828,#222831);border:1px solid #e24b4a;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
+      <div style="font-size:14px;font-weight:700;color:#e24b4a;margin-bottom:8px;">🔴 חנויות עם קרדיט נמוך</div>
+      <div id="dash-low-list"></div>
+    </div>
+
+    <!-- Recent orders -->
+    <div class="card">
+      <div class="card-title">📋 הזמנות אחרונות</div>
+      <div id="dash-recent-orders"></div>
+    </div>
+
+    <!-- Top products -->
+    <div class="card">
+      <div class="card-title">🏆 מוצרים פופולריים</div>
+      <div id="dash-top-products"></div>
+    </div>
+  </div>
+
+  <!-- קונטיינר ריק נשאר רק לתצוגת פאנל משווק (renderResellerPanel) -->
+  <div id="sec-stores" style="display:none;"></div>
+
+  <div id="sec-orders" style="display:none;">
+    <!-- מתג תצוגה -->
+    <div style="display:flex;gap:4px;background:#3a4556;border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:14px;">
+      <button class="loadview-btn on" data-loadview="store" onclick="setLoadView(this,'store')" style="flex:1;background:linear-gradient(135deg,var(--green),var(--green2));color:#000;border:none;padding:9px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span>🏪</span><span>תצוגת חנות</span>
+      </button>
+      <button class="loadview-btn" data-loadview="mine" onclick="setLoadView(this,'mine')" style="flex:1;background:none;color:#888;border:none;padding:9px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span>👤</span><span>התצוגה שלי</span>
+      </button>
+    </div>
+
+    <!-- סיכום -->
+    <div class="g4" id="loads-summary" style="margin-bottom:14px;"></div>
+
+    <!-- כפתורי פעולה -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+      <button class="gbtn admin-only-btn" onclick="openLoadModal('add')" style="display:none;align-items:center;gap:6px;">
+        <span style="font-size:16px;">+</span><span>הוסף טעינה</span>
+      </button>
+      <button class="admin-only-btn" onclick="openLoadModal('refund')" style="display:none;background:linear-gradient(135deg,#e63946,#c1121f);color:#fff;border:none;padding:9px 16px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;align-items:center;gap:6px;box-shadow:0 0 12px rgba(230,57,70,0.4);">
+        <span style="font-size:16px;">−</span><span>הוסף ביטול</span>
+      </button>
+      <button class="gbtn" onclick="exportLoads()" style="background:#1d6f42;display:flex;align-items:center;gap:6px;">
+        <span>📊</span><span>ייצוא לאקסל</span>
+      </button>
+      <input type="text" id="loads-search" placeholder="🔍 חיפוש לפי שם/מזהה שחקן..." oninput="renderLoads()" style="flex:1;min-width:200px;"/>
+      <select id="loads-filter-status" onchange="renderLoads()" style="width:160px;">
+        <option value="all">הכל</option>
+        <option value="add">רק טעינות</option>
+        <option value="refund">רק ביטולים</option>
+        <option value="pending">ממתין לאישור</option>
+        <option value="done">הושלם</option>
+      </select>
+      <div id="loads-sync-status" style="font-size:12px;padding:6px 10px;background:#3a4556;border:1px solid var(--border2);border-radius:8px;min-width:110px;text-align:center;">
+        <span style="color:#888;">💾 מוכן</span>
+      </div>
+    </div>
+
+    <!-- טבלת טעינות -->
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div style="overflow-x:auto;">
+        <table id="loads-table" style="width:100%;border-collapse:collapse;font-size:13px;min-width:900px;">
+          <thead>
+            <tr style="background:#3a4556;border-bottom:1px solid var(--border2);">
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">תאריך חשבונית</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">תאריך ביצוע</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#39e600;font-size:12px;">🏪 חנות</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">מזהה שחקן</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">שם השחקן</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">סוג</th>
+              <th class="lcol-store-only" style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">עלות לחנות</th>
+              <th class="lcol-mine" style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">עלות לחנות</th>
+              <th class="lcol-mine" style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">מחיר ששילמתי</th>
+              <th class="lcol-mine" style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">הרווח שלי</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">אישור ביצוע</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">סטטוס</th>
+              <th style="padding:12px 8px;text-align:center;font-weight:700;color:#888;font-size:12px;">פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="loads-tbody"></tbody>
+        </table>
+      </div>
+      <div id="loads-count" style="padding:10px 16px;font-size:12px;color:#666;border-top:1px solid var(--border2);"></div>
+    </div>
+
+    <!-- לייטבוקס לתצוגת תמונות -->
+    <div id="load-lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;" onclick="closeLightbox(event)">
+      <button onclick="closeLightbox(event)" style="position:absolute;top:20px;left:20px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:22px;line-height:1;">×</button>
+      <div style="position:absolute;top:20px;right:20px;display:flex;gap:8px;">
+        <a id="lb-download" href="#" download style="background:rgba(57,230,0,0.2);border:1px solid var(--green);color:var(--green);padding:8px 14px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+          <span>⬇</span><span>הורדה</span>
+        </a>
+        <a id="lb-open" href="#" target="_blank" rel="noopener" style="background:rgba(91,179,239,0.2);border:1px solid #5bb3ef;color:#5bb3ef;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+          <span>↗</span><span>פתח בלשונית</span>
+        </a>
+      </div>
+      <img id="lb-img" src="" alt="" style="max-width:90vw;max-height:85vh;border-radius:8px;box-shadow:0 0 50px rgba(57,230,0,0.15);" onclick="event.stopPropagation()"/>
+      <div id="lb-caption" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#ccc;font-size:14px;background:rgba(0,0,0,0.6);padding:8px 16px;border-radius:8px;"></div>
+    </div>
+
+    <!-- מודאל הוספת טעינה -->
+    <div id="load-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:200;align-items:center;justify-content:center;padding:20px;">
+      <div style="background:var(--card);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;">
+        <div style="padding:16px 20px;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center;">
+          <div id="load-modal-title" style="font-size:16px;font-weight:700;color:#fff;">➕ הוספת טעינה חדשה</div>
+          <button onclick="closeLoadModal()" style="background:none;border:none;color:#888;font-size:22px;cursor:pointer;line-height:1;">×</button>
+        </div>
+        <div style="padding:18px 20px;">
+          <div id="load-modal-subtitle" style="font-size:12px;color:#ff6b7a;margin-bottom:12px;"></div>
+          <span class="lbl">🏪 חנות מבצעת *</span>
+          <select id="lf-store" onchange="updateLoadProfit()">
+            <option value="">— בחר חנות —</option>
+          </select>
+          <div id="lf-store-balance" style="font-size:11px;color:#888;margin-top:4px;margin-bottom:8px;"></div>
+          <span class="lbl">שם השחקן *</span>
+          <input type="text" id="lf-playerName" placeholder="לדוגמה: F16 מרהוף"/>
+          <span class="lbl">מזהה שחקן *</span>
+          <input type="text" id="lf-playerId" placeholder="לדוגמה: 51716065930"/>
+          <span class="lbl">סוג טעינה</span>
+          <select id="lf-type">
+            <option value="טעינה מלאה">טעינה מלאה</option>
+            <option value="טעינה חלקית">טעינה חלקית</option>
+            <option value="טעינה כפולה">טעינה כפולה</option>
+            <option value="אחר">אחר</option>
+          </select>
+          <div class="g2">
+            <div>
+              <span class="lbl">עלות לחנות (₪) *</span>
+              <input type="number" step="0.01" id="lf-storeCost" placeholder="18.38" oninput="updateLoadProfit()"/>
+            </div>
+            <div>
+              <span class="lbl">מחיר ששילמתי (₪) *</span>
+              <input type="number" step="0.01" id="lf-myPrice" placeholder="22.00" oninput="updateLoadProfit()"/>
+            </div>
+          </div>
+          <div id="lf-profit" style="background:rgba(57,230,0,0.08);border:1px solid rgba(57,230,0,0.2);border-radius:10px;padding:10px 14px;font-size:13px;color:#aaa;margin-top:14px;">
+            הרווח שלי: <strong style="color:var(--green);font-size:15px;">₪0.00</strong>
+          </div>
+        </div>
+        <div style="padding:14px 20px;border-top:1px solid var(--border2);display:flex;gap:10px;">
+          <button id="load-modal-save" class="gbtn" onclick="saveLoad()">שמור טעינה</button>
+          <button class="obtn" onclick="closeLoadModal()">ביטול</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    body.loadview-store .lcol-mine{display:none;}
+    body.loadview-mine .lcol-store-only{display:none;}
+    .load-row td{padding:14px 8px;text-align:center;border-bottom:1px solid var(--border);color:#ddd;}
+    .load-row:hover{background:#3a4556;}
+    .load-cost{color:#ef9f27;font-weight:700;}
+    .load-paid{color:#5bb3ef;font-weight:700;}
+    .load-profit{color:var(--green);font-weight:700;}
+    .load-status-pending{display:inline-block;padding:3px 12px;background:#2a1a00;color:#ef9f27;border-radius:10px;font-size:11px;font-weight:600;}
+    .load-status-done{display:inline-block;padding:3px 12px;background:#0f2010;color:var(--green);border-radius:10px;font-size:11px;font-weight:600;}
+    .load-upload-btn{background:none;color:#5bb3ef;border:1px dashed #5bb3ef;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;}
+    .load-upload-btn:hover{background:rgba(91,179,239,0.1);}
+    .load-uploaded{display:inline-flex;align-items:center;gap:6px;background:#0f2010;color:var(--green);padding:5px 10px;border-radius:6px;font-size:12px;}
+    .load-uploaded .fname{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;color:var(--green);text-decoration:none;}
+    .load-uploaded .fname:hover{text-decoration:underline;}
+    .load-thumb{width:32px;height:32px;border-radius:5px;object-fit:cover;cursor:zoom-in;border:1px solid rgba(57,230,0,0.3);transition:transform .15s;}
+    .load-thumb:hover{transform:scale(1.1);border-color:var(--green);}
+    .load-remove-file{background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;font-weight:700;padding:0;line-height:1;}
+  </style>
+
+  <div id="sec-log" style="display:none;">
+    <div class="card"><div class="card-title">יומן עסקאות</div><div id="log-list"></div></div>
+  </div>
+
+  <!-- ==== טאב חובות חדש ==== -->
+  <div id="sec-debts" style="display:none;">
+    <!-- KPIs -->
+    <div class="g3" style="margin-bottom:16px;">
+      <div class="stat" style="background:linear-gradient(135deg,#3a2828,#222831);border:1px solid #3a1a1a;">
+        <div class="stat-l">🔴 סך חובות</div>
+        <div class="stat-v" style="color:#e24b4a;font-size:22px;" id="d-total-debt">₪0</div>
+        <div style="font-size:11px;color:#888;margin-top:4px;" id="d-total-debt-sub">0 חנויות</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+        <div class="stat-l">✅ סך תשלומים</div>
+        <div class="stat-v" style="color:#39e600;font-size:22px;" id="d-paid-total">₪0</div>
+        <div style="font-size:11px;color:#888;margin-top:4px;" id="d-paid-sub">בתאריך זה</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#3a3528,#222831);border:1px solid #3a2a00;">
+        <div class="stat-l">⚠️ חוב ממוצע</div>
+        <div class="stat-v" style="color:#ef9f27;font-size:22px;" id="d-avg-debt">₪0</div>
+        <div style="font-size:11px;color:#888;margin-top:4px;" id="d-avg-sub">לחנות בחוב</div>
+      </div>
+    </div>
+
+    <!-- 💳 חנויות עם חוב פתוח -->
+    <div class="card">
+      <div class="card-title">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <span>💳 חוב פתוח לתשלום</span>
+          <span id="unpaid-stores-summary" style="font-size:13px;color:#ef9f27;font-weight:700;">—</span>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#bbb;margin-bottom:12px;line-height:1.7;">
+        חנויות שטענת להן קרדיט ועדיין לא קיבלת תשלום. כשהחנות משלמת — לחץ "💰 שולם לי" ורשום סכום.
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+        <input id="unpaid-search" placeholder="🔍 חיפוש חנות..." oninput="renderUnpaidStores()" style="flex:1;min-width:140px;font-size:13px;"/>
+        <select id="unpaid-sort" onchange="renderUnpaidStores()" style="font-size:13px;width:auto;">
+          <option value="biggest">חוב גדול קודם</option>
+          <option value="smallest">חוב קטן קודם</option>
+          <option value="recent">עודכן לאחרונה</option>
+          <option value="oldest">לא עודכן זמן רב</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#bbb;cursor:pointer;background:#222831;padding:6px 10px;border-radius:8px;border:1px solid #2a2a2a;">
+          <input type="checkbox" id="unpaid-show-all" onchange="renderUnpaidStores()" style="width:16px;height:16px;cursor:pointer;"/>
+          הצג גם בלי חוב
+        </label>
+      </div>
+      <div id="unpaid-stores-list" style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;max-height:400px;overflow-y:auto;"></div>
+    </div>
+
+    <!-- רשימת חובות -->
+    <div class="card">
+      <div class="card-title">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <span>🔴 חנויות בחוב</span>
+          <button onclick="exportDebtsReport()" style="background:#39e600;color:#000;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">📥 יצוא דוח Excel</button>
+        </div>
+      </div>
+      <div id="debts-table-wrap"></div>
+    </div>
+
+    <!-- היסטוריית תשלומים -->
+    <div class="card">
+      <div class="card-title">📜 היסטוריית תשלומים</div>
+      <div id="payments-history-wrap"></div>
+    </div>
+  </div>
+
+  <div id="sec-stats" style="display:none;">
+
+    <!-- טבלת סיכום חנויות -->
+    <div class="card">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>📊 טבלת סיכום חנויות</span>
+        <button onclick="exportFullTable()" style="background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">📥 Excel</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="stores-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:600px;">
+          <thead>
+            <tr style="background:#f8f8f8;border-bottom:2px solid #e0e0e0;">
+              <th style="padding:10px 8px;text-align:right;font-weight:700;color:#555;">🏪 חנות</th>
+              <th style="padding:10px 8px;text-align:right;font-weight:700;color:#555;">🔐 כניסה</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">💳 קרדיט</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">⬆️ טעינות</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">📦 הזמנות</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">💰 סה"כ קנה</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">🔴 חוב</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">💳 מסגרת</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">⭐ רמה</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">⚙️ פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="stores-table-body"></tbody>
+          <tfoot id="stores-table-foot"></tfoot>
+        </table>
+      </div>
+    </div>
+    <!-- סיכום חובות -->
+    <div class="card" style="border:1px solid rgba(228,75,74,0.3);">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>💳 מעקב חובות ואשראי</span>
+        <button onclick="exportDebts()" style="background:#e24b4a;color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">📥 ייצוא</button>
+      </div>
+      <div id="debts-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">ייצוא דוחות לאקסל</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <button class="gbtn" onclick="exportOrders()" style="background:#1d6f42;">
+          📊 ייצוא הזמנות
+        </button>
+        <button class="gbtn" onclick="exportStores()" style="background:#1d6f42;">
+          🏪 ייצוא חנויות
+        </button>
+        <button class="gbtn" onclick="exportByStore()" style="background:#1d6f42;">
+          📋 הזמנות לפי חנות
+        </button>
+        <button class="gbtn" onclick="exportSummary()" style="background:#1d6f42;">
+          💰 דוח סיכום
+        </button>
+      </div>
+      <div style="font-size:12px;color:#666;">הקבצים יורדים ישירות למכשיר שלך בפורמט CSV (נפתח באקסל)</div>
+    </div>
+    <div class="card"><div class="card-title">הכנסות לפי חנות</div><div id="store-stats"></div></div>
+    <div class="card"><div class="card-title">מוצרים פופולריים</div><div id="prod-stats"></div></div>
+  </div>
+
+  <!-- ============ דוחות חודשיים מתקדמים ============ -->
+  <div id="sec-monthly" style="display:none;">
+
+    <!-- ===== Header: בחירת חודש ===== -->
+    <div style="background:linear-gradient(135deg,#0d1a0d,#3a4556);border:1px solid rgba(57,230,0,0.25);border-radius:16px;padding:18px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+        <div>
+          <div style="font-size:11px;color:#888;letter-spacing:1px;">MONTHLY REPORT</div>
+          <div id="mr-title" style="font-size:22px;font-weight:800;color:#fff;font-family:'Exo 2',sans-serif;">דוח חודשי</div>
+          <div id="mr-period" style="font-size:12px;color:#39e600;margin-top:2px;">—</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button onclick="mrChangeMonth(-1)" style="background:#475467;color:#39e600;border:1px solid #5a6478;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">◀ קודם</button>
+          <select id="mr-month-picker" onchange="mrSetMonth(this.value)" style="background:#3a4556;border:1px solid #5a6478;border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;font-family:inherit;cursor:pointer;min-width:160px;"></select>
+          <button onclick="mrChangeMonth(1)" id="mr-next-btn" style="background:#475467;color:#39e600;border:1px solid #5a6478;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">הבא ▶</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="mrSetMonth(0)" class="mr-quick" style="background:#3a4556;border:1px solid #5a6478;color:#39e600;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;">📅 החודש</button>
+        <button onclick="mrSetMonth(1)" class="mr-quick" style="background:#3a4556;border:1px solid #5a6478;color:#39e600;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit;">⏮ חודש שעבר</button>
+        <button onclick="exportMonthlyPDF()" style="background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;margin-right:auto;">🖨️ הדפסה / PDF</button>
+        <button onclick="exportMonthlyCSV()" style="background:#1d6f42;color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">📊 ייצוא Excel</button>
+      </div>
+    </div>
+
+    <!-- ===== KPIs (6 כרטיסים) ===== -->
+    <div class="g3" style="margin-bottom:16px;">
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a3a1a;">
+        <div class="stat-l">💰 הכנסות</div>
+        <div class="stat-v" style="color:#39e600;font-size:24px;" id="mr-rev">₪0</div>
+        <div id="mr-rev-cmp" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a3a1a;">
+        <div class="stat-l">💵 רווח נקי</div>
+        <div class="stat-v" style="color:#39e600;font-size:24px;" id="mr-profit">₪0</div>
+        <div id="mr-profit-cmp" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a3a1a;">
+        <div class="stat-l">📦 הזמנות</div>
+        <div class="stat-v" style="font-size:24px;color:#fff;" id="mr-orders">0</div>
+        <div id="mr-orders-cmp" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+    </div>
+    <div class="g3" style="margin-bottom:16px;">
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+        <div class="stat-l">📊 ערך הזמנה ממוצע</div>
+        <div class="stat-v" style="font-size:20px;color:#fff;" id="mr-avg">₪0</div>
+        <div id="mr-avg-cmp" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+        <div class="stat-l">🏪 חנויות פעילות</div>
+        <div class="stat-v" style="font-size:20px;color:#fff;" id="mr-stores">0</div>
+        <div id="mr-stores-cmp" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+        <div class="stat-l">📈 שולי רווח</div>
+        <div class="stat-v" style="font-size:20px;" id="mr-margin">0%</div>
+        <div id="mr-margin-cmp" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+      </div>
+    </div>
+
+    <!-- ===== 🔮 צפי לסוף החודש ===== -->
+    <div id="mr-forecast-card" class="card" style="background:linear-gradient(135deg,#1a2540,#222831);border:1px solid #3a5a8a;margin-bottom:16px;display:none;">
+      <div class="card-title" style="color:#5dade2;">🔮 צפי לסוף החודש</div>
+      <div style="font-size:12px;color:#bbb;margin-bottom:12px;line-height:1.7;" id="mr-forecast-sub">
+        חישוב על סמך הקצב הנוכחי
+      </div>
+      <div class="g2" style="gap:10px;">
+        <div style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:11px;color:#888;margin-bottom:4px;">צפי הכנסות</div>
+          <div style="font-size:22px;font-weight:800;color:#39e600;" id="mr-forecast-rev">₪0</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;" id="mr-forecast-rev-vs">—</div>
+        </div>
+        <div style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:11px;color:#888;margin-bottom:4px;">צפי רווח</div>
+          <div style="font-size:22px;font-weight:800;" id="mr-forecast-profit">₪0</div>
+          <div style="font-size:11px;color:#888;margin-top:4px;" id="mr-forecast-profit-vs">—</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;background:#0d0d0d;border-radius:8px;padding:8px 12px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:4px;">
+          <span>התקדמות החודש</span>
+          <span id="mr-forecast-progress-txt">—</span>
+        </div>
+        <div style="background:#222831;border-radius:6px;height:6px;overflow:hidden;">
+          <div id="mr-forecast-progress-bar" style="height:100%;background:linear-gradient(90deg,#5dade2,#39e600);width:0%;transition:width 0.3s;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== גרף מגמה 6 חודשים ===== -->
+    <div style="background:#3a4556;border:1px solid #5a6478;border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:13px;font-weight:700;color:#fff;">📈 מגמת 6 חודשים אחרונים</span>
+        <div style="display:flex;gap:4px;">
+          <button onclick="mrSetTrendMetric('rev')" id="mr-trend-rev" class="mr-trend-btn on" style="background:#39e600;color:#000;border:none;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">הכנסות</button>
+          <button onclick="mrSetTrendMetric('profit')" id="mr-trend-profit" class="mr-trend-btn" style="background:#475467;color:#888;border:none;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">רווח</button>
+          <button onclick="mrSetTrendMetric('orders')" id="mr-trend-orders" class="mr-trend-btn" style="background:#475467;color:#888;border:none;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">הזמנות</button>
+        </div>
+      </div>
+      <canvas id="mr-trend-chart" height="170" style="width:100%;display:block;"></canvas>
+    </div>
+
+    <!-- ===== גרף יומי לחודש הנבחר ===== -->
+    <div style="background:#3a4556;border:1px solid #5a6478;border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+        <span style="font-size:13px;font-weight:700;color:#fff;">📊 פירוט יומי</span>
+        <div style="display:flex;gap:4px;background:#222831;padding:3px;border-radius:6px;">
+          <button onclick="mrSetDailyMetric('rev')" id="mr-daily-rev-btn" class="mr-daily-btn" style="background:#39e600;color:#000;border:none;border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">💰 הכנסות</button>
+          <button onclick="mrSetDailyMetric('profit')" id="mr-daily-profit-btn" class="mr-daily-btn" style="background:#475467;color:#888;border:none;border-radius:4px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">💵 רווח</button>
+        </div>
+      </div>
+      <div id="mr-daily-stats" style="font-size:11px;color:#888;margin-bottom:6px;text-align:left;"></div>
+      <canvas id="mr-daily-chart" height="150" style="width:100%;display:block;"></canvas>
+    </div>
+
+    <!-- ===== חלוקה לפי קטגוריה + שעות שיא ===== -->
+    <div class="g2" style="margin-bottom:16px;">
+      <div style="background:#3a4556;border:1px solid #5a6478;border-radius:12px;padding:14px;">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;">🍰 חלוקה לפי קטגוריה</div>
+        <canvas id="mr-cat-chart" height="160" style="width:100%;display:block;"></canvas>
+        <div id="mr-cat-legend" style="margin-top:10px;font-size:12px;"></div>
+      </div>
+      <div style="background:#3a4556;border:1px solid #5a6478;border-radius:12px;padding:14px;">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;">🕒 שעות שיא</div>
+        <canvas id="mr-hours-chart" height="160" style="width:100%;display:block;"></canvas>
+        <div id="mr-hours-info" style="margin-top:10px;font-size:12px;color:#888;"></div>
+      </div>
+    </div>
+
+    <!-- ===== ביצועי חנויות ===== -->
+    <div class="card">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>🏆 ביצועי חנויות</span>
+        <select id="mr-stores-sort" onchange="renderMonthlyStores()" style="background:#3a4556;border:1px solid #5a6478;border-radius:6px;padding:5px 10px;color:#fff;font-size:12px;font-family:inherit;width:auto;">
+          <option value="rev">מיון: הכנסות</option>
+          <option value="profit">מיון: רווח</option>
+          <option value="orders">מיון: כמות הזמנות</option>
+          <option value="growth">מיון: צמיחה %</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:600px;">
+          <thead>
+            <tr style="background:#f8f8f8;border-bottom:2px solid #e0e0e0;">
+              <th style="padding:10px 8px;text-align:right;font-weight:700;color:#555;">#</th>
+              <th style="padding:10px 8px;text-align:right;font-weight:700;color:#555;">🏪 חנות</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">📦 הזמנות</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">💰 הכנסות</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">💵 רווח</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">📊 שולי %</th>
+              <th style="padding:10px 8px;text-align:center;font-weight:700;color:#555;">📈 מול קודם</th>
+            </tr>
+          </thead>
+          <tbody id="mr-stores-body"></tbody>
+          <tfoot id="mr-stores-foot"></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== טופ 10 מוצרים ===== -->
+    <div class="card">
+      <div class="card-title">🎮 טופ 10 מוצרים החודש</div>
+      <div id="mr-top-products"></div>
+    </div>
+
+    <!-- ===== טופ 10 לקוחות ===== -->
+    <div class="card">
+      <div class="card-title">👥 טופ 10 לקוחות החודש</div>
+      <div id="mr-top-users"></div>
+    </div>
+
+    <!-- ===== תובנות והמלצות ===== -->
+    <div class="card" style="background:linear-gradient(135deg,#0d1a0d,#3a4556);border:1px solid rgba(57,230,0,0.3);">
+      <div class="card-title">💡 תובנות אוטומטיות</div>
+      <div id="mr-insights" style="font-size:13px;line-height:1.8;"></div>
+    </div>
+
+  </div>
+
+  <!-- ============ 🛡️ אבטחה ============ -->
+  <div id="sec-security" style="display:none;">
+
+    <!-- גיבוי -->
+    <div class="card" style="background:#3a4556;border:1px solid #5a6478;">
+      <div class="card-title">📥 גיבוי ושחזור</div>
+      <div style="font-size:13px;color:#bbb;margin-bottom:12px;line-height:1.7;">
+        גיבוי הוא קובץ JSON עם כל הנתונים: חנויות, משתמשים, הזמנות, טעינות ולוג ביקורת.<br>
+        שמור אותו במקום בטוח (Google Drive / Email / WhatsApp לעצמך).
+      </div>
+
+      <div style="background:#222831;border-radius:10px;padding:14px;margin-bottom:12px;">
+        <div style="font-size:13px;color:#bbb;margin-bottom:8px;">⏰ גיבוי אחרון: <span id="sec-last-backup" style="color:#fff;font-weight:700;">—</span></div>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#fff;margin-bottom:12px;">
+          <input type="checkbox" id="sec-auto-backup" onchange="toggleAutoReminder()" style="width:18px;height:18px;cursor:pointer;"/>
+          הזכר לי על גיבוי כל 24 שעות (בכניסה למערכת)
+        </label>
+        <div class="g2">
+          <button class="gbtn" onclick="downloadBackup()" style="background:linear-gradient(135deg,#39e600,#2ab800);">📥 הורד גיבוי עכשיו</button>
+          <button class="gbtn" onclick="restoreBackup()" style="background:#475467;color:#fff;">📤 שחזר מקובץ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- לוג ביקורת -->
+    <div class="card" style="background:#3a4556;border:1px solid #5a6478;">
+      <div class="card-title">📜 לוג שינויים מלא</div>
+      <div style="font-size:13px;color:#bbb;margin-bottom:12px;line-height:1.7;">
+        רישום של כל הפעולות הרגישות במערכת — מי עשה מה ומתי. מאוחסן עד 1,000 רשומות.
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+        <input id="audit-search" placeholder="חיפוש (משתמש / פעולה...)" oninput="renderAuditLog()" style="flex:1;min-width:140px;font-size:13px;"/>
+        <select id="audit-filter-type" onchange="renderAuditLog()" style="font-size:13px;width:auto;">
+          <option value="all">כל הפעולות</option>
+          <option value="login">כניסה</option>
+          <option value="logout">יציאה</option>
+          <option value="store-delete">מחיקת חנות</option>
+          <option value="store-delete-perm">מחיקה לצמיתות</option>
+          <option value="store-freeze">הקפאה</option>
+          <option value="store-unfreeze">הפשרה</option>
+          <option value="user-create">יצירת משתמש</option>
+          <option value="user-delete">מחיקת משתמש</option>
+          <option value="password-change">שינוי סיסמה</option>
+          <option value="prices-change">שינוי מחירים</option>
+          <option value="credit-topup">טעינת קרדיט</option>
+          <option value="order-manual">הזמנה ידנית</option>
+          <option value="credit-reduce">הפחתת קרדיט</option>
+          <option value="payment-received">תשלום מחנות</option>
+          <option value="unpaid-edit">עדכון חוב פתוח</option>
+          <option value="debt-limit-change">שינוי מסגרת חוב</option>
+          <option value="backup-manual">גיבוי ידני</option>
+          <option value="backup-auto">גיבוי אוטומטי</option>
+          <option value="backup-restore">שחזור גיבוי</option>
+        </select>
+        <button class="gbtn" onclick="exportAuditLog()" style="background:#475467;color:#fff;font-size:12px;padding:6px 14px;">📥 ייצוא CSV</button>
+        <button class="gbtn" onclick="clearAuditLog()" style="background:#552020;color:#fff;font-size:12px;padding:6px 14px;border:1px solid #e24b4a;">🗑️ נקה</button>
+      </div>
+
+      <div id="audit-list" style="max-height:520px;overflow-y:auto;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;"></div>
+      <div id="audit-summary" style="font-size:11px;color:#666;margin-top:8px;text-align:center;"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- STORE FRONT -->
+<div class="page" id="page-store">
+  <div class="toast" id="t-store"></div>
+  <div class="prev-banner" id="prev-banner">
+    <span style="font-size:13px;color:#666;">חנות: <strong style="color:#39e600;" id="prev-name">—</strong></span>
+    <select id="prev-sel" style="margin:0;width:auto;" onchange="switchPreview()"></select>
+  </div>
+  <div class="hero">
+    <h1>טעינת מטבעות <span>וכרטיסי גיפט</span></h1>
+    <p>Roblox · Fortnite · PSN · Xbox · Steam · Google Play ועוד</p>
+    <div class="hero-badges">
+      <span class="hbadge">שירות אישי</span>
+      <span class="hbadge">טעינה מהירה</span>
+      <span class="hbadge">מחירים מיוחדים</span>
+    </div>
+  </div>
+  <div class="cdisp">
+    <span style="color:#888;font-size:13px;">יתרת קרדיט</span>
+    <span style="color:#39e600;font-size:18px;font-weight:700;" id="credit-val">₪0</span>
+  </div>
+  <div id="debt-info" style="display:none;background:#fff8e1;border:1px solid #ef9f27;border-radius:10px;padding:8px 14px;font-size:12px;color:#ef9f27;font-weight:600;margin-bottom:12px;text-align:center;"></div>
+  <div class="nocredit" id="nocredit-msg">❌ חריגה ממסגרת האשראי — פנה לספק</div>
+  <div class="successbox" id="success-box">
+    <div style="font-size:2rem;margin-bottom:8px;">✅</div>
+    <div style="font-size:16px;font-weight:700;color:#39e600;margin-bottom:4px;">ההזמנה התקבלה!</div>
+    <div style="font-size:13px;color:#aaa;" id="success-msg"></div>
+  </div>
+  <div class="cat-row" id="cat-row"></div>
+  <div class="pgrid" id="prod-grid"></div>
+  <div class="ovwrap" id="overlay">
+    <div class="modal">
+      <h3 id="m-title"></h3>
+      <div class="modal-sub" id="m-sub"></div>
+      <div class="pkgs" id="m-pkgs"></div>
+      <label class="lbl" id="m-ulbl">שם משתמש / ID שחקן</label>
+      <div style="display:flex;gap:6px;margin-bottom:4px;">
+        <input id="m-user" placeholder="הכנס ID שחקן" style="flex:1;margin-bottom:0;"/>
+        <button onclick="verifyPlayer()" id="verify-btn" style="background:#39e600;color:#000;border:none;border-radius:8px;padding:0 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">בדוק ✓</button>
+      </div>
+      <div id="player-info" style="display:none;background:#f0fff0;border:1px solid #39e600;border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:13px;color:#111;">
+        <span id="player-name" style="font-weight:700;"></span>
+      </div>
+      <label class="lbl">הערה (אופציונלי)</label>
+      <input id="m-note" placeholder="פלטפורמה, מדינה..." style="margin-bottom:10px;"/>
+      <div class="prow"><span style="font-size:13px;color:#888;">עלות (תשלום לי)</span><span style="font-size:18px;font-weight:700;color:#39e600;" id="m-total">₪0</span></div>
+      <div class="prow" id="m-cost-row" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:6px 10px;margin:6px 0;"><span style="font-size:12px;color:#16a34a;">💰 רווח שלך מהמכירה</span><span style="font-size:14px;font-weight:800;color:#16a34a;" id="m-profit">₪0</span></div>
+      <div class="prow" style="margin-bottom:10px;"><span style="font-size:13px;color:#888;">יתרה אחרי</span><span style="font-size:14px;font-weight:700;" id="m-rem">₪0</span></div>
+      <!-- תקנון -->
+      <div style="background:#fff8e1;border:1px solid #ef9f27;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#555;line-height:1.6;">
+        <div style="font-weight:700;color:#ef9f27;margin-bottom:4px;">⚠️ תקנון — חובה לקרוא</div>
+        • לאחר ביצוע הטעינה — לא ניתן לבטל את העסקה<br/>
+        • הלקוח אחראי על הכנסת ID נכון<br/>
+        • הטעינה מתבצעת לחשבון המשחק בלבד<br/>
+        • CASHPHONE לא אחראית לחשבונות שגויים
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <input type="checkbox" id="terms-check" style="width:18px;height:18px;cursor:pointer;accent-color:#39e600;"/>
+        <label for="terms-check" style="font-size:12px;color:#555;cursor:pointer;">קראתי ואני מסכים לתקנון</label>
+      </div>
+      <button class="paybtn" id="pay-btn" onclick="submitOrder()">אשר הזמנה</button>
+      <button class="cancelbtn" onclick="closeOv()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 📋 ההזמנות שלי (חנות) ============ -->
+<div class="page" id="page-my-orders">
+  <div class="toast" id="t-my-orders"></div>
+
+  <div class="card" style="background:#3a4556;border:1px solid #5a6478;">
+    <div class="card-title">📋 ההזמנות שלי</div>
+    <div style="font-size:13px;color:#bbb;margin-bottom:14px;">
+      היסטוריה מלאה של כל ההזמנות שביצעת בחנות. ניתן לסנן ולחפש.
+    </div>
+
+    <!-- סטטיסטיקות מהירות -->
+    <div class="g3" style="margin-bottom:14px;">
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+        <div class="stat-l">סה״כ הזמנות</div>
+        <div class="stat-v" style="font-size:20px;" id="myo-total">0</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+        <div class="stat-l">הושלמו</div>
+        <div class="stat-v" style="color:#39e600;font-size:20px;" id="myo-done">0</div>
+      </div>
+      <div class="stat" style="background:linear-gradient(135deg,#3a3528,#222831);border:1px solid #3a2a00;">
+        <div class="stat-l">ממתינות</div>
+        <div class="stat-v" style="color:#ef9f27;font-size:20px;" id="myo-pending">0</div>
+      </div>
+    </div>
+
+    <!-- פילטרים -->
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      <input id="myo-search" placeholder="🔍 חיפוש (שחקן / מוצר / הערה...)" oninput="renderMyOrders()" style="flex:1;min-width:140px;font-size:13px;"/>
+      <select id="myo-filter-status" onchange="renderMyOrders()" style="font-size:13px;width:auto;">
+        <option value="all">כל הסטטוסים</option>
+        <option value="new">⏱️ ממתינות</option>
+        <option value="done">✅ הושלמו</option>
+      </select>
+      <select id="myo-filter-period" onchange="renderMyOrders()" style="font-size:13px;width:auto;">
+        <option value="all">כל הזמנים</option>
+        <option value="today">היום</option>
+        <option value="week">7 ימים אחרונים</option>
+        <option value="month">30 ימים אחרונים</option>
+      </select>
+      <button class="gbtn" onclick="exportMyOrders()" style="background:#475467;color:#fff;font-size:12px;padding:6px 14px;">📥 ייצוא CSV</button>
+    </div>
+
+    <!-- רשימת הזמנות -->
+    <div id="myo-list" style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;max-height:600px;overflow-y:auto;"></div>
+    <div id="myo-summary" style="font-size:11px;color:#666;margin-top:8px;text-align:center;"></div>
+  </div>
+</div>
+
+<!-- ============ 💳 הקרדיט שלי (חנות) ============ -->
+<div class="page" id="page-my-credit">
+  <div class="toast" id="t-my-credit"></div>
+
+  <!-- כרטיסי סטטוס מעלה -->
+  <div class="g3" style="margin-bottom:16px;">
+    <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+      <div class="stat-l">💰 יתרה נוכחית</div>
+      <div class="stat-v" id="myc-balance" style="font-size:22px;">₪0</div>
+      <div id="myc-balance-sub" style="font-size:11px;color:#888;margin-top:4px;">—</div>
+    </div>
+    <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+      <div class="stat-l">📥 סה״כ נטענו לי</div>
+      <div class="stat-v" style="color:#39e600;font-size:22px;" id="myc-loaded">₪0</div>
+      <div style="font-size:11px;color:#888;margin-top:4px;" id="myc-loaded-sub">0 טעינות</div>
+    </div>
+    <div class="stat" style="background:linear-gradient(135deg,#3a2828,#222831);border:1px solid #3a1a1a;">
+      <div class="stat-l">📤 סה״כ הוצאתי</div>
+      <div class="stat-v" style="color:#e24b4a;font-size:22px;" id="myc-spent">₪0</div>
+      <div style="font-size:11px;color:#888;margin-top:4px;" id="myc-spent-sub">0 הזמנות</div>
+    </div>
+  </div>
+
+  <!-- 💳 חוב פתוח (סכום שטרם שולם לספק) -->
+  <div id="myc-unpaid-card" class="card" style="background:linear-gradient(135deg,#3a2828,#222831);border:1px solid #5a2020;display:none;">
+    <div class="card-title" style="color:#ef9f27;">💳 חוב פתוח לתשלום</div>
+    <div style="background:#0d0d0d;border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:11px;color:#888;margin-bottom:4px;">סכום פתוח</div>
+      <div style="font-size:32px;font-weight:800;color:#ef9f27;" id="myc-unpaid-total">₪0</div>
+      <div style="font-size:11px;color:#888;margin-top:8px;" id="myc-unpaid-updated">—</div>
+    </div>
+  </div>
+
+  <!-- מסגרת חוב (אם קיימת) -->
+  <div id="myc-debt-card" class="card" style="background:linear-gradient(135deg,#3a3528,#222831);border:1px solid #3a2a00;display:none;">
+    <div class="card-title" style="color:#ef9f27;">💳 מסגרת אשראי</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px;">
+      <div>
+        <div style="font-size:12px;color:#888;">מסגרת מאושרת</div>
+        <div style="font-size:18px;font-weight:700;color:#fff;" id="myc-debt-limit">₪0</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#888;">חוב נוכחי</div>
+        <div style="font-size:18px;font-weight:700;color:#e24b4a;" id="myc-debt-current">₪0</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#888;">זמין בחוב</div>
+        <div style="font-size:18px;font-weight:700;color:#39e600;" id="myc-debt-available">₪0</div>
+      </div>
+    </div>
+    <!-- מד חזותי -->
+    <div style="margin-top:12px;background:#222831;border-radius:10px;height:8px;overflow:hidden;">
+      <div id="myc-debt-bar" style="height:100%;background:linear-gradient(90deg,#39e600,#ef9f27,#e24b4a);width:0%;transition:width 0.3s;"></div>
+    </div>
+  </div>
+
+  <!-- תנועות -->
+  <div class="card" style="background:#3a4556;border:1px solid #5a6478;">
+    <div class="card-title">📜 תנועות בחשבון</div>
+    <div style="font-size:13px;color:#bbb;margin-bottom:12px;">
+      פירוט מלא של כל הטעינות וההוצאות. עדכניות 30 הרשומות האחרונות מוצגות כברירת מחדל.
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <select id="myc-filter-type" onchange="renderMyCredit()" style="font-size:13px;width:auto;">
+        <option value="all">כל התנועות</option>
+        <option value="plus">📥 רק טעינות</option>
+        <option value="minus">📤 רק הוצאות</option>
+      </select>
+      <select id="myc-filter-period" onchange="renderMyCredit()" style="font-size:13px;width:auto;">
+        <option value="30">30 רשומות אחרונות</option>
+        <option value="100">100 אחרונות</option>
+        <option value="all">הכל</option>
+      </select>
+      <button class="gbtn" onclick="exportMyCredit()" style="background:#475467;color:#fff;font-size:12px;padding:6px 14px;">📥 ייצוא CSV</button>
+    </div>
+
+    <div id="myc-list" style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;max-height:520px;overflow-y:auto;"></div>
+    <div id="myc-summary" style="font-size:11px;color:#666;margin-top:8px;text-align:center;"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ============ 💰 עמוד רווחים — בחירת מרווח ============ -->
+<!-- ============================================================ -->
+<div class="page" id="page-margin">
+  <div class="toast" id="t-margin"></div>
+
+  <!-- כותרת -->
+  <div style="background:linear-gradient(135deg,#1a3a1a,#0f2a0f);border:1px solid #2a5a2a;border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px;">
+    <div style="font-size:32px;">💰</div>
+    <div style="flex:1;">
+      <div style="font-size:18px;font-weight:800;color:#fff;">קביעת רווח אוטומטי</div>
+      <div style="font-size:12px;color:#86efac;">בחר רווח קבוע (₪) או באחוזים (%) — והמערכת תחשב את כל המחירים שלך אוטומטית</div>
+    </div>
+  </div>
+
+  <!-- אזור קביעת המרווח -->
+  <div class="card">
+    <div class="card-title">⚙️ הגדרת מרווח</div>
+
+    <!-- בחירת היקף: כללי / לפי מוצר -->
+    <div style="margin-bottom:16px;">
+      <label class="lbl">📦 על מה להחיל?</label>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button class="atab on" id="mg-scope-all" onclick="mgSetScope('all')">🌍 כל המוצרים</button>
+        <button class="atab" id="mg-scope-prod" onclick="mgSetScope('prod')">🎯 מוצר ספציפי</button>
+      </div>
+    </div>
+
+    <!-- בחירת מוצר (מוסתר במצב כללי) -->
+    <div id="mg-prod-select-wrap" style="display:none;margin-bottom:16px;">
+      <label class="lbl">בחר מוצר</label>
+      <select id="mg-prod-select" style="width:100%;background:#1a2030;color:#fff;border:1px solid #5a6478;border-radius:10px;padding:10px;font-size:13px;font-family:inherit;"></select>
+    </div>
+
+    <!-- בחירת סוג: ₪ / % -->
+    <div style="margin-bottom:16px;">
+      <label class="lbl">💵 סוג חישוב</label>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button class="atab on" id="mg-type-pct" onclick="mgSetType('pct')">📊 אחוזים %</button>
+        <button class="atab" id="mg-type-fixed" onclick="mgSetType('fixed')">💵 רווח קבוע ₪</button>
+      </div>
+    </div>
+
+    <!-- שדה הערך -->
+    <div style="margin-bottom:16px;">
+      <label class="lbl" id="mg-value-label">📈 אחוז רווח (%)</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="number" id="mg-value" min="0" step="0.5" placeholder="למשל: 20" style="flex:1;background:#1a2030;color:#fff;border:1px solid #5a6478;border-radius:10px;padding:12px;font-size:18px;font-weight:700;text-align:center;font-family:inherit;" oninput="mgPreview()"/>
+        <span id="mg-value-suffix" style="font-size:24px;font-weight:800;color:#39e600;min-width:32px;text-align:center;">%</span>
+      </div>
+    </div>
+
+    <!-- קיצורי דרך -->
+    <div style="margin-bottom:16px;">
+      <label class="lbl" style="font-size:11px;">⚡ קיצורי דרך</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;" id="mg-shortcuts"></div>
+    </div>
+
+    <!-- תצוגה מקדימה -->
+    <div id="mg-preview" style="background:#0a1a0a;border:1px solid #1a3a1a;border-radius:10px;padding:14px;margin-bottom:16px;display:none;">
+      <div style="font-size:12px;color:#86efac;margin-bottom:8px;font-weight:700;">👁️ תצוגה מקדימה</div>
+      <div id="mg-preview-list"></div>
+    </div>
+
+    <!-- כפתורים -->
+    <div style="display:flex;gap:8px;">
+      <button class="obtn" onclick="mgReset()" style="flex:1;">🔄 אפס למחירי בסיס</button>
+      <button class="gbtn" onclick="mgApply()" style="flex:2;">✓ החל</button>
+    </div>
+  </div>
+
+  <!-- מצב נוכחי -->
+  <div class="card">
+    <div class="card-title">📋 המחירים שלך עכשיו</div>
+    <div id="mg-current-list" style="max-height:400px;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- PRICE EDITOR -->
+<div class="page" id="page-prices">
+  <div class="toast" id="t-prices"></div>
+  <div class="card">
+    <div class="card-title">עורך מחירים</div>
+    <div class="slbl">בחר חנות</div>
+    <div class="store-tabs-row" id="price-store-tabs"></div>
+    <div class="bulk-bar">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:#fff;">עדכון אחיד — כל המוצרים</div>
+      <div class="mtabs">
+        <button class="mtab on" onclick="setBM(this,'pct')">% אחוז</button>
+        <button class="mtab" onclick="setBM(this,'ils')">+ ₪ שקל</button>
+        <button class="mtab" onclick="setBM(this,'fixed')">מחיר קבוע</button>
+        <button class="mtab" onclick="setBM(this,'tier')">לפי רמה</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <div style="flex:1;"><label class="lbl" id="bm-lbl">הוסף/הפחת אחוז</label><input type="number" id="bm-val" placeholder="למשל: 20 או -10"/></div>
+        <button class="gbtn" onclick="applyBulk()">החל</button>
+        <button class="obtn" onclick="resetP()">אפס</button>
+      </div>
+    </div>
+    <div class="slbl">עריכה פרטנית</div>
+    <div id="price-table"></div>
+    <div class="save-bar">
+      <span style="font-size:12px;color:#666;" id="pchanges">אין שינויים</span>
+      <div style="display:flex;gap:8px;">
+        <button class="obtn" onclick="discardP()">בטל</button>
+        <button class="gbtn" onclick="saveP()">שמור</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">השוואת מחירים בין חנויות</div>
+    <div class="compare-wrap"><div id="compare-table"></div></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ============ 💼 פאנל משווק (עמוד נפרד) ============ -->
+<!-- ============================================================ -->
+<div class="page" id="page-reseller">
+  <div class="toast" id="t-reseller"></div>
+
+  <!-- כותרת -->
+  <div style="background:linear-gradient(135deg,#3a1a5f,#2d1245);border:1px solid #5a2a8f;border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:12px;">
+    <div style="font-size:32px;">💼</div>
+    <div style="flex:1;">
+      <div style="font-size:18px;font-weight:800;color:#fff;">אזור המשווק</div>
+      <div style="font-size:12px;color:#c490ff;" id="rs-welcome">ברוך הבא</div>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="g4" style="margin-bottom:14px;">
+    <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+      <div class="stat-l">🏪 חנויות שלי</div>
+      <div class="stat-v" style="color:#39e600;" id="rs-kpi-stores">0</div>
+    </div>
+    <div class="stat" style="background:linear-gradient(135deg,#283a28,#222831);border:1px solid #1a2a1a;">
+      <div class="stat-l">💰 הכנסות החודש</div>
+      <div class="stat-v" style="color:#39e600;" id="rs-kpi-rev">₪0</div>
+    </div>
+    <div class="stat" style="background:linear-gradient(135deg,#3a2828,#2d2222);border:1px solid #5a2a2a;">
+      <div class="stat-l">💳 חוב פתוח אליי</div>
+      <div class="stat-v" style="color:#ef9f27;" id="rs-kpi-unpaid">₪0</div>
+    </div>
+    <div class="stat" style="background:linear-gradient(135deg,#283a3a,#222828);border:1px solid #1a2a2a;">
+      <div class="stat-l">📋 הזמנות החודש</div>
+      <div class="stat-v" style="color:#7cb3ff;" id="rs-kpi-orders">0</div>
+    </div>
+  </div>
+
+  <!-- טאבים פנימיים -->
+  <div class="atabs">
+    <button class="atab on" onclick="rsTab(this,'rs-sec-stores')">🏪 החנויות שלי</button>
+    <button class="atab" onclick="rsTab(this,'rs-sec-orders')">📋 הזמנות</button>
+    <button class="atab" onclick="rsTab(this,'rs-sec-prices')">💵 מחירים</button>
+    <button class="atab" onclick="rsTab(this,'rs-sec-margin')">💰 קביעת רווח</button>
+    <button class="atab" onclick="rsTab(this,'rs-sec-add')">➕ פתח חנות חדשה</button>
+  </div>
+
+  <!-- טאב חנויות שלי -->
+  <div id="rs-sec-stores"></div>
+
+  <!-- טאב הזמנות -->
+  <div id="rs-sec-orders" style="display:none;"></div>
+
+  <!-- טאב מחירים -->
+  <div id="rs-sec-prices" style="display:none;"></div>
+
+  <!-- טאב קביעת רווח -->
+  <div id="rs-sec-margin" style="display:none;"></div>
+
+  <!-- טאב הוספת חנות -->
+  <div id="rs-sec-add" style="display:none;">
+    <div class="card">
+      <div class="card-title">➕ פתיחת חנות חדשה</div>
+      <div class="g2">
+        <div><label class="lbl">שם החנות</label><input id="rs-name" placeholder="למשל: גיימינג ת״א"/></div>
+        <div><label class="lbl">שם משתמש (לכניסה)</label><input id="rs-user" placeholder="username" autocomplete="off"/></div>
+      </div>
+      <div class="g2">
+        <div><label class="lbl">סיסמה</label><input id="rs-pass" type="password" placeholder="סיסמה" autocomplete="new-password"/></div>
+        <div><label class="lbl">שם איש קשר</label><input id="rs-cname" placeholder="שם מלא"/></div>
+      </div>
+      <div class="g2">
+        <div><label class="lbl">טלפון</label><input id="rs-phone" placeholder="050-0000000" type="tel"/></div>
+        <div><label class="lbl">מייל (אופציונלי)</label><input id="rs-email" placeholder="email@gmail.com" type="email"/></div>
+      </div>
+      <div class="g2">
+        <div><label class="lbl">כתובת (אופציונלי)</label><input id="rs-address" placeholder="רחוב + מספר"/></div>
+        <div><label class="lbl">עיר (אופציונלי)</label><input id="rs-city" placeholder="עיר"/></div>
+      </div>
+      <button class="gbtn" onclick="rsCreateStore()" style="margin-top:14px;width:100%;">✓ צור חנות</button>
+    </div>
+  </div>
+</div>
+
+<!-- USERS -->
+<div class="page" id="page-users">
+  <div class="toast" id="t-users"></div>
+
+  <!-- ============ סטטיסטיקות חנויות ============ -->
+  <div class="g4" style="margin-bottom:14px;">
+    <div class="stat"><div class="stat-l">חנויות</div><div class="stat-v" id="st-stores">0</div></div>
+    <div class="stat"><div class="stat-l">קרדיט כולל</div><div class="stat-v" style="color:#39e600;" id="st-credit">₪0</div></div>
+    <div class="stat"><div class="stat-l">הזמנות</div><div class="stat-v" id="st-orders">0</div></div>
+    <div class="stat"><div class="stat-l">הכנסות</div><div class="stat-v" id="st-rev">₪0</div></div>
+  </div>
+
+  <!-- ============ שער דולר ============ -->
+  <div style="background:#3a4556;border:1px solid #39e600;border-radius:8px;padding:10px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <span style="font-size:13px;color:#888;">💱 שער דולר נוכחי</span>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span style="color:#39e600;font-size:16px;font-weight:700;" id="dollar-rate-display">$1 = ₪${dollarRate}</span>
+      <button onclick="fetchDollarRate().then(()=>{toast('t-users','שער דולר עודכן: ₪'+dollarRate);})" style="background:#222;color:#39e600;border:1px solid #39e600;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🔄 עדכן שער</button>
+      <button onclick="fetchDollarRate().then(()=>updateAllStorePrices())" style="background:#39e600;color:#111;border:none;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">📊 עדכן כל החנויות</button>
+    </div>
+    <div style="font-size:11px;color:#555;width:100%;">🕛 עדכון אוטומטי בחצות כל לילה</div>
+  </div>
+
+  <!-- ============ הוסף חנות חדשה ============ -->
+  <div class="card">
+    <div class="card-title">➕ הוסף משתמש / חנות</div>
+
+    <!-- שלב 1: סוג -->
+    <div style="margin-bottom:12px;">
+      <label class="lbl">סוג</label>
+      <select id="u-role" onchange="updateAddFormVisibility()">
+        <option value="store">🏪 חנות — גישה לחנות בלבד</option>
+        <option value="reseller">💼 משווק — פתיחת חנויות וטעינה</option>
+        <option value="admin">👑 אדמין — גישה מלאה</option>
+      </select>
+    </div>
+
+    <!-- שלב 2: פרטי משתמש (תמיד מופיע) -->
+    <div class="g2">
+      <div><label class="lbl">שם משתמש</label><input id="u-name" placeholder="store1" autocomplete="off"/></div>
+      <div><label class="lbl">סיסמה</label><input id="u-pass" type="password" placeholder="סיסמה" autocomplete="new-password"/></div>
+    </div>
+
+    <!-- שלב 3: פרטי חנות (רק במצב "חנות") -->
+    <div id="u-newstore-wrap" style="margin-top:14px;padding-top:14px;border-top:1px dashed #475467;">
+      <div style="font-size:12px;color:#888;font-weight:600;margin-bottom:10px;">🏪 פרטי החנות</div>
+      <div class="g2">
+        <div><label class="lbl">שם החנות</label><input id="n-name" placeholder="גיימינג ת&quot;א" autocomplete="off"/></div>
+        <div>
+          <label class="lbl">רמת מחיר</label>
+          <select id="n-tier">
+            <option value="vip">VIP — הנחה 15%</option>
+            <option value="good">לקוח טוב — הנחה 7%</option>
+            <option value="normal" selected>רגיל — מחיר בסיס</option>
+            <option value="high">גבוה — +10%</option>
+            <option value="max">מקסימלי — +20%</option>
+            <option value="custom">מותאם אישית</option>
+          </select>
+        </div>
+      </div>
+      <div class="g2" style="margin-top:10px;">
+        <div><label class="lbl">קרדיט פתיחה (₪)</label><input id="n-credit" type="number" min="0" placeholder="0"/></div>
+        <div><label class="lbl">מסגרת חוב (₪)</label><input id="n-debt" type="number" min="0" placeholder="0 = ללא חוב"/></div>
+      </div>
+      <div id="n-custom-wrap" style="display:none;margin-top:10px;" class="g2">
+        <div><label class="lbl">שינוי % (חיובי=יקר, שלילי=הנחה)</label><input id="n-pct" type="number" placeholder="למשל: 15 או -5"/></div>
+        <div><label class="lbl">או תוספת קבועה ₪</label><input id="n-ils" type="number" placeholder="למשל: 8"/></div>
+      </div>
+    </div>
+
+    <!-- ===== פרטי לקוח (אופציונלי) ===== -->
+    <div style="border-top:1px solid #475467;margin-top:14px;padding-top:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleCustInfo()">
+        <span style="font-size:13px;font-weight:700;color:#39e600;">📋 פרטי לקוח <span style="color:#888;font-size:11px;font-weight:400;">(אופציונלי)</span></span>
+        <span id="cust-info-toggle" style="color:#888;font-size:14px;">▼</span>
+      </div>
+      <div id="cust-info-fields" style="display:none;margin-top:12px;">
+        <div class="g2">
+          <div><label class="lbl">שם העסק</label><input id="u-biz" placeholder="למשל: גיימינג ת״א" autocomplete="off"/></div>
+          <div><label class="lbl">שם איש קשר</label><input id="u-cname" placeholder="שם מלא" autocomplete="off"/></div>
+        </div>
+        <div class="g2">
+          <div><label class="lbl">ת.ז / ח.פ</label><input id="u-id" placeholder="מספר זהות או ח.פ" autocomplete="off"/></div>
+          <div><label class="lbl">📞 נייד</label><input id="u-phone" placeholder="050-0000000" type="tel" autocomplete="off"/></div>
+        </div>
+        <div class="g2">
+          <div><label class="lbl">כתובת</label><input id="u-address" placeholder="רחוב ומספר" autocomplete="off"/></div>
+          <div><label class="lbl">עיר</label><input id="u-city" placeholder="עיר" autocomplete="off"/></div>
+        </div>
+        <div><label class="lbl">📧 אימייל</label><input id="u-email" placeholder="example@gmail.com" type="email" autocomplete="off"/></div>
+      </div>
+    </div>
+
+    <button class="gbtn" onclick="addUser()" style="margin-top:14px;width:100%;">✓ הוסף</button>
+  </div>
+  <div class="card">
+    <div class="card-title">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <span>👥 רשימת משתמשים ולקוחות</span>
+        <span id="users-count-badge" style="background:#f0f0f0;color:#555;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;">0</span>
+      </div>
+    </div>
+    <!-- שורת סינון וחיפוש -->
+    <div style="background:#fafafa;border:1px solid #e8e8e8;border-radius:10px;padding:12px;margin-bottom:14px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">
+        <div>
+          <label class="lbl" style="color:#666;font-size:11px;">🔍 חיפוש חופשי</label>
+          <input id="uf-search" placeholder="שם / אימייל / טלפון..." oninput="renderUsersTable()" style="font-size:13px;"/>
+        </div>
+        <div>
+          <label class="lbl" style="color:#666;font-size:11px;">🏙️ עיר</label>
+          <select id="uf-city" onchange="renderUsersTable()" style="font-size:13px;">
+            <option value="">— הכל —</option>
+          </select>
+        </div>
+        <div>
+          <label class="lbl" style="color:#666;font-size:11px;">📊 סטטוס</label>
+          <select id="uf-status" onchange="renderUsersTable()" style="font-size:13px;">
+            <option value="">— הכל —</option>
+            <option value="active">פעיל</option>
+            <option value="frozen">מוקפא</option>
+            <option value="nouser">ללא משתמש</option>
+            <option value="admin">אדמין</option>
+            <option value="reseller">משווק</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;">
+        <button onclick="clearUserFilters()" style="background:#f0f0f0;color:#555;border:1px solid #ddd;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;">🗑️ נקה מסננים</button>
+      </div>
+    </div>
+    <!-- הטבלה -->
+    <div style="overflow-x:auto;">
+      <table id="users-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:850px;">
+        <thead>
+          <tr style="background:#f8f8f8;border-bottom:2px solid #e0e0e0;">
+            <th style="padding:10px 6px;text-align:center;font-weight:700;color:#555;width:35px;">#</th>
+            <th style="padding:10px 6px;text-align:right;font-weight:700;color:#555;">סוג</th>
+            <th style="padding:10px 6px;text-align:right;font-weight:700;color:#555;">שם / חנות</th>
+            <th style="padding:10px 6px;text-align:right;font-weight:700;color:#555;">משתמש</th>
+            <th style="padding:10px 6px;text-align:right;font-weight:700;color:#555;">📞 טלפון</th>
+            <th style="padding:10px 6px;text-align:right;font-weight:700;color:#555;">📧 אימייל</th>
+            <th style="padding:10px 6px;text-align:right;font-weight:700;color:#555;">🏙️ עיר</th>
+            <th style="padding:10px 6px;text-align:right;font-weight:700;color:#555;">סוכן</th>
+            <th style="padding:10px 6px;text-align:center;font-weight:700;color:#555;">סטטוס</th>
+            <th style="padding:10px 6px;text-align:center;font-weight:700;color:#555;">⚙️</th>
+          </tr>
+        </thead>
+        <tbody id="users-table-body"></tbody>
+      </table>
+    </div>
+    <!-- חלוקה לעמודים -->
+    <div id="users-pagination" style="display:flex;justify-content:center;align-items:center;gap:6px;margin-top:14px;padding:8px 0;flex-wrap:wrap;"></div>
+  </div>
+  <!-- הקוד הישן נשאר נסתר ולא בשימוש - לתאימות לאחור -->
+  <div id="users-list" style="display:none;"></div>
+</div>
+
+
+
+<!-- ℹ️ מודל מידע: אודות / תקנון / צור קשר -->
+<div id="info-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:#3a4556;border:1px solid #5a6478;border-radius:14px;max-width:680px;width:100%;direction:rtl;font-family:inherit;margin:20px auto;">
+    <!-- כותרת + סגירה -->
+    <div style="padding:14px 18px;border-bottom:1px solid #475467;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#3a4556;border-radius:14px 14px 0 0;z-index:2;">
+      <div style="font-size:18px;font-weight:700;color:#fff;" id="info-title">—</div>
+      <button onclick="closeInfoPage()" style="background:none;border:none;color:#888;font-size:28px;cursor:pointer;padding:0 6px;line-height:1;">×</button>
+    </div>
+    <!-- ניווט בין דפים -->
+    <div style="display:flex;gap:0;border-bottom:1px solid #475467;background:#222831;">
+      <button id="info-tab-about" onclick="showInfoPage('about')" style="flex:1;background:none;border:none;color:#bbb;cursor:pointer;padding:10px;font-size:13px;font-weight:600;font-family:inherit;border-bottom:2px solid transparent;">ℹ️ אודות</button>
+      <button id="info-tab-terms" onclick="showInfoPage('terms')" style="flex:1;background:none;border:none;color:#bbb;cursor:pointer;padding:10px;font-size:13px;font-weight:600;font-family:inherit;border-bottom:2px solid transparent;">⚖️ תקנון</button>
+      <button id="info-tab-contact" onclick="showInfoPage('contact')" style="flex:1;background:none;border:none;color:#bbb;cursor:pointer;padding:10px;font-size:13px;font-weight:600;font-family:inherit;border-bottom:2px solid transparent;">📞 צור קשר</button>
+    </div>
+    <!-- תוכן הדף -->
+    <div id="info-content" style="padding:20px 22px;font-size:14px;line-height:1.8;color:#e2e2e2;max-height:75vh;overflow-y:auto;"></div>
+  </div>
+</div>
+
+<!-- 🚀 מודל הזמנה ידנית מהירה -->
+<div id="quick-order-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:#3a4556;border:1px solid #5a6478;border-radius:14px;max-width:480px;width:100%;direction:rtl;font-family:inherit;margin:20px auto;">
+    <!-- כותרת -->
+    <div style="padding:14px 18px;border-bottom:1px solid #475467;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:17px;font-weight:700;color:#fff;">➕ הזמנה ידנית מהירה</div>
+        <div style="font-size:11px;color:#888;margin-top:2px;">להזמנות שמגיעות בוואטסאפ / טלפון</div>
+      </div>
+      <button onclick="closeQuickOrder()" style="background:none;border:none;color:#888;font-size:26px;cursor:pointer;padding:0 4px;line-height:1;">×</button>
+    </div>
+
+    <!-- תוכן -->
+    <div style="padding:16px;">
+      <!-- שלב 1: בחירת חנות -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">1️⃣ חנות</label>
+        <select id="qo-store" onchange="qoOnStoreChange()" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+          <option value="">— בחר חנות —</option>
+        </select>
+        <div id="qo-store-info" style="font-size:11px;color:#888;margin-top:6px;display:none;"></div>
+      </div>
+
+      <!-- שלב 2: בחירת מוצר -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">2️⃣ מוצר</label>
+        <select id="qo-product" onchange="qoOnProductChange()" disabled style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+          <option value="">— בחר חנות קודם —</option>
+        </select>
+      </div>
+
+      <!-- שלב 3: בחירת חבילה -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">3️⃣ חבילה</label>
+        <select id="qo-package" onchange="qoOnPackageChange()" disabled style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+          <option value="">— בחר מוצר קודם —</option>
+        </select>
+      </div>
+
+      <!-- שלב 4: שם שחקן -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">4️⃣ <span id="qo-user-label">שם משתמש / ID</span></label>
+        <input id="qo-user" type="text" placeholder="הקלד..." style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;"/>
+      </div>
+
+      <!-- הערה (אופציונלי) -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;color:#888;margin-bottom:6px;">הערה (לא חובה)</label>
+        <input id="qo-note" type="text" placeholder="למשל: 'לפי וואטסאפ ב-10:30'" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;font-family:inherit;"/>
+      </div>
+
+      <!-- סיכום מחירים -->
+      <div id="qo-summary" style="background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;padding:12px;margin-bottom:14px;display:none;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#bbb;margin-bottom:6px;">
+          <span>💰 מחיר ללקוח:</span>
+          <span style="color:#fff;font-weight:700;" id="qo-price">₪0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#bbb;margin-bottom:6px;">
+          <span>📥 עלות לי:</span>
+          <span style="color:#ef9f27;font-weight:700;" id="qo-cost">₪0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;border-top:1px solid #2a2a2a;padding-top:8px;margin-top:6px;">
+          <span style="color:#39e600;font-weight:700;">💵 רווח שלי:</span>
+          <span style="color:#39e600;font-weight:800;font-size:16px;" id="qo-profit">₪0</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#666;margin-top:6px;">
+          <span>יתרת קרדיט החנות אחרי הזמנה:</span>
+          <span id="qo-balance-after">—</span>
+        </div>
+      </div>
+
+      <!-- אזהרות -->
+      <div id="qo-warning" style="display:none;background:#3a2828;border:1px solid #5a2020;border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:#ef9f27;"></div>
+
+      <!-- כפתורים -->
+      <div style="display:flex;gap:8px;">
+        <button onclick="submitQuickOrder()" id="qo-submit" disabled style="flex:1;background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;opacity:0.5;">✓ צור הזמנה</button>
+        <button onclick="closeQuickOrder()" style="background:#475467;color:#fff;border:1px solid #5a6478;border-radius:10px;padding:13px 18px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">ביטול</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV mobile store -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="bnav-btn on" id="bn-store" onclick="bnavGo('store')">
+    <span class="bnav-icon">🏪</span><span>חנות</span>
+  </button>
+  <button class="bnav-btn" id="bn-orders" onclick="bnavGo('orders')">
+    <span class="bnav-icon">📋</span><span>הזמנות</span>
+  </button>
+  <button class="bnav-btn" id="bn-log" onclick="bnavGo('log')">
+    <span class="bnav-icon">💳</span><span>קרדיט</span>
+  </button>
+</div>
+
+
+<!-- ===== נגישות ===== -->
+<script src="https://cdn.jsdelivr.net/npm/sienna-accessibility@latest/dist/sienna-accessibility.umd.js" defer></script>
+
+<!-- ===== PWA Service Worker + Install Prompt ===== -->
+
+<!-- ============ פאנל אבחון מובנה (v2.6) ============ -->
+<div id="debug-panel" style="position:fixed;bottom:0;left:0;right:0;background:#475467;color:#39e600;font-family:monospace;font-size:11px;padding:8px;border-top:2px solid #39e600;z-index:99999;max-height:40vh;overflow-y:auto;display:none;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+    <strong style="color:#39e600;">🐛 לוג אבחון</strong>
+    <div>
+      <button onclick="dbgClear()" style="background:#3a0a0a;color:#ff7070;border:1px solid #5a1010;border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;font-family:inherit;">נקה</button>
+      <button onclick="dbgClose()" style="background:#222;color:#fff;border:1px solid #444;border-radius:4px;padding:2px 6px;font-size:10px;cursor:pointer;font-family:inherit;">×</button>
+    </div>
+  </div>
+  <div id="debug-log" style="white-space:pre-wrap;word-break:break-word;line-height:1.4;"></div>
+</div>
+<button id="debug-toggle" onclick="dbgOpen()" style="position:fixed;bottom:8px;left:8px;background:#39e600;color:#000;border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;z-index:99998;box-shadow:0 2px 8px rgba(0,0,0,0.5);">🐛</button>
+
+
+
+</body>
+</html>
