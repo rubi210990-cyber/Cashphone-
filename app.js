@@ -1,5 +1,5 @@
 
-// CashPhone v2.15 — Combined Application JS
+// CashPhone v2.16 — Combined Application JS
 
 
 // === Block #1 ===
@@ -2168,6 +2168,24 @@ function renderMPkgs(){
 function pickPkg(el,i){
   document.querySelectorAll('.pkg').forEach(p=>p.classList.remove('sel'));
   el.classList.add('sel');selPkgData=selProd.pkgs[i];updMTotal();
+  // 🎯 גלילה אוטומטית לשדה הזנת ID + פוקוס - נוחות למשתמש במודאלים ארוכים
+  setTimeout(function(){
+    var userInput=document.getElementById('m-user');
+    if(!userInput)return;
+    // השתמש ב-scrollIntoView מאוד עדין - לא לקצה אלא לאמצע
+    try{
+      userInput.scrollIntoView({behavior:'smooth',block:'center'});
+    }catch(e){
+      // fallback לדפדפנים ישנים יותר
+      userInput.scrollIntoView();
+    }
+    // פוקוס אוטומטי רק אם המשתמש לא הקליד עדיין
+    if(!userInput.value){
+      setTimeout(function(){
+        try{userInput.focus();}catch(e){}
+      },300); // אחרי שהגלילה הסתיימה
+    }
+  },80); // קצר אבל מספיק שיהיה אחרי ה-render
 }
 
 function updMTotal(){
