@@ -294,3 +294,85 @@ input:focus,select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0
   .cpd-actions{padding:10px 16px 14px;flex-direction:column-reverse;}
   .cpd-btn{width:100%;padding:12px;}
 }
+
+/* ============================================================ */
+/* ============ 🔒 מחיר קניה מוסתר (private cost) ============ */
+/* ============================================================ */
+/* התווית מוסתרת ביציאת ברירת המחדל. נחשפת רק ב-hover (במחשב) */
+/* או בלחיצה ארוכה (במובייל) — כדי שלקוח של החנות לא יראה  */
+/* את ההפרש בין מחיר המכירה למחיר הקניה.                    */
+.cost-trigger{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;height:18px;
+  background:#475467;
+  color:#86efac;
+  font-size:10px;
+  font-weight:800;
+  border-radius:50%;
+  cursor:help;
+  user-select:none;
+  -webkit-user-select:none;
+  margin-right:6px;
+  border:1px solid #5a6478;
+  flex-shrink:0;
+  transition:all .12s ease;
+  position:relative;
+  /* מונע תפריט קונטקסט ב-long press במובייל */
+  -webkit-touch-callout:none;
+}
+.cost-trigger:hover{
+  background:#1a3a1a;
+  border-color:#39e600;
+  color:#39e600;
+  transform:scale(1.1);
+}
+.cost-trigger.cost-revealed{
+  background:#1a3a1a;
+  border-color:#39e600;
+  color:#39e600;
+}
+/* התווית עצמה - tooltip */
+.cost-tooltip{
+  position:absolute;
+  bottom:calc(100% + 6px);
+  right:50%;
+  transform:translateX(50%);
+  background:#0a1a0a;
+  border:1px solid #2a5a2a;
+  color:#86efac;
+  font-size:11px;
+  font-weight:700;
+  padding:6px 10px;
+  border-radius:8px;
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .15s,visibility .15s;
+  z-index:1000;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+  font-family:inherit;
+  direction:rtl;
+  line-height:1.4;
+}
+.cost-tooltip::after{
+  content:'';
+  position:absolute;
+  top:100%;
+  right:50%;
+  transform:translateX(50%);
+  border:5px solid transparent;
+  border-top-color:#2a5a2a;
+}
+.cost-trigger:hover .cost-tooltip,
+.cost-trigger.cost-revealed .cost-tooltip{
+  opacity:1;
+  visibility:visible;
+}
+/* רספונסיביות למובייל - tooltip יותר גדול וקריא */
+@media (max-width:480px){
+  .cost-trigger{width:22px;height:22px;font-size:12px;}
+  .cost-tooltip{font-size:12px;padding:8px 12px;}
+}

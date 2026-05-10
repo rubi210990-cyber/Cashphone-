@@ -1,5 +1,5 @@
 
-// CashPhone v2.12 — Combined Application JS
+// CashPhone v2.13 — Combined Application JS
 
 
 // === Block #1 ===
@@ -2043,21 +2043,24 @@ function renderStoreFront(){
   document.getElementById('prod-grid').innerHTML=prods.map(p=>{
     const minP=sp(s,p.id,p.pkgs[0].p);
     const can=s.credit>=minP&&!noC;
-    // מחיר קניה (רק לחנות) — מציג את המחיר המומלץ ללקוח של הכי זולה
+    // מחיר קניה (רק לחנות) — מוסתר מאחורי כפתור $ בפינת הכרטיס
+    // נחשף ב-hover (במחשב) או לחיצה ארוכה (במובייל)
     let costTag='';
     if(showCost){
       const minCostP=getCostPrice(s,p,p.pkgs[0]);
       if(minCostP>0&&minCostP>minP){
-        costTag=`<div style="color:#86efac;font-size:10.5px;font-weight:700;">→ ₪${minCostP} ללקוח</div>`;
+        const profit=minCostP-minP;
+        // הצג בפינה העליונה של הכרטיס - לא בולט, רק החנות תדע ללחוץ
+        costTag=`<div style="position:absolute;top:6px;left:6px;z-index:5;"><span class="cost-trigger" onclick="event.stopPropagation();" onmousedown="event.stopPropagation()" oncontextmenu="event.stopPropagation();return false;">$<span class="cost-tooltip">קניה: ₪${minP}${profit>0?' · רווח: ₪'+profit:''}</span></span></div>`;
       }
     }
-    return`<div class="pcard${!can?' dis':''}" onclick="${can?'openModal('+p.id+')':''}" style="cursor:${can?'pointer':'not-allowed'};">
+    return`<div class="pcard${!can?' dis':''}" onclick="${can?'openModal('+p.id+')':''}" style="cursor:${can?'pointer':'not-allowed'};position:relative;">
+      ${costTag}
       <div class="pimg" style="background:${p.color||'#475467'};position:relative;">
         ${p.icon?`<img src="${p.icon}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:6px;" onerror="this.style.display='none'"/>`:``}
         <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:8px 10px 6px;">
           <div style="color:#fff;font-size:13px;font-weight:700;">${p.name}</div>
           <div style="color:#39e600;font-size:13px;font-weight:800;">מ-₪${minP}</div>
-          ${costTag}
         </div>
       </div>
       <div class="pbody" style="padding:6px 10px;text-align:center;">
@@ -2104,16 +2107,16 @@ function renderMPkgs(){
     }else if(pkg.note){
       extra='<span class="pkg-note" title="'+pkg.note.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();cpAlert(\''+pkg.note.replace(/'/g,"\\'")+'\',{type:\'info\',icon:\'💡\'})" style="margin-right:6px;color:#39e600;cursor:pointer;font-size:13px;">💡</span>';
     }
-    // מחיר קניה (רק לחנות) - מוצג כתג קטן בתוך החבילה
+    // מחיר קניה (רק לחנות) - מוסתר מאחורי כפתור 👁 — נחשף ב-hover/long-press
     let costBadge='';
     if(showCost){
       const costP=getCostPrice(s,selProd,pkg);
-      const profit=costP-dp; // רווח החנות = מחיר קניה (מה שהיא תקבל מהלקוח) - מה שהיא משלמת לי
-      // אנחנו מציגים את המחיר המומלץ ללקוח שלה כסכום שהיא תקבל
-      // המחיר שהיא משלמת לי = dp
-      // הצעה ללקוח שלה = costP (כברירת מחדל = מחיר ה-PRODS)
-      if(costP>0&&costP>dp){
-        costBadge='<span class="pkg-cost-badge" title="מחיר המכירה המומלץ ללקוח הסופי" style="display:inline-block;background:#1f2937;color:#86efac;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:8px;margin-right:6px;">₪'+costP+' ללקוח</span>';
+      const profit=costP-dp;
+      // costP = המחיר שהחנות גובה מהלקוח (יותר גבוה)
+      // dp = המחיר שהחנות משלמת לי (יותר נמוך — מחיר הקניה שלה)
+      // נציג רק אם יש משמעות (יש רווח חיובי)
+      if(costP>0&&dp>0){
+        costBadge='<span class="cost-trigger" onmousedown="event.stopPropagation()" oncontextmenu="event.stopPropagation();return false;">$<span class="cost-tooltip">קניה: ₪'+dp+(profit>0?' · רווח: ₪'+profit:'')+'</span></span>';
       }
     }
     return`<div class="pkg${isSel?' sel':''}${!can?' no':''}" onclick="${can?'pickPkg(this,'+i+')':''}">
@@ -2137,21 +2140,24 @@ function updMTotal(){
   document.getElementById('m-rem').textContent='₪'+Math.max(0,rem).toLocaleString();
   document.getElementById('m-rem').style.color=rem<0?'#e24b4a':'#eee';
   document.getElementById('pay-btn').disabled=rem<0;
-  // שורת רווח (רק לחנות) - מציגה כמה החנות תרוויח אם תמכור במחיר המומלץ
-  const costRow=document.getElementById('m-cost-row');
-  if(costRow){
+  // trigger מוסתר לרווח (רק לחנות) - נחשף ב-hover/long-press
+  const triggerWrap=document.getElementById('m-cost-trigger-wrap');
+  const tip=document.getElementById('m-cost-tip');
+  if(triggerWrap&&tip){
     if(shouldShowCostPrice()){
       const costP=getCostPrice(s,selProd,selPkgData);
       const profit=costP-dp;
-      if(profit>0){
-        costRow.style.display='flex';
-        const profitEl=document.getElementById('m-profit');
-        if(profitEl)profitEl.textContent='₪'+profit.toLocaleString()+' (מכירה ב-₪'+costP+')';
+      // dp = מחיר קניה (החנות משלמת לי)
+      // costP = מחיר מכירה ללקוח (גבוה יותר)
+      // אנחנו מציגים בtooltip: כמה הקניה והרווח
+      if(costP>0&&dp>0){
+        triggerWrap.style.display='inline-flex';
+        tip.textContent='קניה: ₪'+dp+(profit>0?' · רווח: ₪'+profit:'');
       }else{
-        costRow.style.display='none';
+        triggerWrap.style.display='none';
       }
     }else{
-      costRow.style.display='none';
+      triggerWrap.style.display='none';
     }
   }
 }
@@ -6519,6 +6525,94 @@ document.addEventListener('keydown',function(e){
     if(currentUser)openGlobalSearch();
   }
 });
+
+// ============================================================
+// ============ 🔒 Long-press למובייל - חשיפת מחיר קניה ============
+// ============================================================
+// במובייל (טאצ'): לחיצה ארוכה (500ms) על .cost-trigger מציגה את התווית
+// אחרי 3 שניות התווית נעלמת אוטומטית
+// במחשב (mouseover): כבר עובד דרך CSS :hover
+(function(){
+  var pressTimer=null;
+  var pressStartX=0,pressStartY=0;
+  var revealedEl=null;
+  var revealTimeout=null;
+
+  function clearAllRevealed(){
+    if(revealedEl){
+      revealedEl.classList.remove('cost-revealed');
+      revealedEl=null;
+    }
+    if(revealTimeout){
+      clearTimeout(revealTimeout);
+      revealTimeout=null;
+    }
+  }
+
+  function reveal(el){
+    clearAllRevealed();
+    el.classList.add('cost-revealed');
+    revealedEl=el;
+    // נעלם אוטומטית אחרי 3 שניות
+    revealTimeout=setTimeout(function(){
+      clearAllRevealed();
+    },3000);
+  }
+
+  // touchstart - התחל טיימר ל-long press
+  document.addEventListener('touchstart',function(e){
+    var trigger=e.target.closest('.cost-trigger');
+    if(!trigger)return;
+    if(e.touches&&e.touches[0]){
+      pressStartX=e.touches[0].clientX;
+      pressStartY=e.touches[0].clientY;
+    }
+    // מנע פתיחה של מודאל ההזמנה (במקרה שהtrigger בתוך כרטיס מוצר)
+    e.stopPropagation();
+    pressTimer=setTimeout(function(){
+      reveal(trigger);
+      pressTimer=null;
+      // רטט קצר אם נתמך - לפידבק שהcontent נחשף
+      if(navigator.vibrate)try{navigator.vibrate(15);}catch(err){}
+    },500); // 0.5 שניה
+  },{passive:true});
+
+  // touchmove - אם הזיז את האצבע, ביטול הtimer
+  document.addEventListener('touchmove',function(e){
+    if(!pressTimer)return;
+    if(e.touches&&e.touches[0]){
+      var dx=Math.abs(e.touches[0].clientX-pressStartX);
+      var dy=Math.abs(e.touches[0].clientY-pressStartY);
+      if(dx>10||dy>10){
+        clearTimeout(pressTimer);
+        pressTimer=null;
+      }
+    }
+  },{passive:true});
+
+  // touchend - אם הtimer עדיין רץ (לחיצה רגילה), בטל
+  document.addEventListener('touchend',function(e){
+    if(pressTimer){
+      clearTimeout(pressTimer);
+      pressTimer=null;
+    }
+  },{passive:true});
+
+  // לחיצה במקום אחר על המסך - מסתיר את הtooltip שנפתח ב-long press
+  document.addEventListener('touchstart',function(e){
+    if(!revealedEl)return;
+    if(e.target.closest('.cost-trigger')===revealedEl)return;
+    clearAllRevealed();
+  },{passive:true,capture:true});
+
+  // מנע תפריט מערכת ב-long press על trigger (בעיקר אנדרואיד)
+  document.addEventListener('contextmenu',function(e){
+    if(e.target.closest('.cost-trigger')){
+      e.preventDefault();
+      return false;
+    }
+  });
+})();
 
 function renderAll(){
   try{renderStores();}catch(e){console.error('renderStores failed:',e.message||e);}
