@@ -1,5 +1,5 @@
 
-// CashPhone v2.16 — Combined Application JS
+// CashPhone v2.17
 
 
 // === Block #1 ===
@@ -2129,6 +2129,17 @@ function openModal(prodId){
   document.getElementById('success-box').classList.remove('on');
   // השהיית sync כדי שהיתרה לא תקפוץ באמצע ההזמנה
   if(typeof pauseSyncFor==='function')pauseSyncFor(60000);
+  // 🎯 גלילה אוטומטית למודאל - המודאל יושב מתחת לרשימת המוצרים
+  // לכן בלי גלילה המשתמש לא רואה אותו
+  setTimeout(function(){
+    var modal=document.getElementById('overlay');
+    if(!modal)return;
+    try{
+      modal.scrollIntoView({behavior:'smooth',block:'start'});
+    }catch(e){
+      modal.scrollIntoView();
+    }
+  },100);
 }
 
 function renderMPkgs(){
