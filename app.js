@@ -1,5 +1,5 @@
 
-// CashPhone v2.13 — Combined Application JS
+// CashPhone v2.15 — Combined Application JS
 
 
 // === Block #1 ===
@@ -836,6 +836,8 @@ function syncFromFirebase(){
     }
     if(changed){
       try{migrateCustomerInfo();}catch(e){console.warn('migrate:',e);}
+      // 🔗 מיגרציה: סנכרון orders ↔ loads
+      try{migrateOrdersToLoads();}catch(e){console.warn('order→load migration:',e);}
       saveLocal();
       try{renderAll();}catch(e){console.error('renderAll failed:',e.message||e,'stack:',e.stack||'no stack');}
       console.log('✅ נטען גיבוי מ-Firebase ('+stores.length+' חנויות, '+users.length+' משתמשים)');
@@ -917,6 +919,11 @@ function applyRemoteSnapshot(data){
   if(!changedStores&&!changedOrders&&!changedUsers&&!changedLoads){
     SYNC_LAST_REMOTE_TS=data.ts||0;
     return;
+  }
+
+  // 🔗 מיגרציה: אם orders התעדכנו, ודא ש-loads מסונכרנים
+  if(changedOrders){
+    try{migrateOrdersToLoads();}catch(e){}
   }
 
   // שמירה מקומית
@@ -1387,6 +1394,8 @@ function doLogout(){
   if(window._idleWarning){clearTimeout(window._idleWarning);window._idleWarning=null;}
   const w=document.getElementById('idle-warning');
   if(w)w.style.display='none';
+  // עדכון badge התראות
+  if(typeof refreshNotifyOnUserChange==='function')refreshNotifyOnUserChange();
 }
 
 // ============ טיימר חוסר פעילות (30 דקות) ============
@@ -1444,6 +1453,8 @@ function buildNav(){
   // הצג כפתור חיפוש גלובלי לאדמין ולמשווק
   var searchBtn=document.getElementById('nav-search-btn');
   if(searchBtn)searchBtn.style.display=(isAdmin||isReseller)?'inline-flex':'none';
+  // עדכון badge של התראות
+  if(typeof notify!=='undefined')notify.updateBadge();
   if(isAdmin){
     [['page-admin','פאנל ניהול'],['page-store','חנות'],['page-prices','מחירים'],['page-users','משתמשים']].forEach(([id,lbl])=>{
       const b=document.createElement('button');
@@ -1650,6 +1661,14 @@ function topup(id,amtOverride){
     var myCreditPage=document.getElementById('page-my-credit');
     if(myCreditPage&&myCreditPage.classList.contains('on'))renderMyCredit();
   }
+  // 🔔 התראה לחנות
+  if(typeof notify!=='undefined'){
+    notify.send('credit:topup',{
+      message:'נטענו ₪'+amt.toLocaleString()+' לחשבון שלך · יתרה כעת: ₪'+s.credit.toLocaleString(),
+      target_store_id:s.id,
+      action_store_id:s.id
+    });
+  }
   var toastTarget=document.getElementById('t-users')?'t-users':'t-admin';
   toast(toastTarget,'₪'+amt+' נטענו ל-"'+s.name+'" · 💳 חוב פתוח: ₪'+s.unpaidBalance.toLocaleString());
   saveData();
@@ -1819,6 +1838,15 @@ async function recordPayment(storeId,amtOverride){
     var myCreditPage=document.getElementById('page-my-credit');
     if(myCreditPage&&myCreditPage.classList.contains('on'))renderMyCredit();
   }
+  // 🔔 התראה לאדמין ולמשווק (אם החנות שלו)
+  if(typeof notify!=='undefined'){
+    notify.send('payment:received',{
+      message:'התקבל תשלום של ₪'+amt.toLocaleString()+' מ-'+s.name+(s.unpaidBalance>0?' · נשאר חוב: ₪'+s.unpaidBalance.toLocaleString():' · החוב סגור!'),
+      target_role:['admin','reseller'],
+      target_store_id:s.id,
+      action_store_id:s.id
+    });
+  }
   toast('t-admin','✅ ₪'+amt.toLocaleString()+' נרשמו · '+(s.unpaidBalance>0?'נשאר חוב: ₪'+s.unpaidBalance.toLocaleString():'החוב סגור!'));
 }
 
@@ -1889,11 +1917,21 @@ function doneOrder(id){
   const o=orders.find(o=>o.id===id);
   if(o){
     o.status='done';
+    // 🔗 סנכרן סטטוס של ה-load המקושר
+    try{syncLoadStatusFromOrder(o);}catch(e){}
     renderOrders();updateStats();saveData();
     // אם חנות צופה בטאב "ההזמנות שלי" כרגע - רענן
     if(typeof renderMyOrders==='function'){
       var myOrdersPage=document.getElementById('page-my-orders');
       if(myOrdersPage&&myOrdersPage.classList.contains('on'))renderMyOrders();
+    }
+    // 🔔 התראה לחנות שההזמנה שלה אושרה
+    if(typeof notify!=='undefined'){
+      notify.send('order:status',{
+        message:'ההזמנה "'+o.prod+' — '+o.pkg+'" עבור "'+o.user+'" הושלמה ✓',
+        target_store_id:o.storeId,
+        action_store_id:o.storeId
+      });
     }
     sendTelegram(
       `✅ <b>הזמנה הושלמה!</b>\n\n`+
@@ -2248,11 +2286,22 @@ function submitOrder(){
   s.log.unshift({t:`הזמנה: ${selProd.name}`,amt:dp,plus:false,time:now(),user});
   const o={id:Date.now(),storeId:s.id,storeName:s.name,prod:selProd.name,pkg:selPkgData.a,price:dp,basePrice:selPkgData.p,user,note,status:'new',time:now()};
   orders.unshift(o);
+  // 🔗 צור גם load מקושר (סנכרון אוטומטי)
+  try{createLoadFromOrder(o);saveLoads();}catch(e){console.warn('Failed to create load:',e);}
   closeOv();
   document.getElementById('success-box').classList.add('on');
   document.getElementById('success-msg').textContent=`${selPkgData.a} עבור "${user}" — יתרה: ₪${s.credit.toLocaleString()}`;
   renderStoreFront();renderOrders();updateStats();renderLog();
   saveData();
+  // 🔔 התראה לאדמין ולמשווק (אם קיים)
+  if(typeof notify!=='undefined'){
+    notify.send('order:new',{
+      message:s.name+' — '+selProd.name+' '+selPkgData.a+' לשחקן "'+user+'" · ₪'+dp,
+      target_role:['admin','reseller'],
+      target_store_id:s.id, // למשווק - רק אם זאת חנות שלו
+      action_store_id:s.id
+    });
+  }
   // שלח התראה לטלגרם
   sendTelegram(
     `🔔 <b>הזמנה חדשה!</b>\n\n`+
@@ -6527,6 +6576,503 @@ document.addEventListener('keydown',function(e){
 });
 
 // ============================================================
+// ============ 🔔 מערכת התראות (notifySystem) ============
+// ============================================================
+// API:
+//   notify.send(eventType, data) - שולח התראה
+//   notify.markRead(notifId) - סימון כנקרא
+//   notify.markAllRead() - סימון הכל כנקרא
+//   notify.clear() - מחיקת כולן
+//   notify.getUnreadCount() - מספר ההתראות שלא נקראו
+//
+// אירועים נתמכים:
+//   'order:new' - הזמנה חדשה (לאדמין/משווק)
+//   'order:status' - שינוי סטטוס (לחנות)
+//   'credit:topup' - טעינת קרדיט (לחנות)
+//   'credit:low' - יתרה נמוכה (לחנות + אדמין)
+//   'credit:debt' - חנות בחוב (לחנות)
+//   'payment:received' - תשלום התקבל (לאדמין/משווק)
+//   'unpaid:reminder' - תזכורת חוב פתוח (לחנות)
+// ============================================================
+
+window.notify=(function(){
+  // === קבועים ===
+  var EVENTS={
+    'order:new':{icon:'🎮',type:'order',title:'הזמנה חדשה',sound:'order'},
+    'order:status':{icon:'✓',type:'success',title:'עדכון הזמנה',sound:'success'},
+    'credit:topup':{icon:'💰',type:'success',title:'קרדיט נטען',sound:'success'},
+    'credit:low':{icon:'⚠️',type:'warning',title:'יתרה נמוכה',sound:'warning'},
+    'credit:debt':{icon:'❗',type:'error',title:'חוב פתוח',sound:'warning'},
+    'payment:received':{icon:'💵',type:'success',title:'תשלום התקבל',sound:'success'},
+    'unpaid:reminder':{icon:'📅',type:'warning',title:'תזכורת תשלום',sound:'warning'}
+  };
+  var STORAGE_KEY='cp_notifications';
+  var SETTINGS_KEY='cp_notif_settings';
+  var MAX_STORED=50;
+
+  // === מצב פנימי ===
+  var notifications=[];
+  var settings={
+    enabled:true,
+    sound:true,
+    desktop:false, // רמה 2 - יוטעלל בעתיד
+    eventToggles:{} // {eventType: true/false}
+  };
+
+  // === אתחול ===
+  function init(){
+    try{
+      var saved=localStorage.getItem(STORAGE_KEY);
+      if(saved)notifications=JSON.parse(saved)||[];
+      var savedSettings=localStorage.getItem(SETTINGS_KEY);
+      if(savedSettings){
+        var s=JSON.parse(savedSettings);
+        Object.assign(settings,s||{});
+      }
+    }catch(e){console.warn('notify: failed to load',e);}
+    updateBadge();
+  }
+
+  function save(){
+    try{
+      // שמור רק את ה-MAX_STORED האחרונות
+      var toSave=notifications.slice(0,MAX_STORED);
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(toSave));
+    }catch(e){console.warn('notify: failed to save',e);}
+  }
+
+  function saveSettings(){
+    try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}catch(e){}
+  }
+
+  // === Web Audio - צליל סינתטי בלי צורך בקובץ ===
+  var audioCtx=null;
+  function ensureAudio(){
+    if(audioCtx)return audioCtx;
+    try{
+      audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    }catch(e){return null;}
+    return audioCtx;
+  }
+  function playSound(kind){
+    if(!settings.sound)return;
+    var ctx=ensureAudio();
+    if(!ctx)return;
+    // יצירת צליל קצר - תלוי בסוג
+    var freqs;
+    if(kind==='order'){freqs=[523,659,784];} // אקורד C major
+    else if(kind==='success'){freqs=[659,784];} // E + G
+    else if(kind==='warning'){freqs=[440,330];} // A → E (יורד)
+    else freqs=[440];
+    try{
+      freqs.forEach(function(f,i){
+        var osc=ctx.createOscillator();
+        var gain=ctx.createGain();
+        osc.frequency.value=f;
+        osc.type='sine';
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        var startTime=ctx.currentTime+(i*0.08);
+        gain.gain.setValueAtTime(0,startTime);
+        gain.gain.linearRampToValueAtTime(0.15,startTime+0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001,startTime+0.25);
+        osc.start(startTime);
+        osc.stop(startTime+0.3);
+      });
+    }catch(e){}
+  }
+
+  // === בדיקת רלוונטיות לפי תפקיד ===
+  // האם ההתראה רלוונטית למשתמש הנוכחי?
+  function isRelevantToCurrentUser(notif){
+    if(!currentUser)return false;
+    var d=notif.data||{};
+    // אם יש target_role ספציפי
+    if(d.target_role){
+      if(Array.isArray(d.target_role))return d.target_role.indexOf(currentUser.role)>=0;
+      return d.target_role===currentUser.role;
+    }
+    // אם יש target_user_id ספציפי
+    if(d.target_user_id)return d.target_user_id===currentUser.id;
+    // אם יש target_store_id - רק החנות הזו
+    if(d.target_store_id&&currentUser.role==='store')return d.target_store_id===currentUser.storeId;
+    if(d.target_store_id&&currentUser.role==='reseller'){
+      // משווק רואה אם זאת חנות שלו
+      var s=stores.find(function(x){return x.id===d.target_store_id;});
+      if(!s)return false;
+      if(s.resellerId===currentUser.id)return true;
+      var u=users.find(function(x){return x.storeId===s.id;});
+      return u&&u.resellerOf===currentUser.id;
+    }
+    return true;
+  }
+
+  // === API ראשי - שליחת התראה ===
+  function send(eventType,data){
+    if(!settings.enabled)return;
+    if(settings.eventToggles[eventType]===false)return;
+    var event=EVENTS[eventType];
+    if(!event){console.warn('notify: unknown event',eventType);return;}
+
+    var notif={
+      id:'n'+Date.now()+'_'+Math.random().toString(36).slice(2,8),
+      eventType:eventType,
+      icon:event.icon,
+      type:event.type,
+      title:event.title,
+      message:data&&data.message||'',
+      data:data||{},
+      time:Date.now(),
+      read:false
+    };
+
+    // בדיקת רלוונטיות
+    if(!isRelevantToCurrentUser(notif))return;
+
+    // הוספה לראש הרשימה
+    notifications.unshift(notif);
+    if(notifications.length>MAX_STORED*2)notifications=notifications.slice(0,MAX_STORED*2);
+    save();
+
+    // הצגה ויזואלית
+    showToast(notif);
+    playSound(event.sound);
+    updateBadge();
+    shakeBell();
+
+    // אם הפאנל פתוח - עדכן אותו
+    var panel=document.getElementById('cpn-panel');
+    if(panel)renderPanel();
+
+    return notif.id;
+  }
+
+  // === הצגת toast ===
+  function showToast(notif){
+    var stack=document.getElementById('cpn-toast-stack');
+    if(!stack)return;
+    var el=document.createElement('div');
+    el.className='cpn-toast cpn-'+(notif.type||'info');
+    el.dataset.notifId=notif.id;
+    el.innerHTML=
+      '<div class="cpn-toast-icon">'+notif.icon+'</div>'+
+      '<div class="cpn-toast-body">'+
+        '<div class="cpn-toast-title">'+escapeHtml(notif.title)+'</div>'+
+        (notif.message?'<div class="cpn-toast-msg">'+escapeHtml(notif.message)+'</div>':'')+
+      '</div>'+
+      '<button class="cpn-toast-close" aria-label="סגור">×</button>';
+
+    // לחיצה - מסמן כנקרא ופותח את הפאנל
+    el.addEventListener('click',function(e){
+      if(e.target.classList.contains('cpn-toast-close')){
+        e.stopPropagation();
+        closeToast(el);
+        return;
+      }
+      markRead(notif.id);
+      closeToast(el);
+      // אם יש navigation למקום ספציפי
+      var d=notif.data||{};
+      if(d.action_store_id&&typeof openCustomerCard==='function'){
+        try{openCustomerCard(d.action_store_id);}catch(err){}
+      }
+    });
+    stack.appendChild(el);
+
+    // הסרה אוטומטית אחרי 6 שניות
+    var timer=setTimeout(function(){closeToast(el);},6000);
+    el._timer=timer;
+
+    // הגבלת מספר טוסטים גלויים בו-זמנית
+    var toasts=stack.querySelectorAll('.cpn-toast');
+    if(toasts.length>4){
+      // סגור את הישנים ביותר
+      for(var i=0;i<toasts.length-4;i++){
+        closeToast(toasts[i]);
+      }
+    }
+  }
+
+  function closeToast(el){
+    if(!el||el._closing)return;
+    el._closing=true;
+    if(el._timer)clearTimeout(el._timer);
+    el.classList.add('cpn-closing');
+    setTimeout(function(){try{el.remove();}catch(e){}},250);
+  }
+
+  // === ניהול קריאה ===
+  function markRead(notifId){
+    var n=notifications.find(function(x){return x.id===notifId;});
+    if(n&&!n.read){
+      n.read=true;
+      save();
+      updateBadge();
+    }
+  }
+
+  function markAllRead(){
+    notifications.forEach(function(n){n.read=true;});
+    save();
+    updateBadge();
+    var panel=document.getElementById('cpn-panel');
+    if(panel)renderPanel();
+  }
+
+  function clear(){
+    notifications=[];
+    save();
+    updateBadge();
+    var panel=document.getElementById('cpn-panel');
+    if(panel)renderPanel();
+  }
+
+  function getUnreadCount(){
+    return notifications.filter(function(n){return !n.read;}).length;
+  }
+
+  function getAll(){
+    return notifications.slice();
+  }
+
+  // === עדכון תג הפעמון ===
+  function updateBadge(){
+    var btn=document.getElementById('nav-bell-btn');
+    var badge=document.getElementById('nav-bell-badge');
+    if(!btn||!badge)return;
+    // הצג את הכפתור רק אם יש משתמש מחובר
+    btn.style.display=currentUser?'inline-flex':'none';
+    var count=getUnreadCount();
+    if(count>0){
+      badge.textContent=count>99?'99+':String(count);
+      badge.style.display='flex';
+      btn.classList.add('cpn-has-unread');
+    }else{
+      badge.style.display='none';
+      btn.classList.remove('cpn-has-unread');
+    }
+  }
+
+  function shakeBell(){
+    var btn=document.getElementById('nav-bell-btn');
+    if(!btn)return;
+    btn.classList.remove('cpn-shake');
+    void btn.offsetWidth; // טריגר reflow
+    btn.classList.add('cpn-shake');
+    setTimeout(function(){btn.classList.remove('cpn-shake');},700);
+  }
+
+  // === פאנל ההתראות ===
+  function renderPanel(){
+    var panel=document.getElementById('cpn-panel');
+    if(!panel)return;
+    var list=panel.querySelector('.cpn-panel-list');
+    if(!list)return;
+    if(notifications.length===0){
+      list.innerHTML='<div class="cpn-empty"><div class="cpn-empty-icon">🔔</div>אין התראות עדיין</div>';
+      return;
+    }
+    var html='';
+    notifications.slice(0,MAX_STORED).forEach(function(n){
+      var timeStr=formatRelativeTime(n.time);
+      var clr=n.type==='error'?'#e24b4a':n.type==='warning'?'#ef9f27':n.type==='order'?'#c490ff':'#39e600';
+      html+='<div class="cpn-item'+(n.read?'':' cpn-unread')+'" data-id="'+n.id+'">';
+      html+='<div class="cpn-item-icon">'+n.icon+'</div>';
+      html+='<div class="cpn-item-body">';
+      html+='<div class="cpn-item-title">'+escapeHtml(n.title)+'</div>';
+      if(n.message)html+='<div class="cpn-item-msg">'+escapeHtml(n.message)+'</div>';
+      html+='<div class="cpn-item-time">'+timeStr+'</div>';
+      html+='</div></div>';
+    });
+    list.innerHTML=html;
+
+    // מאזיני לחיצה
+    list.querySelectorAll('.cpn-item').forEach(function(el){
+      el.addEventListener('click',function(){
+        var id=this.dataset.id;
+        var n=notifications.find(function(x){return x.id===id;});
+        if(!n)return;
+        markRead(id);
+        renderPanel();
+        // ניווט אם רלוונטי
+        var d=n.data||{};
+        if(d.action_store_id&&typeof openCustomerCard==='function'){
+          try{
+            openCustomerCard(d.action_store_id);
+            closePanel();
+          }catch(err){}
+        }
+      });
+    });
+  }
+
+  function formatRelativeTime(t){
+    var diff=Date.now()-t;
+    var sec=Math.floor(diff/1000);
+    if(sec<60)return 'הרגע';
+    var min=Math.floor(sec/60);
+    if(min<60)return 'לפני '+min+' דק׳';
+    var hr=Math.floor(min/60);
+    if(hr<24)return 'לפני '+hr+' שע׳';
+    var days=Math.floor(hr/24);
+    if(days<7)return 'לפני '+days+' ימים';
+    return new Date(t).toLocaleDateString('he-IL');
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function closePanel(){
+    var panel=document.getElementById('cpn-panel');
+    if(panel)try{panel.remove();}catch(e){}
+  }
+
+  // === הגדרות ===
+  function getSettings(){return Object.assign({},settings);}
+  function setSettings(newSettings){
+    Object.assign(settings,newSettings||{});
+    saveSettings();
+  }
+
+  // === Public API ===
+  init();
+  return {
+    send:send,
+    markRead:markRead,
+    markAllRead:markAllRead,
+    clear:clear,
+    getUnreadCount:getUnreadCount,
+    getAll:getAll,
+    renderPanel:renderPanel,
+    closePanel:closePanel,
+    updateBadge:updateBadge,
+    getSettings:getSettings,
+    setSettings:setSettings
+  };
+})();
+
+// === פתיחה/סגירה של פאנל ההתראות ===
+function toggleNotifPanel(e){
+  if(e)e.stopPropagation();
+  var existing=document.getElementById('cpn-panel');
+  if(existing){
+    notify.closePanel();
+    return;
+  }
+  var panel=document.createElement('div');
+  panel.id='cpn-panel';
+  panel.className='cpn-panel';
+  panel.innerHTML=
+    '<div class="cpn-panel-header">'+
+      '<div class="cpn-panel-title">🔔 התראות</div>'+
+      '<div class="cpn-panel-actions">'+
+        '<button onclick="notify.markAllRead()">סמן הכל כנקרא</button>'+
+        '<button onclick="if(confirm(\'למחוק את כל ההתראות?\'))notify.clear()">נקה</button>'+
+        '<button onclick="notify.closePanel()" title="סגור">×</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="cpn-panel-list"></div>';
+  document.body.appendChild(panel);
+  notify.renderPanel();
+
+  // סגירה בלחיצה מחוץ
+  setTimeout(function(){
+    document.addEventListener('click',panelOutsideClick);
+  },10);
+}
+
+function panelOutsideClick(e){
+  var panel=document.getElementById('cpn-panel');
+  var bell=document.getElementById('nav-bell-btn');
+  if(!panel)return;
+  if(panel.contains(e.target))return;
+  if(bell&&bell.contains(e.target))return;
+  notify.closePanel();
+  document.removeEventListener('click',panelOutsideClick);
+}
+
+// ============================================================
+// === רמה 2 (תשתית עתידית) - Web Push Notifications ===
+// ============================================================
+// כדי להפעיל בעתיד, צריך:
+//   1. ליצור VAPID keys ב-Firebase Console > Project Settings > Cloud Messaging
+//   2. להחליף את VAPID_PUBLIC_KEY למטה
+//   3. לפרוס Cloud Function ב-Firebase שתשלח notifications לטוקנים
+//   4. לקרוא ל-subscribeToPushNotifications() אחרי login של אדמין/חנות
+//
+// הקוד למטה מוכן - רק חסרים המפתחות והפונקציה בענן.
+// ============================================================
+
+var VAPID_PUBLIC_KEY='REPLACE_WITH_YOUR_VAPID_PUBLIC_KEY'; // החלף בפועל
+
+function isPushSupported(){
+  return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+}
+
+function getNotificationPermission(){
+  if(!isPushSupported())return 'unsupported';
+  return Notification.permission; // 'default','granted','denied'
+}
+
+async function requestNotificationPermission(){
+  if(!isPushSupported()){
+    cpAlert('הדפדפן לא תומך בהתראות פוש',{type:'error'});
+    return false;
+  }
+  var perm=await Notification.requestPermission();
+  return perm==='granted';
+}
+
+// פונקציה זו תפעל ברגע שיוגדרו VAPID keys ו-Cloud Function
+async function subscribeToPushNotifications(){
+  if(!isPushSupported())return null;
+  if(VAPID_PUBLIC_KEY.indexOf('REPLACE')>=0){
+    console.log('Push notifications: VAPID key not configured yet');
+    return null;
+  }
+  try{
+    var perm=await Notification.requestPermission();
+    if(perm!=='granted')return null;
+    var registration=await navigator.serviceWorker.ready;
+    var subscription=await registration.pushManager.subscribe({
+      userVisibleOnly:true,
+      applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+    });
+    // שמור את ה-subscription ב-Firebase תחת המשתמש הנוכחי
+    if(currentUser&&typeof db!=='undefined'){
+      try{
+        await db.collection('push_subscriptions').doc(currentUser.id).set({
+          userId:currentUser.id,
+          username:currentUser.username,
+          role:currentUser.role,
+          subscription:JSON.parse(JSON.stringify(subscription)),
+          updatedAt:Date.now()
+        });
+      }catch(e){console.warn('Failed to save subscription:',e);}
+    }
+    return subscription;
+  }catch(e){
+    console.error('Push subscription failed:',e);
+    return null;
+  }
+}
+
+function urlBase64ToUint8Array(base64String){
+  var padding='='.repeat((4-base64String.length%4)%4);
+  var base64=(base64String+padding).replace(/\-/g,'+').replace(/_/g,'/');
+  var rawData=window.atob(base64);
+  var outputArray=new Uint8Array(rawData.length);
+  for(var i=0;i<rawData.length;++i)outputArray[i]=rawData.charCodeAt(i);
+  return outputArray;
+}
+
+// פונקציה לעדכון badge — נקראת מ-doLogin/doLogout
+function refreshNotifyOnUserChange(){
+  if(typeof notify!=='undefined')notify.updateBadge();
+}
+
+// ============================================================
 // ============ 🔒 Long-press למובייל - חשיפת מחיר קניה ============
 // ============================================================
 // במובייל (טאצ'): לחיצה ארוכה (500ms) על .cost-trigger מציגה את התווית
@@ -6668,6 +7214,15 @@ function init(){
   }
 
   try{ loadData(); }catch(e){ console.error('loadData error:',e); }
+
+  // 🔗 מיגרציה: סנכרון orders ↔ loads בלי loads מקושרים
+  try{
+    var migratedCount=migrateOrdersToLoads();
+    if(migratedCount>0){
+      console.log('🔗 מיגרציה: נוצרו '+migratedCount+' loads חדשים מ-orders ישנות');
+    }
+  }catch(e){console.warn('Order→Load migration failed:',e);}
+
   setTimeout(syncFromFirebase,2000);
   // הפעלת live sync — מקשיב לשינויים בזמן אמת מכל המכשירים
   setTimeout(startLiveSync,3000);
@@ -6810,6 +7365,127 @@ function loadNowParts(){
   const period=h<12?'בבוקר':h<17?'בצהריים':h<20?'בערב':'בלילה';
   return {date:date,time:lpad(h)+':'+lpad(d.getMinutes())+' '+period};
 }
+
+// ============================================================
+// ============ 🔗 סנכרון orders ↔ loads ============
+// ============================================================
+// כל הזמנה מחנות = טעינה שאני (האדמין) צריך לבצע בפועל אצל הספק.
+// כלומר orders ו-loads הם שתי תצוגות של אותה ישות.
+// פונקציות אלו דואגות שיהיו מסונכרנים תמיד.
+
+// יצירת load אוטומטי מ-order. מחזיר את ה-load שנוצר.
+function createLoadFromOrder(order){
+  if(!order)return null;
+  if(!loads)loads=[];
+
+  // בדיקה - אם כבר יש load מקושר, אל תיצור שוב
+  if(order.loadId&&loads.find(function(l){return l.id===order.loadId;})){
+    return loads.find(function(l){return l.id===order.loadId;});
+  }
+
+  // חישוב מחיר הקניה שלי (העלות לי = pkg.p ההמרה, או basePrice של ההזמנה)
+  // היום אנחנו לא יודעים בדיוק - basePrice של ההזמנה הוא מחיר בפועל בש"ח של pkg.p,
+  // ועלות בפועל לחנות = ההכנסות שלי = order.price
+  // עלות לי בפועל (לפני שיוכי הספק) = basePrice
+  var myCost=order.basePrice||0;
+  var storeCost=order.price||0; // מה החנות משלמת לי
+
+  var np=loadNowParts();
+  // אם להזמנה יש זמן, ננסה לחלץ ממנה את התאריך/השעה
+  if(order.time){
+    // order.time הוא string בפורמט HH:MM או דומה
+    // נשתמש בזמן הנוכחי כי order.id הוא timestamp
+    if(order.id){
+      try{
+        var d=new Date(order.id);
+        if(!isNaN(d.getTime())){
+          np.date=lpad(d.getDate())+'/'+lpad(d.getMonth()+1)+'/'+d.getFullYear();
+          var h=d.getHours();
+          var period=h<12?'בבוקר':h<17?'בצהריים':h<20?'בערב':'בלילה';
+          np.time=lpad(h)+':'+lpad(d.getMinutes())+' '+period;
+        }
+      }catch(e){}
+    }
+  }
+
+  var load={
+    id:'l'+(order.id||Date.now())+'_'+Math.random().toString(36).slice(2,6),
+    invoiceDate:np.date,invoiceTime:np.time,
+    executionDate:np.date,executionTime:np.time,
+    storeId:order.storeId,storeName:order.storeName||'',
+    playerName:order.user||'',playerId:'',
+    type:(order.prod||'')+(order.pkg?' — '+order.pkg:''),
+    storeCost:storeCost, // מה החנות משלמת לי
+    myPrice:myCost,      // העלות שלי בפועל (קניה מהספק)
+    mode:'add',
+    status:order.status==='done'?'done':'pending',
+    hasFile:false,fileName:'',
+    fromOrderId:order.id, // קישור חזרה להזמנה
+    autoCreated:true
+  };
+  loads.unshift(load);
+
+  // קישור דו-כיווני
+  order.loadId=load.id;
+
+  return load;
+}
+
+// סנכרון בדיעבד - יוצר loads עבור כל ה-orders שאין להם
+// מחזיר מספר הרשומות שנוצרו
+function migrateOrdersToLoads(){
+  if(!Array.isArray(orders))return 0;
+  if(!Array.isArray(loads))loads=[];
+
+  var created=0;
+  orders.forEach(function(order){
+    if(!order||!order.storeId)return;
+    // יש כבר load מקושר?
+    if(order.loadId&&loads.find(function(l){return l.id===order.loadId;}))return;
+    // יש load שכבר מקושר חזרה (fromOrderId)?
+    var existingLoad=loads.find(function(l){return l.fromOrderId===order.id;});
+    if(existingLoad){
+      order.loadId=existingLoad.id;
+      return;
+    }
+    // אין - תיצור
+    createLoadFromOrder(order);
+    created++;
+  });
+  if(created>0){
+    try{saveLoads();}catch(e){}
+    try{saveData();}catch(e){}
+  }
+  return created;
+}
+
+// עדכון סטטוס של load כשמשנים סטטוס של order
+function syncLoadStatusFromOrder(order){
+  if(!order||!order.loadId)return;
+  var load=loads.find(function(l){return l.id===order.loadId;});
+  if(!load)return;
+  if(order.status==='done')load.status='done';
+  else if(order.status==='cancelled'){
+    // ביטול הזמנה = load של refund
+    load.mode='refund';
+    load.status='done';
+    load.type='ביטול: '+(load.type||'');
+  }
+  else load.status='pending';
+  try{saveLoads();}catch(e){}
+}
+
+// מחיקת load כשמוחקים order
+function deleteLoadFromOrder(order){
+  if(!order||!order.loadId)return;
+  if(!Array.isArray(loads))return;
+  var idx=loads.findIndex(function(l){return l.id===order.loadId;});
+  if(idx>=0){
+    loads.splice(idx,1);
+    try{saveLoads();}catch(e){}
+  }
+}
+
 function setLoadView(btn,view){
   document.querySelectorAll('.loadview-btn').forEach(b=>{
     b.classList.remove('on');
@@ -7911,6 +8587,8 @@ async function submitQuickOrder(){
     status:'new',time:now(),manual:true
   };
   orders.unshift(orderObj);
+  // 🔗 צור גם load מקושר (סנכרון אוטומטי)
+  try{createLoadFromOrder(orderObj);saveLoads();}catch(e){console.warn('Failed to create load:',e);}
 
   // לוג ביקורת
   logAudit('order-manual','הזמנה ידנית',{
