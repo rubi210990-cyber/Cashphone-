@@ -36,9 +36,9 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="app.js?v=2.17" defer></script>
+<script src="app.js?v=2.19" defer></script>
 
-<link rel="stylesheet" href="styles.css?v=2.17"/>
+<link rel="stylesheet" href="styles.css?v=2.19"/>
 </head>
 <body>
 
@@ -78,9 +78,13 @@
       <span class="cpn-bell-icon">🔔</span>
       <span id="nav-bell-badge" class="cpn-badge" style="display:none;">0</span>
     </button>
+    <button id="nav-lang-btn" onclick="toggleLanguage()" title="שפה / اللغة" style="background:#475467;border:1px solid #5a6478;border-radius:20px;padding:6px 12px;color:#fff;cursor:pointer;font-family:inherit;font-size:13px;display:none;align-items:center;gap:4px;">
+      <span id="nav-lang-icon" style="font-size:14px;">🌐</span>
+      <span id="nav-lang-text" style="font-size:11px;font-weight:700;">عربي</span>
+    </button>
     <div style="display:flex;align-items:center;gap:6px;background:#475467;border:1px solid #5a6478;border-radius:20px;padding:4px 12px;">
       <span class="user-chip" id="chip-name" style="background:none;border:none;padding:0;"></span>
-      <button class="logout-btn" onclick="doLogout()">יציאה</button>
+      <button class="logout-btn" onclick="doLogout()" data-i18n="nav.logout">יציאה</button>
     </div>
   </div>
 </div>
@@ -749,7 +753,7 @@
   <div class="nocredit" id="nocredit-msg">❌ חריגה ממסגרת האשראי — פנה לספק</div>
   <div class="successbox" id="success-box">
     <div style="font-size:2rem;margin-bottom:8px;">✅</div>
-    <div style="font-size:16px;font-weight:700;color:#39e600;margin-bottom:4px;">ההזמנה התקבלה!</div>
+    <div style="font-size:16px;font-weight:700;color:#39e600;margin-bottom:4px;" data-i18n="success.title">ההזמנה התקבלה!</div>
     <div style="font-size:13px;color:#aaa;" id="success-msg"></div>
   </div>
   <div class="cat-row" id="cat-row"></div>
@@ -761,30 +765,30 @@
       <div class="pkgs" id="m-pkgs"></div>
       <label class="lbl" id="m-ulbl">שם משתמש / ID שחקן</label>
       <div style="display:flex;gap:6px;margin-bottom:4px;">
-        <input id="m-user" placeholder="הכנס ID שחקן" style="flex:1;margin-bottom:0;"/>
-        <button onclick="verifyPlayer()" id="verify-btn" style="background:#39e600;color:#000;border:none;border-radius:8px;padding:0 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">בדוק ✓</button>
+        <input id="m-user" placeholder="הכנס ID שחקן" data-i18n-placeholder="modal.player_id" style="flex:1;margin-bottom:0;"/>
+        <button onclick="verifyPlayer()" id="verify-btn" data-i18n="modal.verify_btn" style="background:#39e600;color:#000;border:none;border-radius:8px;padding:0 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">בדוק ✓</button>
       </div>
       <div id="player-info" style="display:none;background:#f0fff0;border:1px solid #39e600;border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:13px;color:#111;">
         <span id="player-name" style="font-weight:700;"></span>
       </div>
-      <label class="lbl">הערה (אופציונלי)</label>
-      <input id="m-note" placeholder="פלטפורמה, מדינה..." style="margin-bottom:10px;"/>
-      <div class="prow" style="position:relative;"><span style="font-size:13px;color:#888;">עלות (תשלום לי) <span id="m-cost-trigger-wrap" style="display:none;"><span class="cost-trigger" onmousedown="event.stopPropagation()" oncontextmenu="event.stopPropagation();return false;">$<span class="cost-tooltip" id="m-cost-tip">קניה: ₪0</span></span></span></span><span style="font-size:18px;font-weight:700;color:#39e600;" id="m-total">₪0</span></div>
-      <div class="prow" style="margin-bottom:10px;"><span style="font-size:13px;color:#888;">יתרה אחרי</span><span style="font-size:14px;font-weight:700;" id="m-rem">₪0</span></div>
+      <label class="lbl" data-i18n="modal.note_label">הערה (אופציונלי)</label>
+      <input id="m-note" placeholder="פלטפורמה, מדינה..." data-i18n-placeholder="modal.note_placeholder" style="margin-bottom:10px;"/>
+      <div class="prow" style="position:relative;"><span style="font-size:13px;color:#888;"><span data-i18n="modal.cost">עלות (תשלום לי)</span> <span id="m-cost-trigger-wrap" style="display:none;"><span class="cost-trigger" onmousedown="event.stopPropagation()" oncontextmenu="event.stopPropagation();return false;">$<span class="cost-tooltip" id="m-cost-tip">קניה: ₪0</span></span></span></span><span style="font-size:18px;font-weight:700;color:#39e600;" id="m-total">₪0</span></div>
+      <div class="prow" style="margin-bottom:10px;"><span style="font-size:13px;color:#888;" data-i18n="modal.balance_after">יתרה אחרי</span><span style="font-size:14px;font-weight:700;" id="m-rem">₪0</span></div>
       <!-- תקנון -->
       <div style="background:#fff8e1;border:1px solid #ef9f27;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#555;line-height:1.6;">
-        <div style="font-weight:700;color:#ef9f27;margin-bottom:4px;">⚠️ תקנון — חובה לקרוא</div>
-        • לאחר ביצוע הטעינה — לא ניתן לבטל את העסקה<br/>
-        • הלקוח אחראי על הכנסת ID נכון<br/>
-        • הטעינה מתבצעת לחשבון המשחק בלבד<br/>
-        • CASHPHONE לא אחראית לחשבונות שגויים
+        <div style="font-weight:700;color:#ef9f27;margin-bottom:4px;" data-i18n="modal.terms_title">⚠️ תקנון — חובה לקרוא</div>
+        • <span data-i18n="modal.terms_1">לאחר ביצוע הטעינה — לא ניתן לבטל את העסקה</span><br/>
+        • <span data-i18n="modal.terms_2">הלקוח אחראי על הכנסת ID נכון</span><br/>
+        • <span data-i18n="modal.terms_3">הטעינה מתבצעת לחשבון המשחק בלבד</span><br/>
+        • <span data-i18n="modal.terms_4">CASHPHONE לא אחראית לחשבונות שגויים</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
         <input type="checkbox" id="terms-check" style="width:18px;height:18px;cursor:pointer;accent-color:#39e600;"/>
-        <label for="terms-check" style="font-size:12px;color:#555;cursor:pointer;">קראתי ואני מסכים לתקנון</label>
+        <label for="terms-check" data-i18n="modal.terms_check" style="font-size:12px;color:#555;cursor:pointer;">קראתי ואני מסכים לתקנון</label>
       </div>
-      <button class="paybtn" id="pay-btn" onclick="submitOrder()">אשר הזמנה</button>
-      <button class="cancelbtn" onclick="closeOv()">ביטול</button>
+      <button class="paybtn" id="pay-btn" onclick="submitOrder()" data-i18n="modal.confirm_btn">אשר הזמנה</button>
+      <button class="cancelbtn" onclick="closeOv()" data-i18n="common.cancel">ביטול</button>
     </div>
   </div>
 </div>

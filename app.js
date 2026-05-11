@@ -1,5 +1,5 @@
 
-// CashPhone v2.17
+// CashPhone v2.19
 
 
 // === Block #1 ===
@@ -370,6 +370,305 @@ if(!window.fbOK){
 
 // ============ DATA ============
 const CATS={games:'משחקים',mobile:'משחקי מובייל',console:'כרטיסי טעינה',wallet:'ארנקים דיגיטליים',gift:'גיפט קארד'};
+
+// ============================================================
+// ============ 🌐 מערכת תרגום (i18n) ============
+// ============================================================
+// תרגום למסכי לקוח בלבד (חנות).
+// אדמין/משווק נשארים בעברית.
+//
+// שימוש:
+//   t('login.welcome')     - מחזיר טקסט בשפה הנוכחית
+//   setLang('ar')          - מעבר לערבית
+//   setLang('he')          - חזרה לעברית
+//   currentLang()          - מחזיר 'he' או 'ar'
+// ============================================================
+
+var i18n={
+  he:{
+    // נאב
+    'nav.store':'🛒 חנות',
+    'nav.orders':'📋 הזמנות',
+    'nav.credit':'💳 קרדיט',
+    'nav.margin':'💰 רווחים',
+    'nav.logout':'יציאה',
+    // עמוד חנות
+    'store.categories.all':'הכל',
+    'store.categories.games':'משחקים',
+    'store.categories.mobile':'משחקי מובייל',
+    'store.categories.console':'כרטיסי טעינה',
+    'store.categories.wallet':'ארנקים דיגיטליים',
+    'store.categories.gift':'גיפט קארד',
+    'store.from_price':'מ-',
+    'store.no_credit':'אין קרדיט',
+    'store.out_of_stock':'אזל זמנית',
+    'store.out':'אזל',
+    'store.search':'חיפוש מוצר...',
+    'store.no_credit_msg':'אין לך מספיק קרדיט להזמין מוצרים. פנה לאדמין לטעינת קרדיט.',
+    // מודאל הזמנה
+    'modal.pick_amount':'— בחר כמות',
+    'modal.player_id':'הכנס ID שחקן',
+    'modal.note_placeholder':'פלטפורמה, מדינה...',
+    'modal.note_label':'הערה (אופציונלי)',
+    'modal.cost':'עלות (תשלום לי)',
+    'modal.balance_after':'יתרה אחרי',
+    'modal.verify_btn':'בדוק ✓',
+    'modal.confirm_btn':'אשר הזמנה',
+    'modal.terms_title':'⚠️ תקנון — חובה לקרוא',
+    'modal.terms_1':'לאחר ביצוע הטעינה — לא ניתן לבטל את העסקה',
+    'modal.terms_2':'הלקוח אחראי על הכנסת ID נכון',
+    'modal.terms_3':'הטעינה מתבצעת לחשבון המשחק בלבד',
+    'modal.terms_4':'CASHPHONE לא אחראית לחשבונות שגויים',
+    'modal.terms_check':'קראתי ואני מסכים לתקנון',
+    'modal.cost_tooltip_buy':'קניה: ₪',
+    'modal.cost_tooltip_profit':' · רווח: ₪',
+    // הזמנה התקבלה
+    'success.title':'ההזמנה התקבלה!',
+    // הזמנות שלי
+    'orders.title':'ההזמנות שלי',
+    'orders.search':'חיפוש לפי שחקן/מוצר...',
+    'orders.status.new':'⏱ ממתין',
+    'orders.status.done':'✓ בוצע',
+    'orders.empty':'אין הזמנות עדיין',
+    'orders.columns.product':'מוצר',
+    'orders.columns.player':'שחקן',
+    'orders.columns.price':'מחיר',
+    'orders.columns.status':'סטטוס',
+    'orders.columns.time':'זמן',
+    // קרדיט שלי
+    'credit.title':'הקרדיט שלי',
+    'credit.balance':'יתרה נוכחית',
+    'credit.limit':'מסגרת',
+    'credit.unpaid':'חוב פתוח',
+    'credit.history':'תנועות אחרונות',
+    'credit.empty':'אין תנועות עדיין',
+    // רווחים
+    'margin.title':'💰 קביעת רווח אוטומטי',
+    'margin.intro':'בחר רווח קבוע (₪) או באחוזים (%) — והמערכת תחשב את כל המחירים שלך אוטומטית',
+    'margin.scope':'📦 על מה להחיל?',
+    'margin.scope.all':'🌍 כל המוצרים',
+    'margin.scope.prod':'🎯 מוצר ספציפי',
+    'margin.pick_product':'בחר מוצר',
+    'margin.type':'💵 סוג חישוב',
+    'margin.type.pct':'📊 אחוזים %',
+    'margin.type.fixed':'💵 רווח קבוע ₪',
+    'margin.value_pct':'📈 אחוז רווח (%)',
+    'margin.value_fixed':'💵 רווח קבוע (₪)',
+    'margin.shortcuts':'⚡ קיצורי דרך',
+    'margin.preview':'👁️ תצוגה מקדימה',
+    'margin.reset_btn':'🔄 אפס למחירי בסיס',
+    'margin.apply_btn':'✓ החל',
+    'margin.current_title':'📋 המחירים שלך עכשיו',
+    // הודעות / כפתורים כלליים
+    'common.ok':'אישור',
+    'common.cancel':'ביטול',
+    'common.save':'שמור',
+    'common.delete':'מחק',
+    'common.edit':'ערוך',
+    'common.close':'סגור',
+    'common.yes':'כן',
+    'common.no':'לא',
+    'common.confirm':'אישור',
+    'common.error':'שגיאה',
+    'common.success':'הצלחה',
+    'common.warning':'שימו לב',
+    'common.info':'הודעה',
+    'common.loading':'טוען...',
+    'common.balance':'יתרה',
+    'common.credit':'קרדיט',
+    'common.price':'מחיר',
+    'common.amount':'סכום',
+    'common.required':'שדה חובה',
+    'common.optional':'(אופציונלי)',
+    // הזמנה שגויה
+    'order.id_missing':'הכנס ID שחקן קודם',
+    'order.terms_required':'יש לאשר את התקנון לפני ההזמנה',
+    'order.no_balance':'אין לך מספיק קרדיט',
+    // התראות
+    'notif.title':'התראות',
+    'notif.empty':'אין התראות עדיין',
+    'notif.mark_all_read':'סמן הכל כנקרא',
+    'notif.clear':'נקה',
+  },
+  ar:{
+    // نافبار
+    'nav.store':'🛒 المتجر',
+    'nav.orders':'📋 الطلبات',
+    'nav.credit':'💳 الرصيد',
+    'nav.margin':'💰 الأرباح',
+    'nav.logout':'تسجيل خروج',
+    // صفحة المتجر
+    'store.categories.all':'الكل',
+    'store.categories.games':'ألعاب',
+    'store.categories.mobile':'ألعاب الجوال',
+    'store.categories.console':'بطاقات شحن',
+    'store.categories.wallet':'محافظ رقمية',
+    'store.categories.gift':'بطاقات هدايا',
+    'store.from_price':'من ',
+    'store.no_credit':'لا يوجد رصيد',
+    'store.out_of_stock':'نفد مؤقتًا',
+    'store.out':'نفد',
+    'store.search':'بحث عن منتج...',
+    'store.no_credit_msg':'ليس لديك رصيد كافٍ لطلب المنتجات. تواصل مع المسؤول لشحن الرصيد.',
+    // مودال الطلب
+    'modal.pick_amount':' — اختر الكمية',
+    'modal.player_id':'أدخل ID اللاعب',
+    'modal.note_placeholder':'المنصة، الدولة...',
+    'modal.note_label':'ملاحظة (اختياري)',
+    'modal.cost':'التكلفة (الدفع لي)',
+    'modal.balance_after':'الرصيد بعد العملية',
+    'modal.verify_btn':'تحقق ✓',
+    'modal.confirm_btn':'تأكيد الطلب',
+    'modal.terms_title':'⚠️ الشروط — يجب القراءة',
+    'modal.terms_1':'بعد إتمام الشحن — لا يمكن إلغاء العملية',
+    'modal.terms_2':'العميل مسؤول عن إدخال ID صحيح',
+    'modal.terms_3':'الشحن يتم لحساب اللعبة فقط',
+    'modal.terms_4':'CASHPHONE غير مسؤولة عن الحسابات الخاطئة',
+    'modal.terms_check':'قرأت وأوافق على الشروط',
+    'modal.cost_tooltip_buy':'الشراء: ₪',
+    'modal.cost_tooltip_profit':' · الربح: ₪',
+    // الطلب تم
+    'success.title':'تم استلام الطلب!',
+    // طلباتي
+    'orders.title':'طلباتي',
+    'orders.search':'بحث حسب اللاعب/المنتج...',
+    'orders.status.new':'⏱ بالانتظار',
+    'orders.status.done':'✓ تم',
+    'orders.empty':'لا توجد طلبات بعد',
+    'orders.columns.product':'المنتج',
+    'orders.columns.player':'اللاعب',
+    'orders.columns.price':'السعر',
+    'orders.columns.status':'الحالة',
+    'orders.columns.time':'الوقت',
+    // الرصيد
+    'credit.title':'رصيدي',
+    'credit.balance':'الرصيد الحالي',
+    'credit.limit':'الحد الأقصى',
+    'credit.unpaid':'الديون المفتوحة',
+    'credit.history':'العمليات الأخيرة',
+    'credit.empty':'لا توجد عمليات بعد',
+    // الأرباح
+    'margin.title':'💰 تحديد الأرباح تلقائيًا',
+    'margin.intro':'اختر ربحًا ثابتًا (₪) أو بالنسبة المئوية (%) — والنظام سيحسب جميع أسعارك تلقائيًا',
+    'margin.scope':'📦 على ماذا تطبق؟',
+    'margin.scope.all':'🌍 جميع المنتجات',
+    'margin.scope.prod':'🎯 منتج محدد',
+    'margin.pick_product':'اختر منتجًا',
+    'margin.type':'💵 نوع الحساب',
+    'margin.type.pct':'📊 نسبة مئوية %',
+    'margin.type.fixed':'💵 ربح ثابت ₪',
+    'margin.value_pct':'📈 نسبة الربح (%)',
+    'margin.value_fixed':'💵 ربح ثابت (₪)',
+    'margin.shortcuts':'⚡ اختصارات',
+    'margin.preview':'👁️ معاينة',
+    'margin.reset_btn':'🔄 إعادة للأسعار الأساسية',
+    'margin.apply_btn':'✓ تطبيق',
+    'margin.current_title':'📋 أسعارك الحالية',
+    // عام
+    'common.ok':'موافق',
+    'common.cancel':'إلغاء',
+    'common.save':'حفظ',
+    'common.delete':'حذف',
+    'common.edit':'تعديل',
+    'common.close':'إغلاق',
+    'common.yes':'نعم',
+    'common.no':'لا',
+    'common.confirm':'تأكيد',
+    'common.error':'خطأ',
+    'common.success':'نجاح',
+    'common.warning':'تنبيه',
+    'common.info':'معلومة',
+    'common.loading':'جاري التحميل...',
+    'common.balance':'الرصيد',
+    'common.credit':'الرصيد',
+    'common.price':'السعر',
+    'common.amount':'المبلغ',
+    'common.required':'حقل إلزامي',
+    'common.optional':'(اختياري)',
+    // أخطاء الطلب
+    'order.id_missing':'أدخل ID اللاعب أولاً',
+    'order.terms_required':'يجب الموافقة على الشروط قبل الطلب',
+    'order.no_balance':'ليس لديك رصيد كافٍ',
+    // تنبيهات
+    'notif.title':'التنبيهات',
+    'notif.empty':'لا توجد تنبيهات بعد',
+    'notif.mark_all_read':'وضع علامة مقروء للكل',
+    'notif.clear':'مسح',
+  }
+};
+
+// קבלת השפה הנוכחית (ברירת מחדל: עברית)
+function currentLang(){
+  try{return localStorage.getItem('cp_lang')||'he';}catch(e){return 'he';}
+}
+
+// פונקציית תרגום ראשית
+function t(key){
+  var lang=currentLang();
+  var dict=i18n[lang]||i18n.he;
+  return dict[key]||i18n.he[key]||key;
+}
+
+// החלפת שפה - שומר ב-localStorage ומרענן את העמוד
+function setLang(lang){
+  if(lang!=='he'&&lang!=='ar')return;
+  try{localStorage.setItem('cp_lang',lang);}catch(e){}
+  // עדכון מאפייני HTML
+  document.documentElement.setAttribute('lang',lang);
+  document.documentElement.setAttribute('dir','rtl'); // שתי השפות RTL
+  // החל את התרגום על האלמנטים שמסומנים ב-data-i18n
+  applyTranslations();
+  // עדכון כפתור החלפת השפה (להציג את השפה השנייה)
+  updateLangButton();
+  // רענון תצוגות חיות
+  if(typeof renderStoreFront==='function'){
+    var storePage=document.getElementById('page-store');
+    if(storePage&&storePage.classList.contains('on'))try{renderStoreFront();}catch(e){}
+  }
+  if(typeof renderMyOrders==='function'){
+    var ordersPage=document.getElementById('page-my-orders');
+    if(ordersPage&&ordersPage.classList.contains('on'))try{renderMyOrders();}catch(e){}
+  }
+  if(typeof renderMyCredit==='function'){
+    var creditPage=document.getElementById('page-my-credit');
+    if(creditPage&&creditPage.classList.contains('on'))try{renderMyCredit();}catch(e){}
+  }
+  if(typeof renderMarginPage==='function'){
+    var marginPage=document.getElementById('page-margin');
+    if(marginPage&&marginPage.classList.contains('on'))try{renderMarginPage();}catch(e){}
+  }
+  // עדכון tabs בנאב
+  if(typeof buildNav==='function')try{buildNav();}catch(e){}
+}
+
+// Toggle בין השפות
+function toggleLanguage(){
+  setLang(currentLang()==='he'?'ar':'he');
+}
+
+// עדכון הטקסט בכפתור השפה (להציג את השפה שאליה אפשר לעבור)
+function updateLangButton(){
+  var btn=document.getElementById('nav-lang-btn');
+  var txt=document.getElementById('nav-lang-text');
+  if(!btn||!txt)return;
+  if(currentLang()==='he'){
+    txt.textContent='عربي';
+  }else{
+    txt.textContent='עברית';
+  }
+}
+
+// החלת תרגומים על אלמנטים סטטיים בעמוד (data-i18n="key")
+function applyTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key=el.getAttribute('data-i18n');
+    if(key)el.textContent=t(key);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var key=el.getAttribute('data-i18n-placeholder');
+    if(key)el.setAttribute('placeholder',t(key));
+  });
+}
 const TIERS={vip:{l:'VIP',b:'b-vip',pct:-15},good:{l:'טוב',b:'b-ok',pct:-7},normal:{l:'רגיל',b:'b-normal',pct:0},high:{l:'גבוה',b:'b-high',pct:10},max:{l:'מקס',b:'b-high',pct:20},custom:{l:'מותאם',b:'b-normal',pct:0}};
 
 // ========== שער דולר ==========
@@ -1448,11 +1747,18 @@ function idleLogout(){
 function buildNav(){
   const isAdmin=currentUser&&currentUser.role==='admin';
   const isReseller=currentUser&&currentUser.role==='reseller';
+  const isStore=currentUser&&currentUser.role==='store';
   const tabs=document.getElementById('nav-tabs');
   tabs.innerHTML='';
   // הצג כפתור חיפוש גלובלי לאדמין ולמשווק
   var searchBtn=document.getElementById('nav-search-btn');
   if(searchBtn)searchBtn.style.display=(isAdmin||isReseller)?'inline-flex':'none';
+  // 🌐 הצג כפתור שפה רק לחנות (אדמין/משווק עובדים בעברית)
+  var langBtn=document.getElementById('nav-lang-btn');
+  if(langBtn){
+    langBtn.style.display=isStore?'inline-flex':'none';
+    if(isStore)updateLangButton();
+  }
   // עדכון badge של התראות
   if(typeof notify!=='undefined')notify.updateBadge();
   if(isAdmin){
@@ -1473,7 +1779,7 @@ function buildNav(){
     });
   } else {
     // חנות - 3 טאבים
-    [['page-store','🛒 חנות'],['page-my-orders','📋 הזמנות'],['page-margin','💰 רווחים'],['page-my-credit','💳 קרדיט']].forEach(([id,lbl])=>{
+    [['page-store',t('nav.store')],['page-my-orders',t('nav.orders')],['page-margin',t('nav.margin')],['page-my-credit',t('nav.credit')]].forEach(([id,lbl])=>{
       const b=document.createElement('button');
       b.className='ntab'+(id==='page-store'?' on':'');
       b.textContent=lbl;
@@ -2045,6 +2351,54 @@ function shouldShowCostPrice(){
   return currentUser&&currentUser.role==='store';
 }
 
+// ============================================================
+// ============ 📦 סטטוס זמינות חבילה ============
+// ============================================================
+// 3 מצבים:
+//   'available' - זמין (ברירת מחדל)
+//   'out' - אזל זמנית (מוצג מסומן באפור, לא ניתן להזמין)
+//   'hidden' - מוסתר (לא מוצג בכלל ללקוח)
+//
+// עדיפות:
+//   1. override ברמת חנות (s.pkgOverrides[prodId_pkgP])
+//   2. סטטוס ברמת מוצר (pkg.status)
+//   3. ברירת מחדל: 'available'
+function getPkgStatus(s,prod,pkg){
+  if(!prod||!pkg)return 'available';
+  var key=prod.id+'_'+pkg.p;
+  // override ברמת חנות
+  if(s&&s.pkgOverrides&&s.pkgOverrides[key]){
+    return s.pkgOverrides[key];
+  }
+  // סטטוס מערכתי על המוצר
+  if(pkg.status&&['available','out','hidden'].indexOf(pkg.status)>=0){
+    return pkg.status;
+  }
+  return 'available';
+}
+
+// בדיקה: האם החבילה זמינה להזמנה?
+function isPkgOrderable(s,prod,pkg){
+  return getPkgStatus(s,prod,pkg)==='available';
+}
+
+// בדיקה: האם להציג את החבילה ברשימה?
+function isPkgVisible(s,prod,pkg){
+  return getPkgStatus(s,prod,pkg)!=='hidden';
+}
+
+// קבלת רשימת חבילות גלויות למוצר (לסינון בעת רינדור)
+function getVisiblePackages(s,prod){
+  if(!prod||!prod.pkgs)return [];
+  return prod.pkgs.filter(function(pkg){return isPkgVisible(s,prod,pkg);});
+}
+
+// קבלת רשימת חבילות זמינות (לבחירת ברירת המחדל)
+function getOrderablePackages(s,prod){
+  if(!prod||!prod.pkgs)return [];
+  return prod.pkgs.filter(function(pkg){return isPkgOrderable(s,prod,pkg);});
+}
+
 function renderStoreFront(){
   const s=getStore(prevId);
   const tier=TIERS[s.tier]||TIERS.normal;
@@ -2072,38 +2426,58 @@ function renderStoreFront(){
   document.getElementById('nocredit-msg').classList.toggle('on',noC);
   document.getElementById('success-box').classList.remove('on');
   const catRow=document.getElementById('cat-row');
-  catRow.innerHTML=`<button class="cat-btn${activeCat==='all'?' on':''}" onclick="filterCat('all')">הכל</button>`
-    +Object.entries(CATS).map(([k,v])=>`<button class="cat-btn${activeCat===k?' on':''}" onclick="filterCat('${k}')">${v}</button>`).join('');
+  catRow.innerHTML=`<button class="cat-btn${activeCat==='all'?' on':''}" onclick="filterCat('all')">${t('store.categories.all')}</button>`
+    +Object.entries(CATS).map(([k,v])=>{
+      var catLabel=t('store.categories.'+k);
+      // אם אין תרגום, השתמש בשם המקורי
+      if(catLabel==='store.categories.'+k)catLabel=v;
+      return `<button class="cat-btn${activeCat===k?' on':''}" onclick="filterCat('${k}')">${catLabel}</button>`;
+    }).join('');
   const disabledProds = s.disabledProds||[];
   const prods=(activeCat==='all'?PRODS:PRODS.filter(p=>p.cat===activeCat))
-    .filter(p=>!disabledProds.includes(p.id));
+    .filter(p=>!disabledProds.includes(p.id))
+    // 📦 סנן מוצרים שכל החבילות שלהם מוסתרות
+    .filter(p=>{
+      var visible=getVisiblePackages(s,p);
+      return visible.length>0;
+    });
   const showCost=shouldShowCostPrice();
   document.getElementById('prod-grid').innerHTML=prods.map(p=>{
-    const minP=sp(s,p.id,p.pkgs[0].p);
-    const can=s.credit>=minP&&!noC;
+    // השתמש בחבילה הראשונה הזמינה (לא מוסתרת) למחיר ההצגה
+    const visiblePkgs=getVisiblePackages(s,p);
+    const orderablePkgs=getOrderablePackages(s,p);
+    const firstShown=visiblePkgs[0]||p.pkgs[0];
+    const minP=sp(s,p.id,firstShown.p);
+    // האם כל החבילות אזלו? (יש חבילות גלויות אבל לא ניתנות להזמנה)
+    const allOut=orderablePkgs.length===0&&visiblePkgs.length>0;
+    const can=s.credit>=minP&&!noC&&!allOut;
     // מחיר קניה (רק לחנות) — מוסתר מאחורי כפתור $ בפינת הכרטיס
-    // נחשף ב-hover (במחשב) או לחיצה ארוכה (במובייל)
     let costTag='';
-    if(showCost){
-      const minCostP=getCostPrice(s,p,p.pkgs[0]);
+    if(showCost&&!allOut){
+      const minCostP=getCostPrice(s,p,firstShown);
       if(minCostP>0&&minCostP>minP){
         const profit=minCostP-minP;
-        // הצג בפינה העליונה של הכרטיס - לא בולט, רק החנות תדע ללחוץ
         costTag=`<div style="position:absolute;top:6px;left:6px;z-index:5;"><span class="cost-trigger" onclick="event.stopPropagation();" onmousedown="event.stopPropagation()" oncontextmenu="event.stopPropagation();return false;">$<span class="cost-tooltip">קניה: ₪${minP}${profit>0?' · רווח: ₪'+profit:''}</span></span></div>`;
       }
     }
-    return`<div class="pcard${!can?' dis':''}" onclick="${can?'openModal('+p.id+')':''}" style="cursor:${can?'pointer':'not-allowed'};position:relative;">
+    // תווית "אזל" אם כל החבילות אזלו
+    let outBadge='';
+    if(allOut){
+      outBadge=`<div style="position:absolute;top:6px;right:6px;z-index:5;background:#5a2a2a;color:#ffb3b3;border:1px solid #8a3a3a;padding:3px 8px;border-radius:8px;font-size:10px;font-weight:800;">⚠️ ${t('store.out')}</div>`;
+    }
+    return`<div class="pcard${!can?' dis':''}" onclick="${can?'openModal('+p.id+')':''}" style="cursor:${can?'pointer':'not-allowed'};position:relative;${allOut?'opacity:0.6;':''}">
       ${costTag}
+      ${outBadge}
       <div class="pimg" style="background:${p.color||'#475467'};position:relative;">
         ${p.icon?`<img src="${p.icon}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:6px;" onerror="this.style.display='none'"/>`:``}
         <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:8px 10px 6px;">
           <div style="color:#fff;font-size:13px;font-weight:700;">${p.name}</div>
-          <div style="color:#39e600;font-size:13px;font-weight:800;">מ-₪${minP}</div>
+          <div style="color:${allOut?'#888':'#39e600'};font-size:13px;font-weight:800;">${allOut?t('store.out_of_stock'):t('store.from_price')+'₪'+minP}</div>
         </div>
       </div>
       <div class="pbody" style="padding:6px 10px;text-align:center;">
         <div style="font-size:11px;color:#999;">${p.cur}</div>
-        ${!can?'<div style="font-size:11px;color:#e24b4a;font-weight:600;">אין קרדיט</div>':''}
+        ${!can&&!allOut?'<div style="font-size:11px;color:#e24b4a;font-weight:600;">'+t('store.no_credit')+'</div>':''}
       </div>
     </div>`;
   }).join('');
@@ -2114,10 +2488,13 @@ function filterCat(cat){activeCat=cat;renderStoreFront();}
 function openModal(prodId){
   const s=getStore(prevId);
   selProd=PRODS.find(p=>p.id===prodId);
-  selPkgData=selProd.pkgs.find(pkg=>sp(s,selProd.id,pkg.p)<=s.credit)||null;
+  // ברירת מחדל: חבילה זמינה (לא אזלה ולא מוסתרת) שאפשר להרשות לה כספית
+  selPkgData=selProd.pkgs.find(pkg=>
+    isPkgOrderable(s,selProd,pkg)&&sp(s,selProd.id,pkg.p)<=s.credit
+  )||null;
   if(!selPkgData)return;
   document.getElementById('m-title').textContent=selProd.name;
-  document.getElementById('m-sub').textContent=selProd.cur+' — בחר כמות';
+  document.getElementById('m-sub').textContent=selProd.cur+t('modal.pick_amount');
   document.getElementById('m-ulbl').textContent=selProd.ul||'שם משתמש / ID';
   document.getElementById('m-user').value='';
   document.getElementById('m-note').value='';
@@ -2125,6 +2502,8 @@ function openModal(prodId){
   const tc=document.getElementById('terms-check');
   if(tc)tc.checked=false;
   renderMPkgs();
+  // 🌐 רענן תרגומים על המודאל אחרי שהוא נפתח
+  applyTranslations();
   document.getElementById('overlay').classList.add('on');
   document.getElementById('success-box').classList.remove('on');
   // השהיית sync כדי שהיתרה לא תקפוץ באמצע ההזמנה
@@ -2145,9 +2524,15 @@ function openModal(prodId){
 function renderMPkgs(){
   const s=getStore(prevId);
   const showCost=shouldShowCostPrice();
-  document.getElementById('m-pkgs').innerHTML=selProd.pkgs.map((pkg,i)=>{
+  // סנן רק חבילות שלא מוסתרות
+  const visiblePkgs=selProd.pkgs.map((pkg,origIdx)=>({pkg:pkg,origIdx:origIdx}))
+    .filter(item=>isPkgVisible(s,selProd,item.pkg));
+  document.getElementById('m-pkgs').innerHTML=visiblePkgs.map(({pkg,origIdx})=>{
     const dp=sp(s,selProd.id,pkg.p);
-    const can=dp<=s.credit;
+    const status=getPkgStatus(s,selProd,pkg);
+    const isOut=status==='out';
+    const canPay=dp<=s.credit;
+    const can=canPay&&!isOut;
     const isSel=selPkgData&&selPkgData.p===pkg.p;
     // אייקון אזהרה אם יש warn, או הערה אם יש note
     let extra='';
@@ -2158,19 +2543,27 @@ function renderMPkgs(){
     }
     // מחיר קניה (רק לחנות) - מוסתר מאחורי כפתור 👁 — נחשף ב-hover/long-press
     let costBadge='';
-    if(showCost){
+    if(showCost&&!isOut){
       const costP=getCostPrice(s,selProd,pkg);
       const profit=costP-dp;
-      // costP = המחיר שהחנות גובה מהלקוח (יותר גבוה)
-      // dp = המחיר שהחנות משלמת לי (יותר נמוך — מחיר הקניה שלה)
-      // נציג רק אם יש משמעות (יש רווח חיובי)
       if(costP>0&&dp>0){
         costBadge='<span class="cost-trigger" onmousedown="event.stopPropagation()" oncontextmenu="event.stopPropagation();return false;">$<span class="cost-tooltip">קניה: ₪'+dp+(profit>0?' · רווח: ₪'+profit:'')+'</span></span>';
       }
     }
-    return`<div class="pkg${isSel?' sel':''}${!can?' no':''}" onclick="${can?'pickPkg(this,'+i+')':''}">
+    // אם החבילה אזלה - הצג תווית במקום מחיר
+    let priceDisplay;
+    if(isOut){
+      priceDisplay='<span style="display:inline-flex;align-items:center;gap:4px;background:#3a2828;color:#e88;border:1px solid #5a2a2a;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;">⚠️ '+t('store.out_of_stock')+'</span>';
+    }else{
+      priceDisplay=costBadge+'<span>₪'+dp+'</span>';
+    }
+    const classes=['pkg'];
+    if(isSel)classes.push('sel');
+    if(!can)classes.push('no');
+    if(isOut)classes.push('pkg-out');
+    return`<div class="${classes.join(' ')}" ${can?'onclick="pickPkg(this,'+origIdx+')"':''} ${isOut?'style="opacity:0.55;cursor:not-allowed;background:#2a1a1a;"':''}>
       <span class="pkg-a">${pkg.a}${extra}</span>
-      <span class="pkg-p" style="display:flex;align-items:center;gap:4px;">${costBadge}<span>₪${dp}</span></span>
+      <span class="pkg-p" style="display:flex;align-items:center;gap:4px;">${priceDisplay}</span>
     </div>`;
   }).join('');
   updMTotal();
@@ -2464,6 +2857,40 @@ function onCustomerPrice(prodId,baseP,val){
   // (אין צורך בריענון - הקלט עצמו עודכן)
 }
 
+// 📦 עדכון סטטוס זמינות (override ברמת חנות)
+// val: '' (ברירת מחדל / נקה override) | 'available' | 'out' | 'hidden'
+function onPkgStatusChange(prodId,baseP,val){
+  var st=getPStore();
+  if(!st)return;
+  if(!st.pkgOverrides)st.pkgOverrides={};
+  var k=prodId+'_'+baseP;
+  var oldVal=st.pkgOverrides[k]||'';
+  if(val===''||!val){
+    delete st.pkgOverrides[k];
+  }else if(['available','out','hidden'].indexOf(val)>=0){
+    st.pkgOverrides[k]=val;
+  }
+  // שמירה מיידית
+  saveData();
+  // לוג ביקורת
+  try{
+    var prodName=(PRODS.find(function(p){return p.id===prodId;})||{}).name||'';
+    logAudit('pkg-status-change','שינוי סטטוס חבילה',{
+      storeId:st.id,storeName:st.name,
+      product:prodName,pkg:baseP,
+      from:oldVal||'(ברירת מחדל)',
+      to:val||'(ברירת מחדל)'
+    });
+  }catch(e){}
+  // רענון התצוגה הצבעונית של הסטטוס
+  setTimeout(function(){renderPTable();},10);
+  // אם החנות צופה בעמוד החנות שלה - רענן (Live)
+  if(typeof renderStoreFront==='function'){
+    var storePage=document.getElementById('page-store');
+    if(storePage&&storePage.classList.contains('on'))try{renderStoreFront();}catch(e){}
+  }
+}
+
 function countPC(){
   const el=document.getElementById('pchanges');
   if(!el)return;
@@ -2494,12 +2921,13 @@ function renderPTable(){
       prods.forEach(p=>{
         html+=`<div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:700;margin-bottom:4px;">${p.icon?(p.icon.startsWith('http')||p.icon.startsWith('data:')?'<img src="'+p.icon+'" style="width:18px;height:18px;vertical-align:middle;border-radius:3px;margin-left:5px;"/>':p.icon):''} ${p.name}</div>
           <table class="ptable"><thead><tr>
-            <th style="width:24%">כמות</th>
-            <th style="width:14%;color:#ef9f27;">עלות $ שלי</th>
-            <th style="width:11%;color:#888;">עלות ₪ (אוטו')</th>
-            <th style="width:17%">מחיר חנות תשלם לי ₪</th>
-            <th style="width:17%;color:#86efac;">מחיר חנות גובה מלקוח ₪</th>
-            <th style="width:17%">רווח שלי</th>
+            <th style="width:20%">כמות</th>
+            <th style="width:12%;color:#ef9f27;">עלות $ שלי</th>
+            <th style="width:9%;color:#888;">עלות ₪</th>
+            <th style="width:14%">חנות משלמת ₪</th>
+            <th style="width:14%;color:#86efac;">חנות גובה ₪</th>
+            <th style="width:14%">רווח שלי</th>
+            <th style="width:13%;color:#7cb3ff;">סטטוס</th>
           </tr></thead><tbody>`;
         p.pkgs.forEach(pkg=>{
           const k=`${p.id}_${pkg.p}`;
@@ -2509,16 +2937,30 @@ function renderPTable(){
           const profit=cur-ilsCost;
           const profitColor=profit>0?'#39e600':profit<0?'#e24b4a':'#888';
           const profitPct=ilsCost>0?Math.round((profit/ilsCost)*100):0;
-          // מחיר מומלץ ללקוח של החנות (cost prices)
           const customerPrice=(st.costPrices&&st.costPrices[k]!=null)?st.costPrices[k]:'';
-          const defaultCustomerPrice=getBasePrice(p,pkg); // ברירת מחדל אם השדה ריק
-          html+=`<tr${pkg.region&&pkg.region!=='global'?' style="background:rgba(239,159,39,0.04);"':''}>
+          const defaultCustomerPrice=getBasePrice(p,pkg);
+          // 📦 סטטוס: בדוק גם override של החנות וגם סטטוס מערכת
+          const storeStatus=(st.pkgOverrides&&st.pkgOverrides[k])||'';
+          const sysStatus=pkg.status||'available';
+          const effectiveStatus=storeStatus||sysStatus;
+          const isOut=effectiveStatus==='out';
+          const isHidden=effectiveStatus==='hidden';
+          const rowStyle=isOut?'background:rgba(226,75,74,0.07);':isHidden?'background:rgba(100,100,100,0.07);':(pkg.region&&pkg.region!=='global'?'background:rgba(239,159,39,0.04);':'');
+          html+=`<tr style="${rowStyle}">
             <td style="font-size:12px;">${pkg.a}${pkg.warn?' <span title="'+pkg.warn.replace(/"/g,'&quot;')+'" style="color:#ef9f27;cursor:help;">⚠️</span>':pkg.note?' <span title="'+pkg.note.replace(/"/g,'&quot;')+'" style="color:#39e600;cursor:help;">💡</span>':''}</td>
             <td><input class="pinp" type="number" step="0.01" min="0" placeholder="$" value="${dollarCosts[k]!=null?usdCost:''}" oninput="onUSD(${p.id},${pkg.p},this.value)" style="border-color:#5a3a00;background:#1a1100;color:#ef9f27;"/></td>
             <td id="ic_${p.id}_${pkg.p}" style="color:#888;font-size:13px;">₪${ilsCost}</td>
             <td><input class="pinp" type="number" min="1" value="${cur}" oninput="onPI(${p.id},${pkg.p},this.value)"/></td>
             <td><input class="pinp" type="number" min="0" placeholder="${defaultCustomerPrice}" value="${customerPrice}" oninput="onCustomerPrice(${p.id},${pkg.p},this.value)" style="border-color:#1a3a1a;background:#0a1a0a;color:#86efac;"/></td>
             <td id="pf_${p.id}_${pkg.p}" style="color:${profitColor};font-size:12px;font-weight:700;">${profit>=0?'+':''}₪${profit}<span style="font-size:10px;opacity:.7;"> (${profit>=0?'+':''}${profitPct}%)</span></td>
+            <td>
+              <select class="pinp" onchange="onPkgStatusChange(${p.id},${pkg.p},this.value)" style="font-size:11px;padding:3px;background:${isOut?'#3a1a1a':isHidden?'#2a2a2a':'#0a1a0a'};color:${isOut?'#ff8a8a':isHidden?'#aaa':'#86efac'};">
+                <option value="" ${storeStatus===''?'selected':''}>${sysStatus==='out'?'🟡 אזל (מערכת)':sysStatus==='hidden'?'⚫ מוסתר (מערכת)':'🟢 זמין (ברירת מחדל)'}</option>
+                <option value="available" ${storeStatus==='available'?'selected':''}>🟢 זמין (override)</option>
+                <option value="out" ${storeStatus==='out'?'selected':''}>🟡 אזל (override)</option>
+                <option value="hidden" ${storeStatus==='hidden'?'selected':''}>⚫ הסתר (override)</option>
+              </select>
+            </td>
           </tr>`;
         });
         html+='</tbody></table></div>';
@@ -7312,6 +7754,13 @@ function init(){
     }
   }catch(e){console.warn('Auto-login error:',e);}
 }
+
+// 🌐 החל את השפה השמורה בעת טעינה ראשונית
+try{
+  document.documentElement.setAttribute('lang',currentLang());
+  document.documentElement.setAttribute('dir','rtl');
+  applyTranslations();
+}catch(e){}
 
 init();
 
