@@ -10163,7 +10163,9 @@ async function clearAuditLog(){
 
 // === Block #4 ===
 (function(){
-  // ===== Service Worker — גל מזרחי המלצה #1: Offline support =====
+  // רישום Service Worker — מבוטל זמנית כדי למנוע מטמון שמדרס נתונים חדשים
+  // אם תרצה להפעיל שוב — הסר את התגובה
+  /*
   if('serviceWorker' in navigator){
     window.addEventListener('load', function(){
       navigator.serviceWorker.register('service-worker.js')
@@ -10171,7 +10173,7 @@ async function clearAuditLog(){
           console.log('✅ Service Worker registered:', reg.scope);
           reg.addEventListener('updatefound', function(){
             const newWorker = reg.installing;
-            if(!newWorker) return;
+            if(!newWorker)return;
             newWorker.addEventListener('statechange', function(){
               if(newWorker.state==='installed' && navigator.serviceWorker.controller){
                 showUpdateBanner();
@@ -10183,6 +10185,26 @@ async function clearAuditLog(){
           console.warn('Service Worker registration failed:', err);
         });
     });
+  }
+  */
+
+  // הסרת Service Worker קיים אם יש (כדי לסיים את המטמון של הגרסה הישנה)
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(function(registrations){
+      for(let registration of registrations){
+        registration.unregister().then(function(){
+          console.log('🗑️ Service Worker ישן הוסר');
+        });
+      }
+    }).catch(function(e){console.warn('SW unregister error:',e);});
+    // ניקוי מטמון של Service Worker
+    if(window.caches){
+      caches.keys().then(function(names){
+        for(let name of names){
+          caches.delete(name);
+        }
+      }).catch(function(e){});
+    }
   }
 
   // ===== באנר התקנה =====
@@ -10199,13 +10221,14 @@ async function clearAuditLog(){
   window.addEventListener('beforeinstallprompt', function(e){
     e.preventDefault();
     deferredPrompt = e;
-    // גל מזרחי המלצה #2: לא מציגים מיד — מחכים לפעולה מוצלחת ראשונה
-    // tryShowInstallBanner() נקרא מ-onOrderSuccess() בלבד
+    tryShowInstallBanner();
   });
 
   function tryShowInstallBanner(){
     if(!deferredPrompt || installBannerShown) return;
+    // לא מציגים לאדמין/חנות/משווק - רק ללקוחות שגולשים בחנות
     if(isStaffUser()) return;
+    // מציגים את הבאנר רק אם המשתמש לא דחה אותו ב-7 ימים האחרונים
     const dismissed = localStorage.getItem('cp_install_dismissed');
     if(dismissed){
       const daysAgo = (Date.now()-parseInt(dismissed))/86400000;
@@ -10214,10 +10237,12 @@ async function clearAuditLog(){
     showInstallBanner();
   }
 
-  // נקרא אחרי הזמנה מוצלחת — הרגע הנכון להציע התקנה
-  window.triggerInstallPromptAfterSuccess = function(){
-    setTimeout(tryShowInstallBanner, 1500);
-  };
+  // אם משתמש צוות יוצא (logout) — ננסה להציג שוב ללקוח
+  document.addEventListener('click', function(e){
+    if(deferredPrompt && !installBannerShown && !isStaffUser()){
+      setTimeout(tryShowInstallBanner, 500);
+    }
+  });
 
   function showInstallBanner(){
     if(installBannerShown) return;

@@ -36,172 +36,24 @@
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<!-- ============ Code Splitting — רון ביטון המלצה ============ -->
-<!-- Core: תמיד נטען (auth, firebase, sync) -->
-<script src="app-core.js?v=2.9" defer></script>
-<!-- PWA + debug: קטן, תמיד נטען -->
-<script src="app-pwa.js?v=2.9" defer></script>
-<!-- app-store.js, app-admin.js, app-info.js — נטענים lazy לפי צורך -->
+<script src="app.js?v=2.19" defer></script>
 
 <link rel="stylesheet" href="styles.css?v=2.19"/>
-
-<!-- ============================================================ -->
-<!-- ===== SEO — נועה שרון המלצות ===== -->
-<!-- ============================================================ -->
-
-<!-- hreflang — עברית + ערבית (המלצה #2) -->
-<link rel="alternate" hreflang="he" href="https://cashphone.co.il/"/>
-<link rel="alternate" hreflang="ar" href="https://cashphone.co.il/?lang=ar"/>
-<link rel="alternate" hreflang="x-default" href="https://cashphone.co.il/"/>
-
-<!-- Canonical -->
-<link rel="canonical" href="https://cashphone.co.il/"/>
-
-<!-- meta description משופרת -->
-<meta name="description" content="טעינת מטבעות למשחקים בישראל — PUBG UC, Robux, V-Bucks, Diamonds ועוד. גיפט קארדים, ארנקים דיגיטליים. מהיר, אמין, זול. شحن عملات الألعاب في إسرائيل."/>
-<meta name="keywords" content="טעינת מטבעות, PUBG UC, Robux, V-Bucks, Free Fire Diamonds, גיפט קארד, Steam, Google Play, PlayStation, Xbox, CashPhone"/>
-<meta name="robots" content="index, follow"/>
-
-<!-- Open Graph משופר -->
-<meta property="og:locale" content="he_IL"/>
-<meta property="og:locale:alternate" content="ar_IL"/>
-<meta property="og:site_name" content="CashPhone"/>
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="CashPhone — טעינות מטבעות ומשחקים"/>
-<meta name="twitter:description" content="PUBG UC, Robux, V-Bucks, Diamonds — מהיר ואמין"/>
-
-<!-- ===== Schema Markup (המלצה #1) ===== -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://cashphone.co.il/#organization",
-      "name": "CashPhone",
-      "url": "https://cashphone.co.il",
-      "logo": "https://cashphone.co.il/icon.png",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+972-55-5525525",
-        "contactType": "customer service",
-        "availableLanguage": ["Hebrew", "Arabic"]
-      },
-      "sameAs": []
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://cashphone.co.il/#website",
-      "url": "https://cashphone.co.il",
-      "name": "CashPhone",
-      "publisher": {"@id": "https://cashphone.co.il/#organization"},
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://cashphone.co.il/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    },
-    {
-      "@type": "ItemList",
-      "name": "מוצרי CashPhone — טעינות מטבעות ומשחקים",
-      "url": "https://cashphone.co.il",
-      "itemListElement": [
-        {"@type":"ListItem","position":1,"name":"PUBG Mobile UC","url":"https://cashphone.co.il/pubg-uc"},
-        {"@type":"ListItem","position":2,"name":"Roblox Robux","url":"https://cashphone.co.il/roblox-robux"},
-        {"@type":"ListItem","position":3,"name":"Fortnite V-Bucks","url":"https://cashphone.co.il/fortnite-vbucks"},
-        {"@type":"ListItem","position":4,"name":"Free Fire Diamonds","url":"https://cashphone.co.il/free-fire-diamonds"},
-        {"@type":"ListItem","position":5,"name":"PlayStation PSN","url":"https://cashphone.co.il/psn"},
-        {"@type":"ListItem","position":6,"name":"Xbox Gift Card","url":"https://cashphone.co.il/xbox"},
-        {"@type":"ListItem","position":7,"name":"Steam Wallet","url":"https://cashphone.co.il/steam"},
-        {"@type":"ListItem","position":8,"name":"Google Play","url":"https://cashphone.co.il/google-play"},
-        {"@type":"ListItem","position":9,"name":"Apple iTunes","url":"https://cashphone.co.il/apple-itunes"},
-        {"@type":"ListItem","position":10,"name":"Mobile Legends Diamonds","url":"https://cashphone.co.il/mobile-legends"}
-      ]
-    }
-  ]
-}
-</script>
-
-<!-- ===== Product Schemas — Top 5 מוצרים (המלצה #1) ===== -->
-<script type="application/ld+json">
-[
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "PUBG Mobile UC",
-    "description": "טעינת UC למשחק PUBG Mobile — חבילות מ-60 UC עד 72,900 UC. גלובל ו-Turkey Region.",
-    "image": "https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/pubg.png",
-    "brand": {"@type":"Brand","name":"PUBG Mobile"},
-    "url": "https://cashphone.co.il/pubg-uc",
-    "offers": {
-      "@type": "AggregateOffer",
-      "priceCurrency": "ILS",
-      "lowPrice": "4",
-      "highPrice": "2720",
-      "offerCount": "28",
-      "availability": "https://schema.org/InStock",
-      "seller": {"@type":"Organization","name":"CashPhone"}
-    }
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "Roblox Robux",
-    "description": "טעינת Robux לחשבון Roblox שלך — משלוח מיידי.",
-    "image": "https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/roblox.png",
-    "brand": {"@type":"Brand","name":"Roblox"},
-    "url": "https://cashphone.co.il/roblox-robux",
-    "offers": {
-      "@type": "AggregateOffer",
-      "priceCurrency": "ILS",
-      "lowPrice": "7",
-      "offerCount": "5",
-      "availability": "https://schema.org/InStock",
-      "seller": {"@type":"Organization","name":"CashPhone"}
-    }
-  },
-  {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "Free Fire Diamonds",
-    "description": "שחרג Diamonds למשחק Free Fire — כל החבילות במחיר הכי טוב.",
-    "image": "https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/freefire.png",
-    "brand": {"@type":"Brand","name":"Garena Free Fire"},
-    "url": "https://cashphone.co.il/free-fire-diamonds",
-    "offers": {
-      "@type": "AggregateOffer",
-      "priceCurrency": "ILS",
-      "lowPrice": "6",
-      "offerCount": "15",
-      "availability": "https://schema.org/InStock",
-      "seller": {"@type":"Organization","name":"CashPhone"}
-    }
-  }
-]
-</script>
-
 </head>
 <body>
-<!-- skip-to-content — נגישות מקלדת (WCAG 2.4.1) -->
-<a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
 
 <!-- 🔔 מיכל לטוסטים של התראות -->
-<!-- Toast: aria-live — עמית לוי WCAG 4.1.3 -->
-<div id="cpn-toast-stack" class="cpn-toast-stack" role="status" aria-live="polite" aria-atomic="false"></div>
+<div id="cpn-toast-stack" class="cpn-toast-stack"></div>
 
 <!-- LOGIN -->
 <div class="login-screen" id="login-screen">
   <div class="login-box">
     <div class="login-logo">CASH<span>PHONE</span></div>
     <div class="login-sub">פתרון למזומן — כניסה למערכת</div>
-    <div class="login-err" id="login-err" role="alert" aria-live="assertive">שם משתמש או סיסמה שגויים</div>
-    <label for="li-user" class="login-lbl">שם משתמש</label>
-    <input class="login-inp" id="li-user" type="text" placeholder="שם משתמש" aria-label="שם משתמש" aria-required="true" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="username" autocorrect="off" autocapitalize="off"/>
-    <label for="li-pass" class="login-lbl">סיסמה</label>
-    <input class="login-inp" id="li-pass" type="password" placeholder="סיסמה" aria-label="סיסמה" aria-required="true" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="current-password"/>
-    <button class="login-btn" onclick="doLogin()" aria-label="כניסה למערכת">כניסה</button>
+    <div class="login-err" id="login-err">שם משתמש או סיסמה שגויים</div>
+    <input class="login-inp" id="li-user" type="text" placeholder="שם משתמש" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="off" autocorrect="off" autocapitalize="off"/>
+    <input class="login-inp" id="li-pass" type="password" placeholder="סיסמה" onkeydown="if(event.key==='Enter')doLogin()" autocomplete="new-password"/>
+    <button class="login-btn" onclick="doLogin()">כניסה</button>
     <!-- קישורים לאודות ותקנון -->
     <div style="margin-top:18px;padding-top:14px;border-top:1px solid #2a2a2a;display:flex;justify-content:center;gap:14px;font-size:12px;">
       <button onclick="showInfoPage('about')" style="background:none;border:none;color:#888;cursor:pointer;font-family:inherit;font-size:12px;text-decoration:underline;padding:4px;">ℹ️ אודות</button>
@@ -214,7 +66,7 @@
 </div>
 
 <!-- NAV -->
-<div class="nav" id="main-nav" role="navigation" aria-label="ניווט ראשי" style="display:none;">
+<div class="nav" id="main-nav" style="display:none;">
   <div class="logo">CASH<span>PHONE</span><sup style="font-size:9px;color:#666;font-weight:400;margin-right:4px;">v2.9</sup></div>
   <div class="nav-right">
     <div id="nav-tabs" style="display:flex;gap:4px;"></div>
@@ -238,15 +90,14 @@
 </div>
 
 <!-- ADMIN -->
-<main id="main-content">
 <div class="page" id="page-admin">
   <div class="toast" id="t-admin"></div>
 
   <!-- 🚀 כפתור צף "הזמנה ידנית מהירה" -->
-  <button id="quick-order-fab" onclick="openQuickOrder()" title="הזמנה ידנית מהירה" aria-label="פתח טופס הזמנה ידנית מהירה" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;font-size:28px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(57,230,0,0.4);z-index:90;font-family:inherit;display:none;" aria-hidden="true">➕</button>
+  <button id="quick-order-fab" onclick="openQuickOrder()" title="הזמנה ידנית מהירה" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;font-size:28px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(57,230,0,0.4);z-index:90;font-family:inherit;display:none;">➕</button>
 
   <!-- 💰 כפתור צף "הגדר רווח מהיר" - לחנויות ולמשווקים -->
-  <button id="margin-fab" onclick="openMarginQuick()" title="הגדר רווח מהיר" aria-label="הגדר רווח מהיר לכל המוצרים" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(22,163,74,0.45);z-index:90;font-family:inherit;display:none;" aria-hidden="true">💰</button>
+  <button id="margin-fab" onclick="openMarginQuick()" title="הגדר רווח מהיר" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(22,163,74,0.45);z-index:90;font-family:inherit;display:none;">💰</button>
 
   <div class="atabs">
     <button class="atab on" onclick="aTab(this,'sec-dash')">📊 דשבורד</button>
@@ -431,7 +282,7 @@
           <span>↗</span><span>פתח בלשונית</span>
         </a>
       </div>
-      <img id="lb-img" src="" alt="" style="max-width:90vw;max-height:85vh;border-radius:8px;box-shadow:0 0 50px rgba(57,230,0,0.15);" onclick="event.stopPropagation()"/ loading="lazy">
+      <img id="lb-img" src="" alt="" style="max-width:90vw;max-height:85vh;border-radius:8px;box-shadow:0 0 50px rgba(57,230,0,0.15);" onclick="event.stopPropagation()"/>
       <div id="lb-caption" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#ccc;font-size:14px;background:rgba(0,0,0,0.6);padding:8px 16px;border-radius:8px;"></div>
     </div>
 
@@ -1449,23 +1300,23 @@
 </div>
 
 <!-- 🚀 מודל הזמנה ידנית מהירה -->
-<div id="quick-order-modal" role="dialog" aria-modal="true" aria-labelledby="qo-modal-title" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+<div id="quick-order-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
   <div style="background:#3a4556;border:1px solid #5a6478;border-radius:14px;max-width:480px;width:100%;direction:rtl;font-family:inherit;margin:20px auto;">
     <!-- כותרת -->
     <div style="padding:14px 18px;border-bottom:1px solid #475467;display:flex;justify-content:space-between;align-items:center;">
       <div>
-        <div id="qo-modal-title" style="font-size:17px;font-weight:700;color:#fff;">➕ הזמנה ידנית מהירה</div>
+        <div style="font-size:17px;font-weight:700;color:#fff;">➕ הזמנה ידנית מהירה</div>
         <div style="font-size:11px;color:#888;margin-top:2px;">להזמנות שמגיעות בוואטסאפ / טלפון</div>
       </div>
-      <button onclick="closeQuickOrder()" aria-label="סגור חלון הזמנה ידנית" style="background:none;border:none;color:#888;font-size:26px;cursor:pointer;padding:0 4px;line-height:1;">×</button>
+      <button onclick="closeQuickOrder()" style="background:none;border:none;color:#888;font-size:26px;cursor:pointer;padding:0 4px;line-height:1;">×</button>
     </div>
 
     <!-- תוכן -->
     <div style="padding:16px;">
       <!-- שלב 1: בחירת חנות -->
       <div style="margin-bottom:14px;">
-        <label for="qo-store" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">1️⃣ חנות</label>
-        <select id="qo-store" onchange="qoOnStoreChange()" aria-required="true" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">1️⃣ חנות</label>
+        <select id="qo-store" onchange="qoOnStoreChange()" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
           <option value="">— בחר חנות —</option>
         </select>
         <div id="qo-store-info" style="font-size:11px;color:#888;margin-top:6px;display:none;"></div>
@@ -1473,29 +1324,29 @@
 
       <!-- שלב 2: בחירת מוצר -->
       <div style="margin-bottom:14px;">
-        <label for="qo-product" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">2️⃣ מוצר</label>
-        <select id="qo-product" onchange="qoOnProductChange()" disabled aria-required="true" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">2️⃣ מוצר</label>
+        <select id="qo-product" onchange="qoOnProductChange()" disabled style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
           <option value="">— בחר חנות קודם —</option>
         </select>
       </div>
 
       <!-- שלב 3: בחירת חבילה -->
       <div style="margin-bottom:14px;">
-        <label for="qo-package" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">3️⃣ חבילה</label>
-        <select id="qo-package" onchange="qoOnPackageChange()" disabled aria-required="true" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">3️⃣ חבילה</label>
+        <select id="qo-package" onchange="qoOnPackageChange()" disabled style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
           <option value="">— בחר מוצר קודם —</option>
         </select>
       </div>
 
       <!-- שלב 4: שם שחקן -->
       <div style="margin-bottom:14px;">
-        <label for="qo-user" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">4️⃣ <span id="qo-user-label">שם משתמש / ID</span></label>
-        <input id="qo-user" type="text" placeholder="הקלד..." aria-required="true" aria-labelledby="qo-user-label" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;"/>
+        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">4️⃣ <span id="qo-user-label">שם משתמש / ID</span></label>
+        <input id="qo-user" type="text" placeholder="הקלד..." style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;"/>
       </div>
 
       <!-- הערה (אופציונלי) -->
       <div style="margin-bottom:14px;">
-        <label for="qo-note" style="display:block;font-size:12px;color:#888;margin-bottom:6px;">הערה (לא חובה)</label>
+        <label style="display:block;font-size:12px;color:#888;margin-bottom:6px;">הערה (לא חובה)</label>
         <input id="qo-note" type="text" placeholder="למשל: 'לפי וואטסאפ ב-10:30'" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;font-family:inherit;"/>
       </div>
 
@@ -1520,7 +1371,7 @@
       </div>
 
       <!-- אזהרות -->
-      <div id="qo-warning" role="alert" aria-live="assertive" style="display:none;background:#3a2828;border:1px solid #5a2020;border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:#ef9f27;"></div>
+      <div id="qo-warning" style="display:none;background:#3a2828;border:1px solid #5a2020;border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:#ef9f27;"></div>
 
       <!-- כפתורים -->
       <div style="display:flex;gap:8px;">
@@ -1531,18 +1382,18 @@
   </div>
 </div>
 
-<!-- BOTTOM NAV mobile store — עמית לוי: role + aria-label -->
-<nav class="bottom-nav" id="bottom-nav" role="navigation" aria-label="ניווט ראשי — חנות">
-  <button class="bnav-btn on" id="bn-store" onclick="bnavGo('store')" aria-label="חנות" aria-current="page">
-    <span class="bnav-icon" aria-hidden="true">🏪</span><span>חנות</span>
+<!-- BOTTOM NAV mobile store -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="bnav-btn on" id="bn-store" onclick="bnavGo('store')">
+    <span class="bnav-icon">🏪</span><span>חנות</span>
   </button>
-  <button class="bnav-btn" id="bn-orders" onclick="bnavGo('orders')" aria-label="הזמנות שלי">
-    <span class="bnav-icon" aria-hidden="true">📋</span><span>הזמנות</span>
+  <button class="bnav-btn" id="bn-orders" onclick="bnavGo('orders')">
+    <span class="bnav-icon">📋</span><span>הזמנות</span>
   </button>
-  <button class="bnav-btn" id="bn-log" onclick="bnavGo('log')" aria-label="קרדיט ויתרה">
-    <span class="bnav-icon" aria-hidden="true">💳</span><span>קרדיט</span>
+  <button class="bnav-btn" id="bn-log" onclick="bnavGo('log')">
+    <span class="bnav-icon">💳</span><span>קרדיט</span>
   </button>
-</nav>
+</div>
 
 
 <!-- ===== נגישות ===== -->
@@ -1561,7 +1412,7 @@
   </div>
   <div id="debug-log" style="white-space:pre-wrap;word-break:break-word;line-height:1.4;"></div>
 </div>
-<button id="debug-toggle" onclick="dbgOpen()" aria-label="פתח לוח אבחון" style="position:fixed;bottom:8px;left:8px;background:#39e600;color:#000;border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;z-index:99998;box-shadow:0 2px 8px rgba(0,0,0,0.5);">🐛</button>
+<button id="debug-toggle" onclick="dbgOpen()" style="position:fixed;bottom:8px;left:8px;background:#39e600;color:#000;border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;z-index:99998;box-shadow:0 2px 8px rgba(0,0,0,0.5);">🐛</button>
 
 
 
