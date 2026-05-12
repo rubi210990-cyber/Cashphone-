@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>בדיקת נגישות — CashPhone</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Heebo',sans-serif;background:#0d0d14;color:#e8e8f0;direction:rtl;padding:20px 16px;}
+.container{max-width:720px;margin:0 auto;}
+.logo{font-size:20px;font-weight:800;letter-spacing:2px;color:#fff;margin-bottom:24px;display:block;}
+.logo span{color:#39e600;}
+h1{font-size:22px;font-weight:800;margin-bottom:6px;}
+.sub{font-size:13px;color:#7070a0;margin-bottom:28px;}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;background:#1c1c2e;border:1px solid #2a2a40;border-radius:12px;padding:4px;margin-bottom:20px;}
+.tab{flex:1;text-align:center;padding:8px 4px;font-size:13px;border-radius:8px;cursor:pointer;color:#7070a0;border:none;background:none;font-family:inherit;}
+.tab.on{background:linear-gradient(135deg,#39e600,#2ab800);color:#000;font-weight:700;}
+
+/* Sections */
+.section{display:none;}
+.section.on{display:block;}
+
+/* Checklist */
+.check-group{background:#141420;border:1px solid #2a2a40;border-radius:14px;padding:16px;margin-bottom:14px;}
+.check-group-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #1e1e30;}
+.check-item:last-child{border:none;}
+.check-item input[type="checkbox"]{width:18px;height:18px;accent-color:#39e600;flex-shrink:0;margin-top:2px;cursor:pointer;}
+.check-label{font-size:13px;color:#bbb;line-height:1.5;flex:1;}
+.check-label strong{color:#fff;display:block;margin-bottom:2px;}
+.check-label .wcag{font-size:11px;color:#39e600;margin-right:6px;}
+.check-label .tool{font-size:11px;color:#7070a0;}
+.progress-wrap{background:#1e1e30;border-radius:20px;height:8px;margin-bottom:6px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#39e600,#2ab800);transition:width .4s ease;}
+.progress-label{font-size:12px;color:#7070a0;margin-bottom:16px;}
+
+/* Tools */
+.tool-card{background:#141420;border:1px solid #2a2a40;border-radius:14px;padding:16px;margin-bottom:12px;}
+.tool-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;}
+.tool-desc{font-size:13px;color:#9090b0;margin-bottom:12px;line-height:1.6;}
+.tool-btn{display:inline-block;background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;font-family:inherit;}
+.tool-how{margin-top:12px;background:#0d0d14;border-radius:8px;padding:12px;font-size:12px;color:#9090b0;line-height:1.8;}
+.tool-how code{color:#39e600;background:#1a1a2a;padding:2px 6px;border-radius:4px;font-size:11px;}
+
+/* Results */
+.result-box{background:#141420;border:1px solid #2a2a40;border-radius:14px;padding:16px;margin-bottom:12px;}
+.result-score{font-size:42px;font-weight:900;font-family:'Exo 2',sans-serif;color:#39e600;line-height:1;}
+.result-label{font-size:12px;color:#7070a0;margin-bottom:12px;}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.result-item{background:#0d0d14;border-radius:8px;padding:10px;text-align:center;}
+.result-item-score{font-size:22px;font-weight:800;color:#fff;}
+.result-item-label{font-size:11px;color:#7070a0;margin-top:2px;}
+
+/* Toast test */
+.toast-test-area{background:#141420;border:1px solid #2a2a40;border-radius:14px;padding:16px;margin-bottom:14px;}
+.toast-test-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;}
+.toast-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.tbtn{border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+.tbtn-ok{background:#0f2010;color:#39e600;border:1px solid #2a5a2a;}
+.tbtn-err{background:#1e0000;color:#ef4444;border:1px solid #5a2020;}
+.tbtn-warn{background:#1a1000;color:#f59e0b;border:1px solid #5a3a00;}
+.toast-live{background:#0d0d14;border-radius:8px;padding:12px;font-size:12px;color:#7070a0;min-height:60px;}
+.toast-live strong{color:#fff;}
+
+#sr-log{border-top:1px solid #2a2a40;margin-top:10px;padding-top:10px;font-size:11px;color:#5050a0;}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="logo" href="/">CASH<span>PHONE</span></a>
+  <h1>🔍 בדיקת נגישות</h1>
+  <p class="sub">ד"ר אורה כהן — "הצהרת נגישות ללא בדיקה מסמכת היא סיכון משפטי"</p>
+
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('checklist',this)">✅ רשימת בדיקה</button>
+    <button class="tab" onclick="switchTab('tools',this)">🛠️ כלים</button>
+    <button class="tab" onclick="switchTab('toast',this)">🔔 בדיקת Toast</button>
+    <button class="tab" onclick="switchTab('results',this)">📊 תוצאות</button>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="section on" id="sec-checklist">
+    <div class="progress-wrap"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <p class="progress-label" id="progress-label">0 מתוך 0 נבדקו</p>
+
+    <div class="check-group">
+      <div class="check-group-title">🏷️ שדות טפסים</div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>label מקושר לכל input</strong><span class="wcag">WCAG 1.3.1</span><span class="tool">בדוק עם Tab + VoiceOver</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>שדות חובה מסומנים aria-required</strong><span class="wcag">WCAG 3.3.2</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>הודעות שגיאה ברורות ומקושרות</strong><span class="wcag">WCAG 3.3.1</span><span class="tool">role="alert" ← כבר נוסף</span></div></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">⌨️ ניווט מקלדת</div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>Skip-link עובד (Tab ראשון)</strong><span class="wcag">WCAG 2.4.1</span><span class="tool">לחץ Tab בכניסה לדף</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>כל כפתורי ניווט נגישים במקלדת</strong><span class="wcag">WCAG 2.1.1</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>מודאל — focus נשאר בתוכו</strong><span class="wcag">WCAG 2.4.3</span><span class="tool">פתח הזמנה מהירה → Tab עד סגירה</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>focus-ring גלוי על כל אלמנט</strong><span class="wcag">WCAG 2.4.7</span></div></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">📢 קורא מסך</div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>Toast נקרא אוטומטית</strong><span class="wcag">WCAG 4.1.3</span><span class="tool">aria-live="polite" ← כבר נוסף</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>Bottom nav נקרא נכון</strong><span class="wcag">WCAG 4.1.2</span><span class="tool">VoiceOver/TalkBack: "חנות, כפתור"</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>Emoji decorative לא נקרא</strong><span class="wcag">WCAG 1.1.1</span><span class="tool">aria-hidden="true" ← כבר נוסף</span></div></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">🎨 ניגודיות</div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>#39e600 על #2d3748 ≥ 4.5:1</strong><span class="wcag">WCAG 1.4.3</span><span class="tool">השתמש ב-Colour Contrast Analyser</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>טקסט קטן על כפתורים ≥ 4.5:1</strong><span class="wcag">WCAG 1.4.3</span></div></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">📱 מובייל</div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>TalkBack Android — ניווט תחתון</strong><span class="wcag">WCAG 4.1.2</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>גודל מגע מינימום 44x44px</strong><span class="wcag">WCAG 2.5.5</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>prefers-reduced-motion — אנימציות נעצרות</strong><span class="wcag">WCAG 2.3.3</span></div></div>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="section" id="sec-tools">
+    <div class="tool-card">
+      <div class="tool-name">⚡ Lighthouse (Chrome DevTools)</div>
+      <div class="tool-desc">הכלי המהיר ביותר — מריץ audit נגישות + ביצועים + SEO בבת אחת. יש בו ישירות ב-Chrome.</div>
+      <div class="tool-how">
+        1. פתח <code>cashphone.co.il</code> ב-Chrome דסקטופ<br>
+        2. לחץ F12 → לשונית <code>Lighthouse</code><br>
+        3. סמן: Accessibility + Performance + SEO<br>
+        4. לחץ <code>Analyze page load</code><br>
+        5. שמור PDF של התוצאות לתיעוד
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-name">🔍 axe DevTools (Chrome Extension)</div>
+      <div class="tool-desc">המדויק ביותר לנגישות — מוצא בעיות שLighthouse מפספס. חינמי.</div>
+      <a class="tool-btn" href="https://chrome.google.com/webstore/detail/axe-devtools/lhdoppojpmngadmnindnejefpokejbdd" target="_blank">התקן Extension</a>
+      <div class="tool-how">
+        1. התקן את axe DevTools<br>
+        2. פתח את האתר → F12 → לשונית <code>axe DevTools</code><br>
+        3. לחץ <code>Scan ALL of my page</code><br>
+        4. תקן את כל ה-<code>Critical</code> ו-<code>Serious</code>
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-name">🎨 Colour Contrast Analyser</div>
+      <div class="tool-desc">בדיקת ניגודיות #39e600 על #2d3748 — חייב להיות מעל 4.5:1.</div>
+      <a class="tool-btn" href="https://www.tpgi.com/color-contrast-checker/" target="_blank">פתח כלי</a>
+      <div class="tool-how">
+        Foreground: <code>#39e600</code><br>
+        Background: <code>#2d3748</code><br>
+        יחס נדרש: <code>≥ 4.5:1</code> לטקסט רגיל
+      </div>
+    </div>
+
+    <div class="tool-card">
+      <div class="tool-name">📱 TalkBack (Android)</div>
+      <div class="tool-desc">קורא מסך מובנה ב-Android — בדוק את ניווט התחתון והטפסים.</div>
+      <div class="tool-how">
+        הגדרות → נגישות → TalkBack → הפעל<br>
+        בדוק: <code>חנות / הזמנות / קרדיט</code> — האם נשמעים נכון?<br>
+        בדוק: טופס הזמנה — האם labels נקראים?
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST TEST -->
+  <div class="section" id="sec-toast">
+    <div class="toast-test-area">
+      <div class="toast-test-title">🔔 בדיקת Toast — תסריטי קצה</div>
+      <p style="font-size:13px;color:#9090b0;margin-bottom:14px;">ד"ר אורה: "האם ההודעות ברורות ולא נעלמות מהר מדי?"</p>
+
+      <div class="toast-btns">
+        <button class="tbtn tbtn-ok" onclick="testToast('success','✅ ההזמנה נשלחה בהצלחה!',5000)">הצלחה (5 שנ)</button>
+        <button class="tbtn tbtn-err" onclick="testToast('error','❌ שגיאה — יתרה לא מספיקה',7000)">שגיאה (7 שנ)</button>
+        <button class="tbtn tbtn-warn" onclick="testToast('warn','⚠️ חיבור אינטרנט איטי',4000)">אזהרה (4 שנ)</button>
+        <button class="tbtn tbtn-err" onclick="testToast('error','❌ שגיאת Firebase — נסה שוב',7000)">Firebase Error</button>
+      </div>
+
+      <!-- Live region לבדיקה -->
+      <div class="toast-live" id="toast-display" role="status" aria-live="polite" aria-atomic="true">
+        <span style="color:#5050a0;">לחץ על אחד הכפתורים לבדיקת Toast...</span>
+      </div>
+      <div id="sr-log">📢 מה קורא מסך שומע: <span id="sr-text">—</span></div>
+    </div>
+
+    <div class="check-group">
+      <div class="check-group-title">📋 תסריטי קצה לבדיקה ידנית</div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>הזמנה מוצלחת — Toast נשאר ≥ 5 שניות</strong><span class="tool">קורא מסך מספיק זמן לקרוא</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>יתרה לא מספיקה — הודעה ברורה ב-Toast</strong><span class="tool">לא רק "שגיאה" אלא "יתרה לא מספיקה"</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>Firebase offline — Toast מוצג (לא דף ריק)</strong><span class="tool">כבה WiFi → נסה הזמנה</span></div></div>
+      <div class="check-item"><input type="checkbox" onchange="updateProgress()"><div class="check-label"><strong>שדה ריק בשליחה — focus חוזר לשדה</strong><span class="tool">WCAG 3.3.1</span></div></div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="section" id="sec-results">
+    <div class="result-box">
+      <div class="result-score" id="res-lighthouse">—</div>
+      <div class="result-label">ציון Lighthouse Accessibility</div>
+      <input type="range" min="0" max="100" value="0" oninput="document.getElementById('res-lighthouse').textContent=this.value" style="width:100%;accent-color:#39e600;margin-bottom:8px;">
+      <p style="font-size:12px;color:#7070a0;">גרור לציון שקיבלת → שמור לתיעוד</p>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-item-score" id="res-perf">—</div>
+        <div class="result-item-label">Performance</div>
+        <input type="range" min="0" max="100" value="0" oninput="document.getElementById('res-perf').textContent=this.value" style="width:100%;accent-color:#39e600;">
+      </div>
+      <div class="result-item">
+        <div class="result-item-score" id="res-seo">—</div>
+        <div class="result-item-label">SEO</div>
+        <input type="range" min="0" max="100" value="0" oninput="document.getElementById('res-seo').textContent=this.value" style="width:100%;accent-color:#39e600;">
+      </div>
+      <div class="result-item">
+        <div class="result-item-score" id="res-bp">—</div>
+        <div class="result-item-label">Best Practices</div>
+        <input type="range" min="0" max="100" value="0" oninput="document.getElementById('res-bp').textContent=this.value" style="width:100%;accent-color:#39e600;">
+      </div>
+      <div class="result-item">
+        <div class="result-item-score" id="res-pwa">—</div>
+        <div class="result-item-label">PWA</div>
+        <input type="range" min="0" max="100" value="0" oninput="document.getElementById('res-pwa').textContent=this.value" style="width:100%;accent-color:#39e600;">
+      </div>
+    </div>
+
+    <div style="margin-top:16px;background:#141420;border:1px solid #2a2a40;border-radius:12px;padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">📝 הערות ממצאים</div>
+      <textarea placeholder="רשום כאן בעיות שמצאת..." style="width:100%;background:#0d0d14;border:1px solid #2a2a40;border-radius:8px;padding:10px;color:#ccc;font-size:13px;font-family:inherit;resize:vertical;min-height:80px;direction:rtl;"></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('sec-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+
+function updateProgress() {
+  const all = document.querySelectorAll('input[type="checkbox"]');
+  const done = [...all].filter(c => c.checked).length;
+  const pct = Math.round(done / all.length * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${done} מתוך ${all.length} נבדקו (${pct}%)`;
+}
+
+let toastTimer;
+function testToast(type, msg, duration) {
+  const el = document.getElementById('toast-display');
+  const sr = document.getElementById('sr-text');
+  const colors = { success: '#39e600', error: '#ef4444', warn: '#f59e0b' };
+  el.innerHTML = `<strong style="color:${colors[type]}">${msg}</strong><br><span style="font-size:11px;color:#7070a0;">נעלם בעוד ${duration/1000} שניות</span>`;
+  sr.textContent = msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    el.innerHTML = '<span style="color:#5050a0;">Toast נעלם — האם היה מספיק זמן?</span>';
+    sr.textContent = '(Toast נעלם)';
+  }, duration);
+}
+
+updateProgress();
+</script>
+</body>
+</html>
