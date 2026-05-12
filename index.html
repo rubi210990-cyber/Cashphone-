@@ -44,6 +44,144 @@
 <!-- app-store.js, app-admin.js, app-info.js — נטענים lazy לפי צורך -->
 
 <link rel="stylesheet" href="styles.css?v=2.19"/>
+
+<!-- ============================================================ -->
+<!-- ===== SEO — נועה שרון המלצות ===== -->
+<!-- ============================================================ -->
+
+<!-- hreflang — עברית + ערבית (המלצה #2) -->
+<link rel="alternate" hreflang="he" href="https://cashphone.co.il/"/>
+<link rel="alternate" hreflang="ar" href="https://cashphone.co.il/?lang=ar"/>
+<link rel="alternate" hreflang="x-default" href="https://cashphone.co.il/"/>
+
+<!-- Canonical -->
+<link rel="canonical" href="https://cashphone.co.il/"/>
+
+<!-- meta description משופרת -->
+<meta name="description" content="טעינת מטבעות למשחקים בישראל — PUBG UC, Robux, V-Bucks, Diamonds ועוד. גיפט קארדים, ארנקים דיגיטליים. מהיר, אמין, זול. شحن عملات الألعاب في إسرائيل."/>
+<meta name="keywords" content="טעינת מטבעות, PUBG UC, Robux, V-Bucks, Free Fire Diamonds, גיפט קארד, Steam, Google Play, PlayStation, Xbox, CashPhone"/>
+<meta name="robots" content="index, follow"/>
+
+<!-- Open Graph משופר -->
+<meta property="og:locale" content="he_IL"/>
+<meta property="og:locale:alternate" content="ar_IL"/>
+<meta property="og:site_name" content="CashPhone"/>
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CashPhone — טעינות מטבעות ומשחקים"/>
+<meta name="twitter:description" content="PUBG UC, Robux, V-Bucks, Diamonds — מהיר ואמין"/>
+
+<!-- ===== Schema Markup (המלצה #1) ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://cashphone.co.il/#organization",
+      "name": "CashPhone",
+      "url": "https://cashphone.co.il",
+      "logo": "https://cashphone.co.il/icon.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+972-55-5525525",
+        "contactType": "customer service",
+        "availableLanguage": ["Hebrew", "Arabic"]
+      },
+      "sameAs": []
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://cashphone.co.il/#website",
+      "url": "https://cashphone.co.il",
+      "name": "CashPhone",
+      "publisher": {"@id": "https://cashphone.co.il/#organization"},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://cashphone.co.il/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "name": "מוצרי CashPhone — טעינות מטבעות ומשחקים",
+      "url": "https://cashphone.co.il",
+      "itemListElement": [
+        {"@type":"ListItem","position":1,"name":"PUBG Mobile UC","url":"https://cashphone.co.il/pubg-uc"},
+        {"@type":"ListItem","position":2,"name":"Roblox Robux","url":"https://cashphone.co.il/roblox-robux"},
+        {"@type":"ListItem","position":3,"name":"Fortnite V-Bucks","url":"https://cashphone.co.il/fortnite-vbucks"},
+        {"@type":"ListItem","position":4,"name":"Free Fire Diamonds","url":"https://cashphone.co.il/free-fire-diamonds"},
+        {"@type":"ListItem","position":5,"name":"PlayStation PSN","url":"https://cashphone.co.il/psn"},
+        {"@type":"ListItem","position":6,"name":"Xbox Gift Card","url":"https://cashphone.co.il/xbox"},
+        {"@type":"ListItem","position":7,"name":"Steam Wallet","url":"https://cashphone.co.il/steam"},
+        {"@type":"ListItem","position":8,"name":"Google Play","url":"https://cashphone.co.il/google-play"},
+        {"@type":"ListItem","position":9,"name":"Apple iTunes","url":"https://cashphone.co.il/apple-itunes"},
+        {"@type":"ListItem","position":10,"name":"Mobile Legends Diamonds","url":"https://cashphone.co.il/mobile-legends"}
+      ]
+    }
+  ]
+}
+</script>
+
+<!-- ===== Product Schemas — Top 5 מוצרים (המלצה #1) ===== -->
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "PUBG Mobile UC",
+    "description": "טעינת UC למשחק PUBG Mobile — חבילות מ-60 UC עד 72,900 UC. גלובל ו-Turkey Region.",
+    "image": "https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/pubg.png",
+    "brand": {"@type":"Brand","name":"PUBG Mobile"},
+    "url": "https://cashphone.co.il/pubg-uc",
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "ILS",
+      "lowPrice": "4",
+      "highPrice": "2720",
+      "offerCount": "28",
+      "availability": "https://schema.org/InStock",
+      "seller": {"@type":"Organization","name":"CashPhone"}
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Roblox Robux",
+    "description": "טעינת Robux לחשבון Roblox שלך — משלוח מיידי.",
+    "image": "https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/roblox.png",
+    "brand": {"@type":"Brand","name":"Roblox"},
+    "url": "https://cashphone.co.il/roblox-robux",
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "ILS",
+      "lowPrice": "7",
+      "offerCount": "5",
+      "availability": "https://schema.org/InStock",
+      "seller": {"@type":"Organization","name":"CashPhone"}
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": "Free Fire Diamonds",
+    "description": "שחרג Diamonds למשחק Free Fire — כל החבילות במחיר הכי טוב.",
+    "image": "https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/freefire.png",
+    "brand": {"@type":"Brand","name":"Garena Free Fire"},
+    "url": "https://cashphone.co.il/free-fire-diamonds",
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "ILS",
+      "lowPrice": "6",
+      "offerCount": "15",
+      "availability": "https://schema.org/InStock",
+      "seller": {"@type":"Organization","name":"CashPhone"}
+    }
+  }
+]
+</script>
+
 </head>
 <body>
 <!-- skip-to-content — נגישות מקלדת (WCAG 2.4.1) -->
