@@ -2293,15 +2293,140 @@ function updateFilters(){
 }
 
 
+
+  // בדיקת מה קיים כבר ב-localStorage
+  var existingStores=null,existingUsers=null,existingTs=null;
+  try{
+    existingStores=localStorage.getItem('cp_stores');
+    existingUsers=localStorage.getItem('cp_users');
+    existingTs=localStorage.getItem('cp_ts');
+  }catch(e){}
+
+  console.log('🔬 localStorage diagnostic:',{
+    works:storageOK,
+    error:storageError,
+    existingStores:existingStores?JSON.parse(existingStores).length+' חנויות':'(אין)',
+    existingUsers:existingUsers?JSON.parse(existingUsers).length+' משתמשים':'(אין)',
+    lastSave:existingTs?new Date(parseInt(existingTs)).toLocaleString('he-IL'):'(אף פעם)'
+  });
+
+  // אם localStorage לא עובד — הצג התראה גדולה ובולטת
+  if(!storageOK){
+    setTimeout(function(){
+      var banner=document.createElement('div');
+      banner.style.cssText='position:fixed;top:0;left:0;right:0;background:#ff3030;color:#fff;padding:12px 16px;text-align:center;font-weight:700;z-index:99999;font-size:14px;direction:rtl;font-family:inherit;box-shadow:0 2px 10px rgba(0,0,0,0.5);';
+      banner.innerHTML='⚠️ <b>localStorage לא עובד!</b> נתונים לא יישמרו.<br><span style="font-size:12px;font-weight:400;">סיבה: '+storageError+'</span><br><span style="font-size:11px;font-weight:400;">בדוק שאתה לא במצב גלישה פרטית, ושאין חוסם שעוצר אחסון.</span>';
+      document.body.appendChild(banner);
+    },500);
+  }
+
+  try{ loadData(); }catch(e){ console.error('loadData error:',e); }
+
+  // 🔗 מיגרציה: סנכרון orders ↔ loads בלי loads מקושרים
+  try{
+    var migratedCount=migrateOrdersToLoads();
+    if(migratedCount>0){
+      console.log('🔗 מיגרציה: נוצרו '+migratedCount+' loads חדשים מ-orders ישנות');
+    }
+  }catch(e){console.warn('Order→Load migration failed:',e);}
+
+  setTimeout(syncFromFirebase,2000);
+  // הפעלת live sync — מקשיב לשינויים בזמן אמת מכל המכשירים
+  setTimeout(startLiveSync,3000);
+  try{ renderAll(); }catch(e){ console.error('renderAll error:',e); }
+  try{ fetchDollarRate(); }catch(e){}
+  try{ scheduleMidnightUpdate(); }catch(e){}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const nav=document.getElementById('main-nav');
+  if(nav)nav.style.display='none';
+  const ls=document.getElementById('login-screen');
+  if(ls){ls.style.display='flex';ls.style.zIndex='9998';}
+  // התחברות אוטומטית אם יש סשן שמור
+  try{
+    const sess=localStorage.getItem('cp_session');
+    if(sess){
+      const s=JSON.parse(sess);
+      // בדיקת תוקף - האם עברו יותר מ-30 דקות מהפעילות האחרונה?
+      const lastActivity=parseInt(localStorage.getItem('cp_last_activity')||'0');
+      const idleTime=Date.now()-lastActivity;
+      if(lastActivity&&idleTime>IDLE_TIMEOUT){
+        // הסשן פג תוקף - לנקות
+        localStorage.removeItem('cp_session');
+        localStorage.removeItem('cp_last_activity');
+        const errEl=document.getElementById('login-err');
+        if(errEl){
+          errEl.classList.add('on');
+          errEl.style.background='#2a1a00';
+          errEl.style.borderColor='#ef9f27';
+          errEl.style.color='#ef9f27';
+          errEl.textContent='⏱️ הסשן פג תוקף. יש להתחבר שוב';
+        }
+      }else if(s&&s.username&&s.password){
+        // אדמין - תמיד אפשר
+        if(s.username==='admin'&&s.password==='admin123'){
+          const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null};
+          currentUser=adminUser;
+          resetIdleTimer();
+          document.getElementById('login-screen').style.display='none';
+          document.getElementById('main-nav').style.display='flex';
+          document.getElementById('chip-name').textContent='admin 👑';
+          buildNav();
+          showPage('page-admin');
+          setTimeout(renderDashboard,100);
+        }else{
+          // משתמש רגיל - חיפוש ברשימה
+          const found=users.find(x=>x.username.toLowerCase()===s.username.toLowerCase()&&x.password===s.password);
+          if(found){
+            doLogin(found);
+          }else{
+            // אם לא נמצא - אולי הרשימה עדיין לא נטענה מ-Firebase, ננסה שוב אחרי הסנכרון
+            setTimeout(function(){
+              const f2=users.find(x=>x.username.toLowerCase()===s.username.toLowerCase()&&x.password===s.password);
+              if(f2)doLogin(f2);
+            },2500);
+          }
+        }
+      }
+    }
+  }catch(e){console.warn('Auto-login error:',e);}
+}
+
+// 🌐 החל את השפה השמורה בעת טעינה ראשונית
+try{
+  document.documentElement.setAttribute('lang',currentLang());
+  document.documentElement.setAttribute('dir','rtl');
+  applyTranslations();
+}catch(e){}
+
+init();
+
+// Mobile improvements
+function isMobile(){return window.innerWidth<=600;}
+
+// After login, show bottom nav for store users on mobile
+const _origBuildNav=buildNav;
+buildNav=function(){
+  _origBuildNav();
+  const bottomNav=document.getElementById('bottom-nav');
+  if(currentUser&&currentUser.role==='store'&&isMobile()){
+    if(bottomNav)bottomNav.style.display='flex';
+    document.getElementById('main-nav').style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.add('has-bottom-nav'));
+  } else {
+    if(bottomNav)bottomNav.style.display='none';
+    if(currentUser)document.getElementById('main-nav').style.display='flex';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('has-bottom-nav'));
+  }
+};
+
+
 // ============================================================
 // ============ 🚀 CODE SPLITTING — Lazy Loader ============
 // ============================================================
-// רון ביטון המלצה: טעינת מודולים לפי צורך בלבד
-
 window.CashModules = {};
 
 window.loadModule = async function(name) {
-  if (window.CashModules[name]) return; // כבר נטען
+  if (window.CashModules[name]) return;
   const urls = {
     store:  'app-store.js?v=2.9',
     admin:  'app-admin.js?v=2.9',
@@ -2309,27 +2434,19 @@ window.loadModule = async function(name) {
   };
   const url = urls[name];
   if (!url) { console.warn('[Modules] Unknown module:', name); return; }
-  console.log('[Modules] Loading:', name);
   return new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = url;
-    s.onload  = () => { window.CashModules[name] = true; console.log('[Modules] Loaded:', name); resolve(); };
+    s.onload  = () => { window.CashModules[name] = true; resolve(); };
     s.onerror = () => reject(new Error('Failed to load module: ' + name));
     document.head.appendChild(s);
   });
 };
 
-// ============ patch showPage להשתמש בלודר ============
 const _origShowPage = window.showPage;
 window.showPage = async function(id) {
-  // דשבורד, הזמנות, חובות, דוחות, משתמשים — רק אדמין/משווק
-  if (['page-admin'].includes(id)) {
-    await window.loadModule('admin');
-  }
-  // חנות — לקוחות
-  if (id === 'page-store') {
-    await window.loadModule('store');
-  }
+  if (id === 'page-admin') await window.loadModule('admin');
+  if (id === 'page-store') await window.loadModule('store');
   if (typeof _origShowPage === 'function') _origShowPage(id);
   else {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
@@ -2338,7 +2455,6 @@ window.showPage = async function(id) {
   }
 };
 
-// ============ patch showInfoPage ============
 const _origShowInfo = window.showInfoPage;
 window.showInfoPage = async function(page) {
   await window.loadModule('info');
