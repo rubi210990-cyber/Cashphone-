@@ -188,7 +188,8 @@
 <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
 
 <!-- 🔔 מיכל לטוסטים של התראות -->
-<div id="cpn-toast-stack" class="cpn-toast-stack"></div>
+<!-- Toast: aria-live — עמית לוי WCAG 4.1.3 -->
+<div id="cpn-toast-stack" class="cpn-toast-stack" role="status" aria-live="polite" aria-atomic="false"></div>
 
 <!-- LOGIN -->
 <div class="login-screen" id="login-screen">
@@ -242,10 +243,10 @@
   <div class="toast" id="t-admin"></div>
 
   <!-- 🚀 כפתור צף "הזמנה ידנית מהירה" -->
-  <button id="quick-order-fab" onclick="openQuickOrder()" title="הזמנה ידנית מהירה" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;font-size:28px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(57,230,0,0.4);z-index:90;font-family:inherit;display:none;">➕</button>
+  <button id="quick-order-fab" onclick="openQuickOrder()" title="הזמנה ידנית מהירה" aria-label="פתח טופס הזמנה ידנית מהירה" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;font-size:28px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(57,230,0,0.4);z-index:90;font-family:inherit;display:none;" aria-hidden="true">➕</button>
 
   <!-- 💰 כפתור צף "הגדר רווח מהיר" - לחנויות ולמשווקים -->
-  <button id="margin-fab" onclick="openMarginQuick()" title="הגדר רווח מהיר" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(22,163,74,0.45);z-index:90;font-family:inherit;display:none;">💰</button>
+  <button id="margin-fab" onclick="openMarginQuick()" title="הגדר רווח מהיר" aria-label="הגדר רווח מהיר לכל המוצרים" style="position:fixed;bottom:24px;left:24px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;font-size:26px;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(22,163,74,0.45);z-index:90;font-family:inherit;display:none;" aria-hidden="true">💰</button>
 
   <div class="atabs">
     <button class="atab on" onclick="aTab(this,'sec-dash')">📊 דשבורד</button>
@@ -1448,23 +1449,23 @@
 </div>
 
 <!-- 🚀 מודל הזמנה ידנית מהירה -->
-<div id="quick-order-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
+<div id="quick-order-modal" role="dialog" aria-modal="true" aria-labelledby="qo-modal-title" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99998;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;">
   <div style="background:#3a4556;border:1px solid #5a6478;border-radius:14px;max-width:480px;width:100%;direction:rtl;font-family:inherit;margin:20px auto;">
     <!-- כותרת -->
     <div style="padding:14px 18px;border-bottom:1px solid #475467;display:flex;justify-content:space-between;align-items:center;">
       <div>
-        <div style="font-size:17px;font-weight:700;color:#fff;">➕ הזמנה ידנית מהירה</div>
+        <div id="qo-modal-title" style="font-size:17px;font-weight:700;color:#fff;">➕ הזמנה ידנית מהירה</div>
         <div style="font-size:11px;color:#888;margin-top:2px;">להזמנות שמגיעות בוואטסאפ / טלפון</div>
       </div>
-      <button onclick="closeQuickOrder()" style="background:none;border:none;color:#888;font-size:26px;cursor:pointer;padding:0 4px;line-height:1;">×</button>
+      <button onclick="closeQuickOrder()" aria-label="סגור חלון הזמנה ידנית" style="background:none;border:none;color:#888;font-size:26px;cursor:pointer;padding:0 4px;line-height:1;">×</button>
     </div>
 
     <!-- תוכן -->
     <div style="padding:16px;">
       <!-- שלב 1: בחירת חנות -->
       <div style="margin-bottom:14px;">
-        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">1️⃣ חנות</label>
-        <select id="qo-store" onchange="qoOnStoreChange()" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+        <label for="qo-store" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">1️⃣ חנות</label>
+        <select id="qo-store" onchange="qoOnStoreChange()" aria-required="true" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
           <option value="">— בחר חנות —</option>
         </select>
         <div id="qo-store-info" style="font-size:11px;color:#888;margin-top:6px;display:none;"></div>
@@ -1472,29 +1473,29 @@
 
       <!-- שלב 2: בחירת מוצר -->
       <div style="margin-bottom:14px;">
-        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">2️⃣ מוצר</label>
-        <select id="qo-product" onchange="qoOnProductChange()" disabled style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+        <label for="qo-product" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">2️⃣ מוצר</label>
+        <select id="qo-product" onchange="qoOnProductChange()" disabled aria-required="true" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
           <option value="">— בחר חנות קודם —</option>
         </select>
       </div>
 
       <!-- שלב 3: בחירת חבילה -->
       <div style="margin-bottom:14px;">
-        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">3️⃣ חבילה</label>
-        <select id="qo-package" onchange="qoOnPackageChange()" disabled style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
+        <label for="qo-package" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">3️⃣ חבילה</label>
+        <select id="qo-package" onchange="qoOnPackageChange()" disabled aria-required="true" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;">
           <option value="">— בחר מוצר קודם —</option>
         </select>
       </div>
 
       <!-- שלב 4: שם שחקן -->
       <div style="margin-bottom:14px;">
-        <label style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">4️⃣ <span id="qo-user-label">שם משתמש / ID</span></label>
-        <input id="qo-user" type="text" placeholder="הקלד..." style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;"/>
+        <label for="qo-user" style="display:block;font-size:12px;color:#bbb;margin-bottom:6px;font-weight:600;">4️⃣ <span id="qo-user-label">שם משתמש / ID</span></label>
+        <input id="qo-user" type="text" placeholder="הקלד..." aria-required="true" aria-labelledby="qo-user-label" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;font-family:inherit;"/>
       </div>
 
       <!-- הערה (אופציונלי) -->
       <div style="margin-bottom:14px;">
-        <label style="display:block;font-size:12px;color:#888;margin-bottom:6px;">הערה (לא חובה)</label>
+        <label for="qo-note" style="display:block;font-size:12px;color:#888;margin-bottom:6px;">הערה (לא חובה)</label>
         <input id="qo-note" type="text" placeholder="למשל: 'לפי וואטסאפ ב-10:30'" style="width:100%;background:#222831;border:1px solid #5a6478;border-radius:8px;padding:8px 12px;color:#fff;font-size:13px;font-family:inherit;"/>
       </div>
 
@@ -1519,7 +1520,7 @@
       </div>
 
       <!-- אזהרות -->
-      <div id="qo-warning" style="display:none;background:#3a2828;border:1px solid #5a2020;border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:#ef9f27;"></div>
+      <div id="qo-warning" role="alert" aria-live="assertive" style="display:none;background:#3a2828;border:1px solid #5a2020;border-radius:8px;padding:10px;margin-bottom:14px;font-size:12px;color:#ef9f27;"></div>
 
       <!-- כפתורים -->
       <div style="display:flex;gap:8px;">
@@ -1530,18 +1531,18 @@
   </div>
 </div>
 
-<!-- BOTTOM NAV mobile store -->
-<div class="bottom-nav" id="bottom-nav">
-  <button class="bnav-btn on" id="bn-store" onclick="bnavGo('store')">
-    <span class="bnav-icon">🏪</span><span>חנות</span>
+<!-- BOTTOM NAV mobile store — עמית לוי: role + aria-label -->
+<nav class="bottom-nav" id="bottom-nav" role="navigation" aria-label="ניווט ראשי — חנות">
+  <button class="bnav-btn on" id="bn-store" onclick="bnavGo('store')" aria-label="חנות" aria-current="page">
+    <span class="bnav-icon" aria-hidden="true">🏪</span><span>חנות</span>
   </button>
-  <button class="bnav-btn" id="bn-orders" onclick="bnavGo('orders')">
-    <span class="bnav-icon">📋</span><span>הזמנות</span>
+  <button class="bnav-btn" id="bn-orders" onclick="bnavGo('orders')" aria-label="הזמנות שלי">
+    <span class="bnav-icon" aria-hidden="true">📋</span><span>הזמנות</span>
   </button>
-  <button class="bnav-btn" id="bn-log" onclick="bnavGo('log')">
-    <span class="bnav-icon">💳</span><span>קרדיט</span>
+  <button class="bnav-btn" id="bn-log" onclick="bnavGo('log')" aria-label="קרדיט ויתרה">
+    <span class="bnav-icon" aria-hidden="true">💳</span><span>קרדיט</span>
   </button>
-</div>
+</nav>
 
 
 <!-- ===== נגישות ===== -->

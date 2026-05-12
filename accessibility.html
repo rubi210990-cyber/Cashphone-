@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>הצהרת נגישות — CashPhone</title>
+<meta name="description" content="הצהרת נגישות של אתר CashPhone בהתאם לתקן ישראלי 5568 ו-WCAG 2.1 AA"/>
+<link rel="canonical" href="https://cashphone.co.il/accessibility"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Heebo',sans-serif;background:#f5f5f5;color:#222;direction:rtl;padding:24px 16px;line-height:1.8;}
+.container{max-width:720px;margin:0 auto;background:#fff;border-radius:16px;padding:32px 28px;box-shadow:0 2px 16px rgba(0,0,0,0.06);}
+.logo{font-size:22px;font-weight:800;letter-spacing:2px;color:#111;margin-bottom:24px;display:block;}
+.logo span{color:#39e600;}
+h1{font-size:24px;font-weight:800;margin-bottom:8px;color:#111;}
+.date{font-size:13px;color:#888;margin-bottom:28px;}
+h2{font-size:17px;font-weight:700;margin:24px 0 10px;color:#111;border-right:3px solid #39e600;padding-right:10px;}
+p{font-size:14px;color:#444;margin-bottom:12px;}
+ul{font-size:14px;color:#444;padding-right:20px;margin-bottom:12px;}
+ul li{margin-bottom:6px;}
+.contact-box{background:#f0fff0;border:1px solid #39e600;border-radius:10px;padding:16px 20px;margin-top:28px;}
+.contact-box p{margin:4px 0;font-size:14px;}
+.contact-box a{color:#1a6600;font-weight:600;}
+.badge{display:inline-block;background:#39e600;color:#000;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-right:6px;}
+.back{display:inline-block;margin-top:24px;font-size:13px;color:#666;text-decoration:none;}
+.back:hover{color:#39e600;}
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="logo" href="/">CASH<span>PHONE</span></a>
+
+  <h1>הצהרת נגישות</h1>
+  <p class="date">עודכן לאחרונה: מאי 2026</p>
+
+  <p>CashPhone מחויבת לנגישות דיגיטלית ולאפשר לכל אדם — ללא קשר ליכולות — להשתמש בשירות שלנו. אנו פועלים לעמידה בדרישות תקן ישראלי 5568 ותקן WCAG 2.1 ברמת AA.</p>
+
+  <h2>מצב הנגישות הנוכחי</h2>
+  <p><span class="badge">חלקי</span> האתר עומד בחלק מדרישות WCAG 2.1 AA. אנו עובדים על שיפורים נוספים.</p>
+  <ul>
+    <li>תמיכה מלאה ב-RTL עברית וערבית</li>
+    <li>כל שדות הקלט כוללים תווית (<code>&lt;label&gt;</code>) מקושרת</li>
+    <li>כפתורי ניווט כוללים <code>aria-label</code> מפורש</li>
+    <li>הודעות מערכת (Toast) מוכרזות ל-screen readers דרך <code>aria-live</code></li>
+    <li>תמיכה ב-<code>prefers-reduced-motion</code></li>
+    <li>דף "אין חיבור" נגיש בעת offline</li>
+    <li>Skip-to-content link לדילוג לתוכן הראשי</li>
+  </ul>
+
+  <h2>בעיות נגישות ידועות</h2>
+  <ul>
+    <li>חלק מהמודאלים עשויים לא לנהל focus trap מלא בכל הדפדפנים</li>
+    <li>תמונות מוצרים מסוימות חסרות טקסט חלופי (<code>alt</code>) מלא</li>
+    <li>ניגודיות צבעים בחלק מהתוויות הקטנות — בבדיקה</li>
+  </ul>
+
+  <h2>טכנולוגיות עזר נתמכות</h2>
+  <ul>
+    <li>NVDA + Firefox (Windows)</li>
+    <li>VoiceOver + Safari (iOS / macOS)</li>
+    <li>TalkBack + Chrome (Android)</li>
+    <li>ניווט מקלדת מלא</li>
+  </ul>
+
+  <h2>אמצעי נגישות באתר</h2>
+  <ul>
+    <li>תמיכה בהגדלת טקסט עד 200% ללא שבירת layout</li>
+    <li>עיצוב מותאם למצב ניגודיות גבוהה (<code>forced-colors</code>)</li>
+    <li>PWA — ניתן להתקנה כאפליקציה לחוויה משופרת</li>
+  </ul>
+
+  <h2>פנייה בנושא נגישות</h2>
+  <div class="contact-box">
+    <p><strong>רכז הנגישות של CashPhone:</strong></p>
+    <p>📧 <a href="mailto:Cashphone21@gmail.com">Cashphone21@gmail.com</a></p>
+    <p>📞 <a href="tel:+972555525525">055-5525525</a></p>
+    <p>⏰ ראשון–חמישי, 09:00–22:00</p>
+    <p style="margin-top:10px;font-size:13px;color:#666;">נשתדל להגיב תוך 5 ימי עסקים.</p>
+  </div>
+
+  <a class="back" href="/">← חזרה לחנות</a>
+</div>
+</body>
+</html>

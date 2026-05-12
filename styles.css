@@ -665,3 +665,64 @@ img:not([alt]){outline:2px dashed var(--warning);}
   .gbtn,.login-btn,.paybtn{forced-color-adjust:none;background:Highlight;color:HighlightText;}
   .atab.on{forced-color-adjust:none;}
 }
+
+/* ============================================================
+   עמית לוי — נגישות WCAG 2.1 AA
+   ============================================================ */
+
+/* ניגודיות מוגברת — WCAG 1.4.3 */
+/* #39e600 על #2d3748 = 5.2:1 — גבולי. מוסיפים font-weight 700 בכל מקום קריטי */
+.gbtn, .login-btn, .done-btn, .paybtn, .pbtn {
+  font-weight: 700 !important;
+}
+/* כפתורי טקסט כהה על ירוק — מוסיפים shadow קל לשיפור קריאות */
+.gbtn, .login-btn, .paybtn {
+  text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+}
+
+/* Focus ring ברור לכל אלמנטים אינטראקטיביים — WCAG 2.4.7 */
+:focus-visible {
+  outline: 2px solid var(--green) !important;
+  outline-offset: 3px !important;
+}
+/* מחיקת outline ברירת מחדל של דפדפן — רק focus-visible */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Bottom nav aria-current — סימון ויזואלי ברור */
+.bnav-btn[aria-current="page"] {
+  color: var(--green);
+}
+
+/* Modal focus trap visual — מסגרת ברורה */
+[role="dialog"] {
+  outline: none;
+}
+[role="dialog"]:focus-within {
+  box-shadow: 0 0 0 2px var(--green), 0 20px 60px rgba(0,0,0,0.8);
+}
+
+/* error messages — צבע ניגודיות מספק */
+[role="alert"], .login-err {
+  font-weight: 600;
+}
+
+/* Reduced motion — WCAG 2.3.3 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .skip-link { transition: none; }
+}
+
+/* High contrast text on green buttons */
+@media (prefers-contrast: more) {
+  .gbtn, .login-btn, .paybtn, .pbtn, .done-btn {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+  }
+}
