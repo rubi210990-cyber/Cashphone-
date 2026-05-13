@@ -813,11 +813,9 @@ setTimeout(syncDollarCostsFromFB,1500);
 const PRODS=[
   // כל המחירים ב-$ — מחושבים אוטומטית לשקלים לפי שער הדולר
   {id:1,cat:'games',name:'Roblox',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/roblox.png',emoji:'',color:'#ce0e2d',cur:'Robux',ul:'שם משתמש Roblox',usd:false,pkgs:[
-    {a:'רובלוקס $5 דולר',p:20,region:'global'},
-    {a:'רובלוקס $10 דולר',p:36,region:'global'},
-    {a:'רובלוקס $25 דולר',p:90,region:'global'},
-    {a:'רובלוקס $50 דולר',p:167,region:'global'},
-    {a:'רובלוקס $100 דולר',p:333,region:'global'},
+    {a:'רובלוקס $10 דולר',p:42,region:'global'},
+    {a:'רובלוקס $25 דולר',p:105,region:'global'},
+    {a:'רובלוקס $50 דולר',p:210,region:'global'},
     {a:'🇹🇷 רובלוקס 800 Robux TR',p:18,region:'tr',note:'גלובלי לחלוטין — חוסך כ-40%'},
     {a:'🇹🇷 רובלוקס 1700 Robux TR',p:36,region:'tr',note:'גלובלי לחלוטין — חוסך כ-40%'},
     {a:'🇹🇷 רובלוקס 4500 Robux TR',p:88,region:'tr',note:'גלובלי לחלוטין — חוסך כ-45%'},
@@ -827,10 +825,10 @@ const PRODS=[
     {a:'🇦🇷 רובלוקס 4500 Robux AR',p:72,region:'ar',note:'גלובלי לחלוטין — החיסכון הגדול ביותר'}
   ]},
   {id:2,cat:'games',name:'Fortnite',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/fortnite.png',emoji:'',color:'#1a1a2e',cur:'V-Bucks',ul:'Epic Games ID',usd:false,pkgs:[
-    {a:'1000 V-Bucks',p:45,region:'global'},
-    {a:'2800 V-Bucks',p:90,region:'global'},
-    {a:'5000 V-Bucks',p:154,region:'global'},
-    {a:'13500 V-Bucks',p:327,region:'global'}
+    {a:'1000 V-Bucks',p:64,region:'global'},
+    {a:'2800 V-Bucks',p:129,region:'global'},
+    {a:'5000 V-Bucks',p:199,region:'global'},
+    {a:'13500 V-Bucks',p:460,region:'global'}
   ]},
   {id:3,cat:'games',name:'Valorant',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/valorant.png',emoji:'',color:'#ff4655',cur:'VP',ul:'Riot ID',usd:true,pkgs:[{a:'475 VP',p:4.99},{a:'950 VP',p:9.99},{a:'1900 VP',p:19.99},{a:'3650 VP',p:34.99}]},
   {id:4,cat:'games',name:'League of Legends',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/lol.png',emoji:'',color:'#c89b3c',cur:'RP',ul:'Riot ID',usd:true,pkgs:[{a:'650 RP',p:5},{a:'1380 RP',p:10},{a:'2800 RP',p:20},{a:'5000 RP',p:35}]},
@@ -842,19 +840,19 @@ const PRODS=[
     {a:'PUBG Mobile UC 60',p:4,region:'global'},
     {a:'PUBG Mobile UC 120',p:7,region:'global'},
     {a:'PUBG Mobile UC 240',p:15,region:'global'},
-    {a:'PUBG Mobile 325 UC',p:19,region:'global'},
+    {a:'PUBG Mobile 325 UC',p:21,region:'global'},
     {a:'PUBG Mobile UC 385',p:23,region:'global'},
-    {a:'PUBG Mobile UC 660',p:34,region:'global'},
+    {a:'PUBG Mobile UC 660',p:42,region:'global'},
     {a:'PUBG Mobile UC 720',p:38,region:'global'},
     {a:'PUBG Mobile UC 770',p:40,region:'global'},
     {a:'PUBG Mobile UC 985',p:52,region:'global'},
     {a:'PUBG Mobile UC 1320',p:64,region:'global'},
-    {a:'PUBG Mobile UC 1800',p:80,region:'global'},
+    {a:'PUBG Mobile UC 1800',p:104,region:'global'},
     {a:'PUBG Mobile UC 2125',p:98,region:'global'},
-    {a:'PUBG Mobile UC 3850',p:163,region:'global'},
+    {a:'PUBG Mobile UC 3850',p:208,region:'global'},
     {a:'PUBG Mobile UC 4175',p:173,region:'global'},
     {a:'PUBG Mobile UC 5650',p:237,region:'global'},
-    {a:'PUBG Mobile UC 8100',p:317,region:'global'},
+    {a:'PUBG Mobile UC 8100',p:417,region:'global'},
     {a:'PUBG Mobile UC 8760',p:343,region:'global'},
     {a:'PUBG Mobile UC 9900',p:402,region:'global'},
     {a:'PUBG Mobile UC 13750',p:544,region:'global'},
@@ -870,23 +868,23 @@ const PRODS=[
     {a:'🇹🇷 PUBG UC 8100 TR',p:170,region:'tr',warn:'דורש חשבון משויך לאזור טורקיה — Tencent עלולים לחסום'}
   ]},
   {id:10,cat:'games',name:'Call of Duty',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/cod.png',emoji:'',color:'#222',cur:'COD Points',ul:'Activision ID',usd:true,pkgs:[{a:'200 CP',p:1.99},{a:'500 CP',p:4.99},{a:'1100 CP',p:9.99},{a:'2400 CP',p:19.99}]},
-  {id:11,cat:'console',name:'PlayStation (PSN)',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/psn.png',emoji:'',color:'#003087',cur:'PSN',ul:'PSN Email',usd:false,pkgs:[{a:'PSN ארה״ב $10',p:34},{a:'PSN ארה״ב $25',p:90},{a:'PSN $50',p:176},{a:'PSN ארה״ב $60',p:202},{a:'PSN ארה״ב $100',p:346}]},
-  {id:12,cat:'console',name:'Xbox',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Xbox.png',emoji:'',color:'#107c10',cur:'Xbox',ul:'Microsoft Email',usd:true,pkgs:[{a:'$10 Xbox',p:10},{a:'$25 Xbox',p:25},{a:'$50 Xbox',p:50},{a:'$100 Xbox',p:100}]},
-  {id:13,cat:'console',name:'Nintendo eShop',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/nintendo.png',emoji:'',color:'#e4000f',cur:'Nintendo',ul:'Nintendo Account',usd:true,pkgs:[{a:'$10 eShop',p:10},{a:'$20 eShop',p:20},{a:'$35 eShop',p:35},{a:'$50 eShop',p:50}]},
-  {id:14,cat:'wallet',name:'Steam',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/steam.png',emoji:'',color:'#1b2838',cur:'Steam',ul:'Steam Email',usd:true,pkgs:[{a:'$5 Steam',p:5},{a:'$10 Steam',p:10},{a:'$20 Steam',p:20},{a:'$50 Steam',p:50}]},
-  {id:15,cat:'wallet',name:'Google Play',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Googleplay.png',emoji:'',color:'#01875f',cur:'Google Play',ul:'Gmail',usd:false,pkgs:[{a:'גוגל פליי $5 ארה״ב',p:20},{a:'גוגל פליי $10 ארה״ב',p:37},{a:'גוגל פליי $15 ארה״ב',p:55},{a:'גוגל פליי $25 ארה״ב',p:88},{a:'גוגל פליי $50 ארה״ב',p:176},{a:'גוגל פליי $100 ארה״ב',p:352}]},
-  {id:16,cat:'wallet',name:'Apple / iTunes',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/apple.png',emoji:'',color:'#555',cur:'Apple',ul:'Apple ID',usd:false,pkgs:[{a:'iTunes $2 US',p:9},{a:'iTunes $3 US',p:13},{a:'iTunes $4 US',p:16},{a:'iTunes $5 US',p:20},{a:'iTunes $6 US',p:21},{a:'iTunes $10 US',p:36},{a:'iTunes $15 US',p:55},{a:'iTunes $20 US',p:71},{a:'iTunes $25 US',p:90},{a:'iTunes $50 US',p:176},{a:'iTunes $70 US',p:240},{a:'iTunes $100 US',p:340},{a:'iTunes $200 US',p:688},{a:'iTunes $300 US',p:1024},{a:'iTunes $400 US',p:1344},{a:'iTunes $500 US',p:1680}]},
-  {id:17,cat:'wallet',name:'Razer Gold',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/razergold.png',emoji:'💚',color:'#44d62c',cur:'Razer Gold',ul:'Razer ID',usd:false,pkgs:[{a:'Razer Gold $5',p:20},{a:'Razer Gold $10',p:36},{a:'Razer Gold $20',p:72},{a:'Razer Gold $50',p:176},{a:'Razer Gold $100',p:349},{a:'Razer Gold $200',p:685},{a:'Razer Gold $250',p:842},{a:'Razer Gold $500',p:1664}]},
-  {id:18,cat:'gift',name:'Amazon',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Amzon.png',emoji:'',color:'#ff9900',cur:'Amazon',ul:'Amazon Email',usd:true,pkgs:[{a:'$10 Amazon',p:10},{a:'$25 Amazon',p:25},{a:'$50 Amazon',p:50},{a:'$100 Amazon',p:100}]},
+  {id:11,hidden:true,cat:'console',name:'PlayStation (PSN)',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/psn.png',emoji:'',color:'#003087',cur:'PSN',ul:'PSN Email',usd:false,pkgs:[{a:'PSN ארה״ב $10',p:34},{a:'PSN ארה״ב $25',p:90},{a:'PSN $50',p:176},{a:'PSN ארה״ב $60',p:202},{a:'PSN ארה״ב $100',p:346}]},
+  {id:12,hidden:true,cat:'console',name:'Xbox',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Xbox.png',emoji:'',color:'#107c10',cur:'Xbox',ul:'Microsoft Email',usd:true,pkgs:[{a:'$10 Xbox',p:10},{a:'$25 Xbox',p:25},{a:'$50 Xbox',p:50},{a:'$100 Xbox',p:100}]},
+  {id:13,hidden:true,cat:'console',name:'Nintendo eShop',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/nintendo.png',emoji:'',color:'#e4000f',cur:'Nintendo',ul:'Nintendo Account',usd:true,pkgs:[{a:'$10 eShop',p:10},{a:'$20 eShop',p:20},{a:'$35 eShop',p:35},{a:'$50 eShop',p:50}]},
+  {id:14,hidden:true,cat:'wallet',name:'Steam',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/steam.png',emoji:'',color:'#1b2838',cur:'Steam',ul:'Steam Email',usd:true,pkgs:[{a:'$5 Steam',p:5},{a:'$10 Steam',p:10},{a:'$20 Steam',p:20},{a:'$50 Steam',p:50}]},
+  {id:15,hidden:true,cat:'wallet',name:'Google Play',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Googleplay.png',emoji:'',color:'#01875f',cur:'Google Play',ul:'Gmail',usd:false,pkgs:[{a:'גוגל פליי $5 ארה״ב',p:20},{a:'גוגל פליי $10 ארה״ב',p:37},{a:'גוגל פליי $15 ארה״ב',p:55},{a:'גוגל פליי $25 ארה״ב',p:88},{a:'גוגל פליי $50 ארה״ב',p:176},{a:'גוגל פליי $100 ארה״ב',p:352}]},
+  {id:16,hidden:true,cat:'wallet',name:'Apple / iTunes',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/apple.png',emoji:'',color:'#555',cur:'Apple',ul:'Apple ID',usd:false,pkgs:[{a:'iTunes $2 US',p:9},{a:'iTunes $3 US',p:13},{a:'iTunes $4 US',p:16},{a:'iTunes $5 US',p:20},{a:'iTunes $6 US',p:21},{a:'iTunes $10 US',p:36},{a:'iTunes $15 US',p:55},{a:'iTunes $20 US',p:71},{a:'iTunes $25 US',p:90},{a:'iTunes $50 US',p:176},{a:'iTunes $70 US',p:240},{a:'iTunes $100 US',p:340},{a:'iTunes $200 US',p:688},{a:'iTunes $300 US',p:1024},{a:'iTunes $400 US',p:1344},{a:'iTunes $500 US',p:1680}]},
+  {id:17,hidden:true,cat:'wallet',name:'Razer Gold',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/razergold.png',emoji:'💚',color:'#44d62c',cur:'Razer Gold',ul:'Razer ID',usd:false,pkgs:[{a:'Razer Gold $5',p:20},{a:'Razer Gold $10',p:36},{a:'Razer Gold $20',p:72},{a:'Razer Gold $50',p:176},{a:'Razer Gold $100',p:349},{a:'Razer Gold $200',p:685},{a:'Razer Gold $250',p:842},{a:'Razer Gold $500',p:1664}]},
+  {id:18,hidden:true,cat:'gift',name:'Amazon',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Amzon.png',emoji:'',color:'#ff9900',cur:'Amazon',ul:'Amazon Email',usd:true,pkgs:[{a:'$10 Amazon',p:10},{a:'$25 Amazon',p:25},{a:'$50 Amazon',p:50},{a:'$100 Amazon',p:100}]},
   {id:20,cat:'mobile',name:'Free Fire',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/freefire.png',emoji:'',color:'#e53935',cur:'Diamonds',ul:'Free Fire Player ID',usd:false,pkgs:[
-    {a:'Free Fire 100+10 Diamond',p:5,region:'global'},
-    {a:'Free Fire 210+21 Diamond',p:10,region:'global'},
+    {a:'Free Fire 100+10 Diamond',p:4,region:'global'},
+    {a:'Free Fire 210+21 Diamond',p:9,region:'global'},
     {a:'Free Fire 341 Diamond',p:13,region:'global'},
-    {a:'Free Fire 530+53 Diamond',p:19,region:'global'},
+    {a:'Free Fire 530+53 Diamond',p:22,region:'global'},
     {a:'Free Fire 810 Diamond',p:28,region:'global'},
-    {a:'Free Fire 1080+108 Diamond',p:37,region:'global'},
+    {a:'Free Fire 1080+108 Diamond',p:44,region:'global'},
     {a:'Free Fire 1718 Diamond',p:53,region:'global'},
-    {a:'Free Fire 2200+220 Diamond',p:72,region:'global'},
+    {a:'Free Fire 2200+220 Diamond',p:87,region:'global'},
     {a:'Free Fire 3650 Diamond',p:106,region:'global'},
     {a:'Free Fire 7260 Diamond',p:218,region:'global'},
     {a:'🇧🇷 Free Fire 530 Diamond BR',p:11,region:'br',warn:'דורש חשבון Free Fire רשום בברזיל'},
@@ -894,7 +892,7 @@ const PRODS=[
     {a:'🇧🇷 Free Fire 2200 Diamond BR',p:42,region:'br',warn:'דורש חשבון Free Fire רשום בברזיל'},
     {a:'🇧🇷 Free Fire 5060 Diamond BR',p:88,region:'br',warn:'דורש חשבון Free Fire רשום בברזיל'}
   ]},
-  {id:19,cat:'gift',name:'GameStop',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/GameStop.png',emoji:'🕹️',color:'#e31837',cur:'GameStop',ul:'Email',usd:true,pkgs:[{a:'$10 GS',p:10},{a:'$25 GS',p:25},{a:'$50 GS',p:50}]},
+  {id:19,hidden:true,cat:'gift',name:'GameStop',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/GameStop.png',emoji:'🕹️',color:'#e31837',cur:'GameStop',ul:'Email',usd:true,pkgs:[{a:'$10 GS',p:10},{a:'$25 GS',p:25},{a:'$50 GS',p:50}]},
   {id:21,cat:'mobile',name:'Mobile Legends',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/MobileLegends.jpeg',emoji:'💎',color:'#1e88e5',cur:'Diamonds',ul:'ML User ID',usd:false,pkgs:[{a:'Mobile Legends 253 Diamonds + 25 Bonus',p:18},{a:'Mobile Legends 505 Diamonds + 66 Bonus',p:32},{a:'Mobile Legends 1010 Diamonds + 182 Bonus',p:68},{a:'Mobile Legends 1515 Diamonds + 273 Bonus',p:103},{a:'Mobile Legends 2525 Diamonds + 480 Bonus',p:160}]},
   {id:22,cat:'mobile',name:'TikTok',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Tiktok.svg.png',emoji:'🎵',color:'#000000',cur:'Coins',ul:'TikTok Username',usd:false,pkgs:[
     {a:'טיקטוק 70 מטבעות',p:4,region:'global'},
@@ -940,8 +938,8 @@ const PRODS=[
     {a:'🇹🇷 Bigo 4000 יהלומים TR',p:170,region:'tr',note:'נטען דרך ה-ID — חוסך כ-45%'},
     {a:'🇹🇷 Bigo 8000 יהלומים TR',p:340,region:'tr',note:'נטען דרך ה-ID — חוסך כ-45%'}
   ]},
-  {id:24,cat:'gift',name:'Netflix',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Netflix.jpg',emoji:'🎬',color:'#e50914',cur:'Netflix',ul:'Netflix Email',usd:false,pkgs:[{a:'Netflix 4K חודש 1 - 5 מסכים',p:52},{a:'Netflix 4K חודש 3 - 5 מסכים',p:157},{a:'Netflix 4K חודש 12 - 1 מסך',p:279},{a:'Netflix 4K חודש 6 - 5 מסכים',p:304},{a:'Netflix 4K חודש 12 - 5 מסכים',p:608},{a:'Netflix Gift Card $15',p:80},{a:'Netflix Gift Card $30',p:122},{a:'Netflix Gift Card $60',p:218}]},
-  {id:25,cat:'mobile',name:'Likee',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Likee.jpg',emoji:'💜',color:'#fe2c55',cur:'Diamonds',ul:'Likee ID',usd:false,pkgs:[{a:'Likee 42 Diamonds',p:4},{a:'Likee 84 Diamonds',p:8},{a:'Likee 210 Diamonds',p:18},{a:'Likee 420 Diamonds',p:34},{a:'Likee 2100 Diamonds',p:160},{a:'Likee 3150 Diamonds',p:240},{a:'Likee 4200 Diamonds',p:320},{a:'Likee 10700 Diamonds',p:832},{a:'Likee 21000 Diamonds',p:1600}]},
+  {id:24,hidden:true,cat:'gift',name:'Netflix',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Netflix.jpg',emoji:'🎬',color:'#e50914',cur:'Netflix',ul:'Netflix Email',usd:false,pkgs:[{a:'Netflix 4K חודש 1 - 5 מסכים',p:52},{a:'Netflix 4K חודש 3 - 5 מסכים',p:157},{a:'Netflix 4K חודש 12 - 1 מסך',p:279},{a:'Netflix 4K חודש 6 - 5 מסכים',p:304},{a:'Netflix 4K חודש 12 - 5 מסכים',p:608},{a:'Netflix Gift Card $15',p:80},{a:'Netflix Gift Card $30',p:122},{a:'Netflix Gift Card $60',p:218}]},
+  {id:25,hidden:true,cat:'mobile',name:'Likee',icon:'https://raw.githubusercontent.com/rubi210990-cyber/Cashphone-/main/Likee.jpg',emoji:'💜',color:'#fe2c55',cur:'Diamonds',ul:'Likee ID',usd:false,pkgs:[{a:'Likee 42 Diamonds',p:4},{a:'Likee 84 Diamonds',p:8},{a:'Likee 210 Diamonds',p:18},{a:'Likee 420 Diamonds',p:34},{a:'Likee 2100 Diamonds',p:160},{a:'Likee 3150 Diamonds',p:240},{a:'Likee 4200 Diamonds',p:320},{a:'Likee 10700 Diamonds',p:832},{a:'Likee 21000 Diamonds',p:1600}]},
 ];
 
 function makePrices(tier,custPct,custIls){
@@ -2436,6 +2434,7 @@ function renderStoreFront(){
   const disabledProds = s.disabledProds||[];
   const prods=(activeCat==='all'?PRODS:PRODS.filter(p=>p.cat===activeCat))
     .filter(p=>!disabledProds.includes(p.id))
+    .filter(p=>!p.hidden)
     // 📦 סנן מוצרים שכל החבילות שלהם מוסתרות
     .filter(p=>{
       var visible=getVisiblePackages(s,p);
