@@ -1,6 +1,43 @@
 
 // CashPhone v2.19
 
+// ============================================================
+// 🔐 הגדרות אבטחה — שנה את הסיסמה כאן בלבד
+// ============================================================
+const ADMIN_PASS = 'cashphone2026!'; // ← שנה לסיסמה חזקה שלך
+const MAX_LOGIN_ATTEMPTS = 5;        // מספר ניסיונות מותר
+const LOCKOUT_MINUTES = 15;          // זמן נעילה בדקות
+
+// Rate Limiting — מונע brute force
+const _loginAttempts = {};
+function _checkRateLimit(username) {
+  const key = 'rl_' + username;
+  const now = Date.now();
+  if (!_loginAttempts[key]) _loginAttempts[key] = { count: 0, firstAttempt: now, locked: false };
+  const r = _loginAttempts[key];
+  // אם עברו 15 דקות — אפס
+  if (now - r.firstAttempt > LOCKOUT_MINUTES * 60 * 1000) {
+    _loginAttempts[key] = { count: 0, firstAttempt: now, locked: false };
+    return { allowed: true };
+  }
+  if (r.locked) {
+    const remaining = Math.ceil((LOCKOUT_MINUTES * 60 * 1000 - (now - r.firstAttempt)) / 60000);
+    return { allowed: false, remaining };
+  }
+  return { allowed: true };
+}
+function _recordFailedAttempt(username) {
+  const key = 'rl_' + username;
+  if (!_loginAttempts[key]) _loginAttempts[key] = { count: 0, firstAttempt: Date.now(), locked: false };
+  _loginAttempts[key].count++;
+  if (_loginAttempts[key].count >= MAX_LOGIN_ATTEMPTS) {
+    _loginAttempts[key].locked = true;
+  }
+}
+function _resetAttempts(username) {
+  delete _loginAttempts['rl_' + username];
+}
+// ============================================================
 
 // === Block #1 ===
 window.fbOK=false;
@@ -1065,7 +1102,7 @@ function loadData(){
     if(u&&JSON.parse(u).length>0)users=JSON.parse(u);
   }catch(e){console.error('📂 loadData parse error:',e);}
   if(!users.find(function(u){return u.username==='admin';}))
-    users.unshift({id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null});
+    users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
   // טעינת לוג ביקורת
   try{loadAuditLog();}catch(e){}
   // מיגרציה: העברת customerInfo מחנויות למשתמשים מקושרים
@@ -1152,7 +1189,7 @@ function syncFromFirebase(){
       changed=true;
     }
     if(!users.find(function(u){return u.username==='admin';})){
-      users.unshift({id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null});
+      users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
       changed=true;
     }
     if(changed){
@@ -1221,7 +1258,7 @@ function applyRemoteSnapshot(data){
       users=data.users;
       // חובה לוודא שאדמין קיים
       if(!users.find(function(u){return u.username==='admin';})){
-        users.unshift({id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null});
+        users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
       }
       changedUsers=true;
     }
@@ -1352,7 +1389,7 @@ function pauseSyncFor(ms){
 // טען נתונים מ-Firebase בהפעלה
 let stores=[{id:'default',name:'ברירת מחדל',tier:'normal',credit:0,maxCredit:0,prices:makePrices('normal'),log:[]}];
 let orders=[];
-let users=[{id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null}];
+let users=[{id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null}];
 let currentUser=null;
 let prevId='default';
 let priceStoreId='default';
@@ -1542,7 +1579,7 @@ function restoreBackup(){
         if(d.dollarRate&&typeof dollarRate!=='undefined')dollarRate=d.dollarRate;
         if(d.dollarCosts&&typeof dollarCosts!=='undefined')dollarCosts=d.dollarCosts;
         if(!users.find(function(u){return u.username==='admin';})){
-          users.unshift({id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null});
+          users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
         }
         saveData();
         try{saveAuditLog();}catch(e){}
@@ -1561,7 +1598,7 @@ function restoreBackup(){
 // ============ AUTH ============
 function quickLogin(){
   document.getElementById('li-user').value='admin';
-  document.getElementById('li-pass').value='admin123';
+  document.getElementById('li-pass').value='';
   doLogin();
 }
 
@@ -1573,11 +1610,24 @@ function doLogin(autoLoginUser){
   }else{
     u=document.getElementById('li-user').value.trim().toLowerCase();
     p=document.getElementById('li-pass').value;
+
+    // 🔐 Rate Limiting — אדמין לא ננעל לעולם, רק משתמשים רגילים
+    if(u!=='admin'){
+      const rl=_checkRateLimit(u);
+      if(!rl.allowed){
+        const errEl=document.getElementById('login-err');
+        errEl.classList.add('on');
+        errEl.style.color='#ef9f27';
+        errEl.textContent='🔒 חשבון נעול ל-'+rl.remaining+' דקות עקב ניסיונות כושלים רבים';
+        document.getElementById('li-pass').value='';
+        return;
+      }
+    }
     // תמיד אפשר להיכנס כ-admin
-    if(u==='admin'&&p==='admin123'){
-      const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null};
+    if(u==='admin'&&p===ADMIN_PASS){
+      const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null};
       currentUser=adminUser;
-      try{localStorage.setItem('cp_session',JSON.stringify({username:'admin',password:'admin123'}));}catch(e){}
+      try{localStorage.setItem('cp_session',JSON.stringify({username:'admin',password:ADMIN_PASS}));}catch(e){}
       resetIdleTimer();
       document.getElementById('login-screen').style.display='none';
       document.getElementById('main-nav').style.display='flex';
@@ -1585,7 +1635,16 @@ function doLogin(autoLoginUser){
       document.getElementById('chip-name').textContent='admin 👑';
       buildNav();
       showPage('page-admin');
+      // התראה אם היו ניסיונות כושלים על האדמין
+      const adminAttempts=(_loginAttempts['rl_admin']||{}).count||0;
+      if(adminAttempts>=3){
+        setTimeout(function(){
+          cpAlert('⚠️ שים לב: היו '+adminAttempts+' ניסיונות כושלים לכניסה לחשבון האדמין לפני שהצלחת. מישהו ניסה לפרוץ?','warning');
+        },1000);
+      }
+      _resetAttempts('admin');
       logAudit('login','כניסה למערכת',{role:'admin'});
+      initSession('admin','admin');
       setTimeout(function(){renderDashboard();checkBackupReminder();},100);
       return;
     }
@@ -1640,20 +1699,23 @@ function doLogin(autoLoginUser){
           // עדיין לא נמצא
           document.getElementById('login-err').classList.add('on');
           document.getElementById('login-err').style.color='';
-          document.getElementById('login-err').textContent='שם משתמש או סיסמה שגויים';
+          _recordFailedAttempt(u);
+          document.getElementById('login-err').textContent='שם משתמש או סיסמה שגויים — נסיון '+((_loginAttempts['rl_'+u]||{}).count||1)+'/'+MAX_LOGIN_ATTEMPTS;
           document.getElementById('li-pass').value='';
         }).catch(function(err){
           console.warn('Firebase login fallback failed:',err);
           document.getElementById('li-pass').removeAttribute('disabled');
           document.getElementById('login-err').classList.add('on');
           document.getElementById('login-err').style.color='';
-          document.getElementById('login-err').textContent='שם משתמש או סיסמה שגויים';
+          _recordFailedAttempt(u);
+          document.getElementById('login-err').textContent='שם משתמש או סיסמה שגויים — נסיון '+((_loginAttempts['rl_'+u]||{}).count||1)+'/'+MAX_LOGIN_ATTEMPTS;
           document.getElementById('li-pass').value='';
         });
         return;
       }
       document.getElementById('login-err').classList.add('on');
-      document.getElementById('login-err').textContent='שם משתמש או סיסמה שגויים';
+      _recordFailedAttempt(u);
+      document.getElementById('login-err').textContent='שם משתמש או סיסמה שגויים — נסיון '+((_loginAttempts['rl_'+u]||{}).count||1)+'/'+MAX_LOGIN_ATTEMPTS;
       document.getElementById('li-pass').value='';
       return;
     }
@@ -1678,7 +1740,9 @@ function doLogin(autoLoginUser){
   document.getElementById('login-err').classList.remove('on');
   document.getElementById('chip-name').textContent=found.username+(found.role==='admin'?' 👑':found.role==='reseller'?' 🤝':' 🏪');
   buildNav();
+  _resetAttempts(found.username);
   logAudit('login','כניסה למערכת',{role:found.role,username:found.username});
+  initSession(found.username, found.role);
   if(found.role==='store'){
     // הסתר תפריט בחירת חנות לגמרי
     const sel=document.getElementById('prev-sel');
@@ -1700,6 +1764,7 @@ function doLogin(autoLoginUser){
 function doLogout(){
   if(currentUser){
     try{logAudit('logout','התנתקות');}catch(e){}
+    endSession();
   }
   currentUser=null;
   // ניקוי ההתחברות השמורה
@@ -3818,7 +3883,7 @@ function toast(id,msg){
 function aTab(el,id){
   document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
-  ['sec-dash','sec-orders','sec-log','sec-stats','sec-debts','sec-monthly','sec-security'].forEach(s=>{
+  ['sec-dash','sec-orders','sec-log','sec-stats','sec-debts','sec-monthly','sec-security','sec-sessions'].forEach(s=>{
     const el=document.getElementById(s);
     if(el)el.style.display='none';
   });
@@ -3831,6 +3896,7 @@ function aTab(el,id){
   if(id==='sec-debts')renderDebtsTab();
   if(id==='sec-monthly')renderMonthlyReport();
   if(id==='sec-security')renderSecurityTab();
+  if(id==='sec-sessions')renderSessionsTab();
 }
 
 // ============ EXCEL EXPORT ============
@@ -7750,8 +7816,8 @@ function init(){
         }
       }else if(s&&s.username&&s.password){
         // אדמין - תמיד אפשר
-        if(s.username==='admin'&&s.password==='admin123'){
-          const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:'admin123',role:'admin',storeId:null};
+        if(s.username==='admin'&&s.password===ADMIN_PASS){
+          const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null};
           currentUser=adminUser;
           resetIdleTimer();
           document.getElementById('login-screen').style.display='none';
@@ -10023,6 +10089,235 @@ function exportMyCredit(){
 // ============ 🛡️ פונקציות UI - טאב אבטחה ============
 // ============================================================
 
+// ============================================================
+// 🖥️ מערכת סשנים פעילים
+// ============================================================
+
+// מאגר סשנים — מתעדכן בזמן אמת
+const _activeSessions = {};
+let _mySessionId = null;
+let _myIpData = null;
+
+// יצירת ID ייחודי לסשן
+function _genSessionId(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+// זיהוי מכשיר מ-UserAgent
+function _parseDevice(ua){
+  if(!ua) return {device:'לא ידוע', browser:'לא ידוע', os:'לא ידוע'};
+  let device='💻 מחשב', os='', browser='';
+  if(/iPhone/i.test(ua)) device='📱 iPhone';
+  else if(/Android/i.test(ua) && /Mobile/i.test(ua)) device='📱 אנדרואיד';
+  else if(/iPad/i.test(ua)) device='📟 iPad';
+  else if(/Android/i.test(ua)) device='📟 טאבלט';
+  if(/Windows NT 10/i.test(ua)) os='Windows 10/11';
+  else if(/Windows NT/i.test(ua)) os='Windows';
+  else if(/Mac OS X/i.test(ua)) os='macOS';
+  else if(/Android/i.test(ua)) os='Android';
+  else if(/iPhone OS/i.test(ua)||/iOS/i.test(ua)) os='iOS';
+  else if(/Linux/i.test(ua)) os='Linux';
+  if(/Edg\//i.test(ua)) browser='Edge';
+  else if(/Chrome\//i.test(ua) && !/Chromium/i.test(ua)) browser='Chrome';
+  else if(/Firefox\//i.test(ua)) browser='Firefox';
+  else if(/Safari\//i.test(ua) && !/Chrome/i.test(ua)) browser='Safari';
+  else if(/OPR\//i.test(ua)||/Opera/i.test(ua)) browser='Opera';
+  else browser='דפדפן לא ידוע';
+  return {device, browser, os};
+}
+
+// שמירת סשן ב-Firestore
+async function _saveSessionToFirestore(sessionData){
+  if(!window.fbOK||!window.db) return;
+  try{
+    await window.db.collection('cashphone_sessions').doc(sessionData.id).set(sessionData);
+  }catch(e){ console.warn('Session save failed:',e); }
+}
+
+// מחיקת סשן מ-Firestore (ביציאה)
+async function _removeSessionFromFirestore(sessionId){
+  if(!window.fbOK||!window.db) return;
+  try{
+    await window.db.collection('cashphone_sessions').doc(sessionId).delete();
+  }catch(e){ console.warn('Session remove failed:',e); }
+}
+
+// קבלת IP ומיקום
+async function _fetchIpData(){
+  try{
+    const res = await fetch('https://ipapi.co/json/', {signal: AbortSignal.timeout(4000)});
+    if(res.ok) return await res.json();
+  }catch(e){}
+  try{
+    const res2 = await fetch('https://api.ipify.org?format=json', {signal: AbortSignal.timeout(3000)});
+    if(res2.ok){ const d=await res2.json(); return {ip:d.ip,city:'—',country_name:'—'}; }
+  }catch(e){}
+  return {ip:'לא ידוע',city:'—',country_name:'—'};
+}
+
+// אתחול סשן — נקרא מ-doLogin
+async function initSession(username, role){
+  _mySessionId = _genSessionId();
+  _myIpData = await _fetchIpData();
+  const dev = _parseDevice(navigator.userAgent);
+  const sessionData = {
+    id: _mySessionId,
+    username,
+    role,
+    ip: _myIpData.ip || 'לא ידוע',
+    city: _myIpData.city || '—',
+    country: _myIpData.country_name || '—',
+    device: dev.device,
+    browser: dev.browser,
+    os: dev.os,
+    loginTime: Date.now(),
+    lastSeen: Date.now(),
+    userAgent: navigator.userAgent.slice(0,120)
+  };
+  _activeSessions[_mySessionId] = sessionData;
+  await _saveSessionToFirestore(sessionData);
+  // Heartbeat כל 30 שניות
+  if(window._sessionHeartbeat) clearInterval(window._sessionHeartbeat);
+  window._sessionHeartbeat = setInterval(async function(){
+    if(_mySessionId && _activeSessions[_mySessionId]){
+      _activeSessions[_mySessionId].lastSeen = Date.now();
+      if(window.fbOK && window.db){
+        try{ await window.db.collection('cashphone_sessions').doc(_mySessionId).update({lastSeen: Date.now()}); }catch(e){}
+      }
+    }
+  }, 30000);
+}
+
+// סיום סשן — נקרא מ-doLogout
+async function endSession(){
+  if(window._sessionHeartbeat) clearInterval(window._sessionHeartbeat);
+  if(_mySessionId){
+    delete _activeSessions[_mySessionId];
+    await _removeSessionFromFirestore(_mySessionId);
+    _mySessionId = null;
+  }
+}
+
+// ניתוק סשן של משתמש אחר (רק אדמין)
+async function kickSession(sessionId){
+  if(!currentUser||currentUser.role!=='admin') return;
+  if(sessionId===_mySessionId){ cpAlert('לא ניתן לנתק את עצמך 😄','warning'); return; }
+  if(window.fbOK&&window.db){
+    try{ await window.db.collection('cashphone_sessions').doc(sessionId).delete(); }catch(e){}
+  }
+  delete _activeSessions[sessionId];
+  renderSessionsTab();
+  toast('t-admin','✅ המשתמש נותק');
+}
+
+// שחרור נעילה של משתמש
+function unlockUser(username){
+  _resetAttempts(username);
+  renderSessionsTab();
+  toast('t-admin','✅ הנעילה של '+username+' שוחררה');
+}
+
+// פורמט זמן
+function _timeAgo(ts){
+  const diff = Date.now() - ts;
+  const s = Math.floor(diff/1000);
+  if(s<60) return 'לפני '+s+' שניות';
+  const m = Math.floor(s/60);
+  if(m<60) return 'לפני '+m+' דקות';
+  const h = Math.floor(m/60);
+  return 'לפני '+h+' שעות';
+}
+function _duration(ts){
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff/60000);
+  if(m<60) return m+' דק\'';
+  return Math.floor(m/60)+'ש\' '+(m%60)+'ד\'';
+}
+
+// רינדור טאב הסשנים
+async function renderSessionsTab(){
+  const el = document.getElementById('sessions-list');
+  const lockedEl = document.getElementById('locked-users-list');
+  if(!el) return;
+
+  el.innerHTML = '<div style="color:#aaa;font-size:13px;text-align:center;padding:20px;">⏳ טוען סשנים...</div>';
+
+  // שלוף סשנים מ-Firestore
+  let sessions = [];
+  if(window.fbOK && window.db){
+    try{
+      const snap = await window.db.collection('cashphone_sessions').get();
+      snap.forEach(doc => { sessions.push(doc.data()); });
+      // נקה סשנים ישנים (חסרי heartbeat מעל 3 דקות)
+      const stale = sessions.filter(s => Date.now() - s.lastSeen > 3*60*1000);
+      for(const s of stale){
+        try{ await window.db.collection('cashphone_sessions').doc(s.id).delete(); }catch(e){}
+      }
+      sessions = sessions.filter(s => Date.now() - s.lastSeen <= 3*60*1000);
+    }catch(e){ sessions = Object.values(_activeSessions); }
+  } else {
+    sessions = Object.values(_activeSessions);
+  }
+
+  if(sessions.length===0){
+    el.innerHTML='<div style="color:#888;font-size:13px;text-align:center;padding:20px;">אין סשנים פעילים כרגע</div>';
+  } else {
+    let html='';
+    sessions.forEach(function(s){
+      const isMe = s.id === _mySessionId;
+      const roleIcon = s.role==='admin'?'👑':s.role==='reseller'?'💼':'🏪';
+      html += '<div style="background:'+(isMe?'#1a2a1a':'#2d3748')+';border:1px solid '+(isMe?'#39e600':'#475467')+';border-radius:10px;padding:12px 14px;margin-bottom:10px;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">';
+      html += '<div>';
+      html += '<div style="font-weight:700;color:#fff;font-size:14px;">'+roleIcon+' '+s.username+(isMe?' <span style="font-size:11px;background:#39e600;color:#000;padding:1px 6px;border-radius:8px;font-weight:700;">אתה</span>':'')+'</div>';
+      html += '<div style="font-size:12px;color:#aaa;margin-top:4px;">🌐 IP: <b style="color:#fff;">'+s.ip+'</b>';
+      if(s.city&&s.city!=='—') html += ' &nbsp;📍 '+s.city+', '+s.country;
+      html += '</div>';
+      html += '<div style="font-size:12px;color:#aaa;margin-top:2px;">'+s.device+' &nbsp;|&nbsp; '+s.browser+' &nbsp;|&nbsp; '+s.os+'</div>';
+      html += '<div style="font-size:12px;color:#aaa;margin-top:2px;">⏰ נכנס: '+new Date(s.loginTime).toLocaleString('he-IL')+' &nbsp;('+_duration(s.loginTime)+' מחובר)</div>';
+      html += '<div style="font-size:11px;color:#666;margin-top:2px;">עדכון אחרון: '+_timeAgo(s.lastSeen)+'</div>';
+      html += '</div>';
+      if(!isMe){
+        html += '<button onclick="kickSession(\''+s.id+'\')" style="background:#e24b4a;color:#fff;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;font-family:inherit;white-space:nowrap;">⛔ נתק</button>';
+      }
+      html += '</div></div>';
+    });
+    el.innerHTML = html;
+  }
+
+  // משתמשים חסומים
+  if(lockedEl){
+    const locked = Object.entries(_loginAttempts)
+      .filter(([k,v]) => v.locked)
+      .map(([k,v]) => ({username: k.replace('rl_',''), data: v}));
+    if(locked.length===0){
+      lockedEl.innerHTML='<div style="color:#888;font-size:13px;text-align:center;padding:16px;">אין משתמשים חסומים כרגע ✅</div>';
+    } else {
+      let html='';
+      locked.forEach(function(l){
+        const remaining = Math.ceil((LOCKOUT_MINUTES*60*1000-(Date.now()-l.data.firstAttempt))/60000);
+        html+='<div style="background:#2a1a1a;border:1px solid #e24b4a;border-radius:10px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
+        html+='<div><div style="color:#fff;font-weight:700;">🔒 '+l.username+'</div>';
+        html+='<div style="font-size:12px;color:#aaa;">'+l.data.count+' ניסיונות כושלים — עוד '+Math.max(0,remaining)+' דקות לשחרור</div></div>';
+        html+='<button onclick="unlockUser(\''+l.username+'\')" style="background:#39e600;color:#000;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:700;">🔓 שחרר</button>';
+        html+='</div>';
+      });
+      lockedEl.innerHTML=html;
+    }
+  }
+}
+
+// ייצוא CSV של הסשנים
+function exportSessionsCSV(){
+  const sessions = Object.values(_activeSessions);
+  if(sessions.length===0){ cpAlert('אין סשנים לייצוא','info'); return; }
+  const rows = [['שם משתמש','תפקיד','IP','עיר','מכשיר','דפדפן','זמן כניסה']];
+  sessions.forEach(s=>{
+    rows.push([s.username,s.role,s.ip,s.city+' '+s.country,s.device,s.browser,new Date(s.loginTime).toLocaleString('he-IL')]);
+  });
+  downloadCSV('sessions_'+Date.now()+'.csv', rows);
+}
+
 function renderSecurityTab(){
   var ab=document.getElementById('sec-auto-backup');
   var lastBackup=document.getElementById('sec-last-backup');
@@ -10387,3 +10682,15 @@ async function clearAuditLog(){
     if(el)el.innerHTML='';
   };
 })();
+
+// ניקוי סשן כשסוגרים/מרעננים את הדף
+window.addEventListener('beforeunload', function(){
+  if(_mySessionId && window.fbOK && window.db){
+    // sendBeacon — הדרך היחידה לשלוח בקשה לפני סגירת הדף
+    try{
+      const url = 'https://firestore.googleapis.com/v1/projects/cashphone-467f1/databases/(default)/documents/cashphone_sessions/'+_mySessionId;
+      navigator.sendBeacon && navigator.sendBeacon('/beacon-noop'); // fallback
+      window.db.collection('cashphone_sessions').doc(_mySessionId).delete();
+    }catch(e){}
+  }
+});
