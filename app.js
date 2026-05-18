@@ -4,15 +4,13 @@
 // ============================================================
 // 🔐 הגדרות אבטחה — סיסמת ברירת מחדל (מוחלפת ע"י Firestore)
 // ============================================================
-const ADMIN_PASS_DEFAULT = 'cashphone2026!'; // ← ברירת מחדל בלבד
+const ADMIN_PASS_DEFAULT = 'cashphone2026!';
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_MINUTES = 15;
 
 // סיסמה אקטיבית — מתעדכנת מ-Firestore
-Object.defineProperty(window, 'ADMIN_PASS', {
-  get: function(){ return window._runtimeAdminPass || ADMIN_PASS_DEFAULT; },
-  configurable: true
-});
+window._runtimeAdminPass = null;
+function ADMIN_PASS(){ return window._runtimeAdminPass || ADMIN_PASS_DEFAULT; }
 
 // Rate Limiting — מונע brute force
 const _loginAttempts = {};
@@ -1119,7 +1117,7 @@ function loadData(){
     if(u&&JSON.parse(u).length>0)users=JSON.parse(u);
   }catch(e){console.error('📂 loadData parse error:',e);}
   if(!users.find(function(u){return u.username==='admin';}))
-    users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
+    users.unshift({id:'admin',username:'admin',password:ADMIN_PASS(),role:'admin',storeId:null});
   // טעינת לוג ביקורת
   try{loadAuditLog();}catch(e){}
   // מיגרציה: העברת customerInfo מחנויות למשתמשים מקושרים
@@ -1206,7 +1204,7 @@ function syncFromFirebase(){
       changed=true;
     }
     if(!users.find(function(u){return u.username==='admin';})){
-      users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
+      users.unshift({id:'admin',username:'admin',password:ADMIN_PASS(),role:'admin',storeId:null});
       changed=true;
     }
     if(changed){
@@ -1275,7 +1273,7 @@ function applyRemoteSnapshot(data){
       users=data.users;
       // חובה לוודא שאדמין קיים
       if(!users.find(function(u){return u.username==='admin';})){
-        users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
+        users.unshift({id:'admin',username:'admin',password:ADMIN_PASS(),role:'admin',storeId:null});
       }
       changedUsers=true;
     }
@@ -1406,7 +1404,7 @@ function pauseSyncFor(ms){
 // טען נתונים מ-Firebase בהפעלה
 let stores=[{id:'default',name:'ברירת מחדל',tier:'normal',credit:0,maxCredit:0,prices:makePrices('normal'),log:[]}];
 let orders=[];
-let users=[{id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null}];
+let users=[{id:'admin',username:'admin',password:ADMIN_PASS(),role:'admin',storeId:null}];
 let currentUser=null;
 let prevId='default';
 let priceStoreId='default';
@@ -1596,7 +1594,7 @@ function restoreBackup(){
         if(d.dollarRate&&typeof dollarRate!=='undefined')dollarRate=d.dollarRate;
         if(d.dollarCosts&&typeof dollarCosts!=='undefined')dollarCosts=d.dollarCosts;
         if(!users.find(function(u){return u.username==='admin';})){
-          users.unshift({id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null});
+          users.unshift({id:'admin',username:'admin',password:ADMIN_PASS(),role:'admin',storeId:null});
         }
         saveData();
         try{saveAuditLog();}catch(e){}
@@ -1641,10 +1639,10 @@ function doLogin(autoLoginUser){
       }
     }
     // תמיד אפשר להיכנס כ-admin
-    if(u==='admin'&&p===ADMIN_PASS){
-      const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null};
+    if(u==='admin'&&p===ADMIN_PASS()){
+      const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:ADMIN_PASS(),role:'admin',storeId:null};
       currentUser=adminUser;
-      try{localStorage.setItem('cp_session',JSON.stringify({username:'admin',password:ADMIN_PASS}));}catch(e){}
+      try{localStorage.setItem('cp_session',JSON.stringify({username:'admin',password:ADMIN_PASS()}));}catch(e){}
       resetIdleTimer();
       document.getElementById('login-screen').style.display='none';
       document.getElementById('main-nav').style.display='flex';
@@ -7833,8 +7831,8 @@ function init(){
         }
       }else if(s&&s.username&&s.password){
         // אדמין - תמיד אפשר
-        if(s.username==='admin'&&s.password===ADMIN_PASS){
-          const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:ADMIN_PASS,role:'admin',storeId:null};
+        if(s.username==='admin'&&s.password===ADMIN_PASS()){
+          const adminUser=users.find(x=>x.username==='admin')||{id:'admin',username:'admin',password:ADMIN_PASS(),role:'admin',storeId:null};
           currentUser=adminUser;
           resetIdleTimer();
           document.getElementById('login-screen').style.display='none';
@@ -10382,7 +10380,7 @@ async function changeAdminPassword(){
 
   // ולידציות
   if(!current){ showErr('יש להזין את הסיסמה הנוכחית'); return; }
-  if(current !== ADMIN_PASS){ showErr('❌ הסיסמה הנוכחית שגויה'); return; }
+  if(current !== ADMIN_PASS()){ showErr('❌ הסיסמה הנוכחית שגויה'); return; }
   if(!newPass){ showErr('יש להזין סיסמה חדשה'); return; }
   if(newPass.length < 8){ showErr('הסיסמה חייבת להכיל לפחות 8 תווים'); return; }
   if(newPass !== confirm){ showErr('❌ הסיסמאות לא תואמות'); return; }
@@ -10399,7 +10397,7 @@ async function changeAdminPassword(){
     }catch(e){ console.warn('Firestore save failed:', e); }
   }
 
-  // עדכון ADMIN_PASS בזיכרון
+  // עדכון ADMIN_PASS() בזיכרון
   // eslint-disable-next-line no-global-assign
   window._runtimeAdminPass = newPass;
 
