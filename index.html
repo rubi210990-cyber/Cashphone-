@@ -140,6 +140,7 @@
     <button class="atab" onclick="aTab(this,'sec-stats')">📈 דוחות</button>
     <button class="atab" onclick="aTab(this,'sec-monthly')">📅 חודשי</button>
     <button class="atab" onclick="aTab(this,'sec-security')">🛡️ אבטחה</button>
+    <button class="atab" onclick="aTab(this,'sec-sessions')">🖥️ סשנים</button>
   </div>
 
   <!-- DASHBOARD -->
@@ -758,6 +759,25 @@
       <div id="audit-summary" style="font-size:11px;color:#666;margin-top:8px;text-align:center;"></div>
     </div>
 
+  </div>
+
+  <!-- ============ 🖥️ סשנים פעילים ============ -->
+  <div id="sec-sessions" style="display:none;">
+    <div class="card" style="background:#3a4556;border:1px solid #5a6478;margin-bottom:16px;">
+      <div class="card-title">🖥️ סשנים פעילים</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:12px;">מי מחובר כרגע למערכת, מאיזה מכשיר ומתי נכנס</div>
+      <div id="sessions-list"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="gbtn" onclick="renderSessionsTab()" style="background:#475467;">🔄 רענן</button>
+        <button class="gbtn" onclick="exportSessionsCSV()" style="background:#475467;">📥 ייצוא CSV</button>
+      </div>
+    </div>
+
+    <div class="card" style="background:#3a4556;border:1px solid #5a6478;">
+      <div class="card-title">🔒 משתמשים חסומים</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:12px;">משתמשים שננעלו עקב ניסיונות כניסה כושלים</div>
+      <div id="locked-users-list"></div>
+    </div>
   </div>
 
 </div>

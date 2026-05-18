@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 🔐 רק קריאה/כתיבה למסמך הראשי של cashphone
+    match /cashphone/main {
+      // קריאה — רק אם המשתמש מאומת (anonymous auth)
+      allow read: if request.auth != null;
+      
+      // כתיבה — רק אם המשתמש מאומת
+      allow write: if request.auth != null;
+    }
+
+    // 🔐 לוגים — כתיבה בלבד, לא מחיקה
+    match /cashphone_logs/{logId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update, delete: if false;
+    }
+
+    // 🔐 כל שאר המסמכים — חסום לחלוטין
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
