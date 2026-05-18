@@ -4,21 +4,102 @@
 
   <url>
     <loc>https://cashphone.co.il/</loc>
+    <lastmod>2026-05-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/?lang=ar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://cashphone.co.il/"/>
   </url>
 
-  <url><loc>https://cashphone.co.il/pubg-uc</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://cashphone.co.il/roblox-robux</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://cashphone.co.il/fortnite-vbucks</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://cashphone.co.il/free-fire-diamonds</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://cashphone.co.il/mobile-legends</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://cashphone.co.il/psn</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://cashphone.co.il/xbox</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://cashphone.co.il/steam</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://cashphone.co.il/google-play</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://cashphone.co.il/apple-itunes</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url>
+    <loc>https://cashphone.co.il/pubg-uc.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/pubg-uc.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/pubg-uc.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/roblox-robux.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/roblox-robux.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/roblox-robux.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/free-fire-diamonds.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/free-fire-diamonds.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/free-fire-diamonds.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/fortnite-vbucks.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/fortnite-vbucks.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/fortnite-vbucks.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/mobile-legends.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/mobile-legends.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/mobile-legends.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/psn.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/psn.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/psn.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/xbox.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/xbox.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/xbox.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/steam.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/steam.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/steam.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/google-play.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/google-play.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/google-play.html?lang=ar"/>
+  </url>
+
+  <url>
+    <loc>https://cashphone.co.il/apple-itunes.html</loc>
+    <lastmod>2026-05-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he" href="https://cashphone.co.il/apple-itunes.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://cashphone.co.il/apple-itunes.html?lang=ar"/>
+  </url>
 
 </urlset>
