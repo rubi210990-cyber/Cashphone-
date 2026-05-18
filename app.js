@@ -2,11 +2,17 @@
 // CashPhone v2.19
 
 // ============================================================
-// 🔐 הגדרות אבטחה — שנה את הסיסמה כאן בלבד
+// 🔐 הגדרות אבטחה — סיסמת ברירת מחדל (מוחלפת ע"י Firestore)
 // ============================================================
-const ADMIN_PASS = 'cashphone2026!'; // ← שנה לסיסמה חזקה שלך
-const MAX_LOGIN_ATTEMPTS = 5;        // מספר ניסיונות מותר
-const LOCKOUT_MINUTES = 15;          // זמן נעילה בדקות
+const ADMIN_PASS_DEFAULT = 'cashphone2026!'; // ← ברירת מחדל בלבד
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCKOUT_MINUTES = 15;
+
+// סיסמה אקטיבית — מתעדכנת מ-Firestore
+Object.defineProperty(window, 'ADMIN_PASS', {
+  get: function(){ return window._runtimeAdminPass || ADMIN_PASS_DEFAULT; },
+  configurable: true
+});
 
 // Rate Limiting — מונע brute force
 const _loginAttempts = {};
@@ -61,6 +67,17 @@ function initFirebase(){
     window.db=firebase.firestore();
     window.fbOK=true;
     console.log('✅ Firebase ready');
+    // טעינת סיסמת אדמין מ-Firestore (אם שונתה)
+    setTimeout(function(){
+      try{
+        window.db.collection('cashphone').doc('main').get().then(function(doc){
+          if(doc.exists && doc.data().adminPass){
+            window._runtimeAdminPass = doc.data().adminPass;
+            console.log('🔑 סיסמת אדמין נטענה מ-Firestore');
+          }
+        });
+      }catch(e){}
+    }, 1000);
     return true;
   }catch(e){
     console.warn('Firebase init failed:',e);
@@ -10316,6 +10333,85 @@ function exportSessionsCSV(){
     rows.push([s.username,s.role,s.ip,s.city+' '+s.country,s.device,s.browser,new Date(s.loginTime).toLocaleString('he-IL')]);
   });
   downloadCSV('sessions_'+Date.now()+'.csv', rows);
+}
+
+// ============================================================
+// 🔑 שינוי סיסמת אדמין
+// ============================================================
+
+// בדיקת חוזק סיסמה
+function _checkPassStrength(pass){
+  let score = 0;
+  if(pass.length >= 8) score++;
+  if(pass.length >= 12) score++;
+  if(/[A-Z]/.test(pass)) score++;
+  if(/[0-9]/.test(pass)) score++;
+  if(/[^A-Za-z0-9]/.test(pass)) score++;
+  return score;
+}
+
+// עדכון פס חוזק בזמן הקלדה
+document.addEventListener('DOMContentLoaded', function(){
+  const inp = document.getElementById('cp-new');
+  if(!inp) return;
+  inp.addEventListener('input', function(){
+    const score = _checkPassStrength(inp.value);
+    const bar = document.getElementById('pass-strength-bar');
+    const txt = document.getElementById('pass-strength-txt');
+    if(!bar||!txt) return;
+    const colors = ['#e24b4a','#e24b4a','#ef9f27','#39e600','#39e600'];
+    const labels = ['','חלשה מאוד 😟','חלשה 😕','בינונית 👍','חזקה 💪','חזקה מאוד 🔒'];
+    bar.style.background = score>0 ? colors[score-1] : '#2d3748';
+    bar.style.width = (score*20)+'%';
+    txt.textContent = inp.value.length>0 ? (labels[score]||'') : '';
+    txt.style.color = score>0 ? colors[score-1] : '#888';
+  });
+});
+
+async function changeAdminPassword(){
+  const current = document.getElementById('cp-current').value;
+  const newPass = document.getElementById('cp-new').value;
+  const confirm = document.getElementById('cp-confirm').value;
+  const errEl = document.getElementById('change-pass-err');
+  const okEl = document.getElementById('change-pass-ok');
+
+  function showErr(msg){ errEl.textContent=msg; errEl.style.display='block'; okEl.style.display='none'; }
+  function showOk(msg){ okEl.textContent=msg; okEl.style.display='block'; errEl.style.display='none'; }
+  function hideAll(){ errEl.style.display='none'; okEl.style.display='none'; }
+  hideAll();
+
+  // ולידציות
+  if(!current){ showErr('יש להזין את הסיסמה הנוכחית'); return; }
+  if(current !== ADMIN_PASS){ showErr('❌ הסיסמה הנוכחית שגויה'); return; }
+  if(!newPass){ showErr('יש להזין סיסמה חדשה'); return; }
+  if(newPass.length < 8){ showErr('הסיסמה חייבת להכיל לפחות 8 תווים'); return; }
+  if(newPass !== confirm){ showErr('❌ הסיסמאות לא תואמות'); return; }
+  if(newPass === current){ showErr('הסיסמה החדשה זהה לנוכחית'); return; }
+  if(_checkPassStrength(newPass) < 2){ showErr('⚠️ הסיסמה חלשה מדי — הוסף מספרים או אותיות גדולות'); return; }
+
+  // שמירה ב-Firestore
+  if(window.fbOK && window.db){
+    try{
+      await window.db.collection('cashphone').doc('main').update({
+        adminPass: newPass,
+        adminPassUpdated: Date.now()
+      });
+    }catch(e){ console.warn('Firestore save failed:', e); }
+  }
+
+  // עדכון ADMIN_PASS בזיכרון
+  // eslint-disable-next-line no-global-assign
+  window._runtimeAdminPass = newPass;
+
+  // ניקוי שדות
+  document.getElementById('cp-current').value='';
+  document.getElementById('cp-new').value='';
+  document.getElementById('cp-confirm').value='';
+  document.getElementById('pass-strength-bar').style.background='#2d3748';
+  document.getElementById('pass-strength-txt').textContent='';
+
+  logAudit('security','סיסמת אדמין שונתה',{});
+  showOk('✅ הסיסמה שונתה בהצלחה! בפעם הבאה השתמש בסיסמה החדשה.');
 }
 
 function renderSecurityTab(){

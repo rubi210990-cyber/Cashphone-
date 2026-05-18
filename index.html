@@ -699,6 +699,31 @@
   <!-- ============ 🛡️ אבטחה ============ -->
   <div id="sec-security" style="display:none;">
 
+    <!-- שינוי סיסמת אדמין -->
+    <div class="card" style="background:#3a4556;border:1px solid #5a6478;margin-bottom:16px;">
+      <div class="card-title">🔑 שינוי סיסמת אדמין</div>
+      <div style="font-size:12px;color:#aaa;margin-bottom:14px;">הסיסמה החדשה תישמר ב-Firestore ותיכנס לתוקף מיד</div>
+      <div id="change-pass-err" style="display:none;background:#3a1a1a;border:1px solid #e24b4a;border-radius:8px;padding:8px 12px;font-size:13px;color:#e24b4a;margin-bottom:10px;"></div>
+      <div id="change-pass-ok" style="display:none;background:#1a2a1a;border:1px solid #39e600;border-radius:8px;padding:8px 12px;font-size:13px;color:#39e600;margin-bottom:10px;"></div>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:360px;">
+        <div>
+          <label style="font-size:12px;color:#aaa;display:block;margin-bottom:4px;">סיסמה נוכחית</label>
+          <input id="cp-current" type="password" placeholder="הכנס סיסמה נוכחית" style="width:100%;background:#2d3748;border:1px solid #475467;border-radius:8px;padding:9px 12px;color:#fff;font-size:14px;font-family:inherit;box-sizing:border-box;"/>
+        </div>
+        <div>
+          <label style="font-size:12px;color:#aaa;display:block;margin-bottom:4px;">סיסמה חדשה</label>
+          <input id="cp-new" type="password" placeholder="לפחות 8 תווים" style="width:100%;background:#2d3748;border:1px solid #475467;border-radius:8px;padding:9px 12px;color:#fff;font-size:14px;font-family:inherit;box-sizing:border-box;"/>
+        </div>
+        <div>
+          <label style="font-size:12px;color:#aaa;display:block;margin-bottom:4px;">אימות סיסמה חדשה</label>
+          <input id="cp-confirm" type="password" placeholder="הכנס שוב את הסיסמה החדשה" style="width:100%;background:#2d3748;border:1px solid #475467;border-radius:8px;padding:9px 12px;color:#fff;font-size:14px;font-family:inherit;box-sizing:border-box;"/>
+        </div>
+        <div id="pass-strength-bar" style="height:4px;border-radius:4px;background:#2d3748;margin-top:-4px;transition:all .3s;"></div>
+        <div id="pass-strength-txt" style="font-size:11px;color:#888;margin-top:-6px;"></div>
+        <button onclick="changeAdminPassword()" style="background:linear-gradient(135deg,#39e600,#2ab800);color:#000;border:none;border-radius:8px;padding:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;">🔑 שנה סיסמה</button>
+      </div>
+    </div>
+
     <!-- גיבוי -->
     <div class="card" style="background:#3a4556;border:1px solid #5a6478;">
       <div class="card-title">📥 גיבוי ושחזור</div>
